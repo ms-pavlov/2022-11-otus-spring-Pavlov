@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+     http://www.springframework.org/schema/util  http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+    <util:constant id="SYSTEM_OUT" static-field="java.lang.System.out" />
+
+    <bean id="questionSource" class="ru.otus.data.sources.QuestionSourceImpl">
+        <constructor-arg name="resourcePath" value="test.csv"/>
+    </bean>
+
+    <bean id="questionDataStorage" class="ru.otus.data.storages.QuestionDataStorageImpl">
+        <constructor-arg name="dataSource" ref="questionSource"/>
+    </bean>
+
+    <bean id="questionFormatView" class="ru.otus.views.QuestionFormatViewImpl">
+        <constructor-arg name="printStream" ref="SYSTEM_OUT"/>
+    </bean>
+
+    <bean id="answersStorage" class="ru.otus.data.storages.AnswersStorageImpl">
+        <constructor-arg name="questionDataStorage" ref="questionDataStorage"/>
+    </bean>
+
+    <bean id="questionService" class="ru.otus.services.QuestionServiceImpl">
+        <constructor-arg name="questionDataStorage" ref="questionDataStorage"/>
+        <constructor-arg name="answersStorage" ref="answersStorage"/>
+    </bean>
+
+    <bean id="questionController" class="ru.otus.controllers.QuestionControllerImpl">
+        <constructor-arg name="service" ref="questionService"/>
+        <constructor-arg name="view" ref="questionFormatView"/>
+    </bean>
+</beans>
