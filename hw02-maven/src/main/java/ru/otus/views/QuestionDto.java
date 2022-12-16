@@ -21,14 +21,14 @@ public class QuestionDto {
         decisions.add(correct, question.getQuestionCorrect());
     }
 
+    public boolean checkAnswer(int ans) {
+        return ans == correct;
+    }
+
     private int prepareCorrect(int position, int size) {
         if (position > size) {
             return size;
         }
         return Math.max(position, 0);
-    }
-
-    public boolean checkAnswer(int ans) {
-        return ans == correct;
     }
 }

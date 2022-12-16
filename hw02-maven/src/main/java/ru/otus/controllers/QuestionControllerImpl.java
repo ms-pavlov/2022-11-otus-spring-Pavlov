@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.otus.services.TestsService;
 
 @Component
-public class QuestionControllerImpl implements QuestionController{
+public class QuestionControllerImpl implements QuestionController {
 
     private final TestsService testsService;
 

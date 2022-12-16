@@ -13,6 +13,11 @@ public class AnswersStorageImpl implements AnswersStorage{
         answers = getNewAnswers(questionDataStorage);
     }
 
+    @Override
+    public List<Integer> getAnswers() {
+        return answers;
+    }
+
     private List<Integer> getNewAnswers(QuestionDataStorage questionDataStorage) {
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < questionDataStorage.getTemplate().size(); i++) {
@@ -23,10 +28,5 @@ public class AnswersStorageImpl implements AnswersStorage{
 
     private static int getRandomInteger(int max){
         return (int)(Math.random()*(max+1));
-    }
-
-    @Override
-    public List<Integer> getAnswers() {
-        return answers;
     }
 }

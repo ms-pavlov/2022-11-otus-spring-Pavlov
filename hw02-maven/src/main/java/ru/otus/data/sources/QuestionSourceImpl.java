@@ -21,14 +21,6 @@ public class QuestionSourceImpl implements QuestionDataSource {
         this.resourcePath = properties.get("path");
     }
 
-    private Reader getResourceReader(String resourcePath) {
-        return Optional.ofNullable(resourcePath)
-                .filter(path -> !path.isEmpty())
-                .map(path -> QuestionSourceImpl.class.getClassLoader().getResourceAsStream(resourcePath))
-                .map(InputStreamReader::new)
-                .orElseThrow(() -> new RuntimeException("No such file " + resourcePath));
-    }
-
     @Override
     public List<Question> getQuestions() {
         CsvToBean<Question> csvQuestions = new CsvToBeanBuilder<Question>(getResourceReader(resourcePath))
@@ -38,5 +30,13 @@ public class QuestionSourceImpl implements QuestionDataSource {
                 .build();
 
         return csvQuestions.stream().toList();
+    }
+
+    private Reader getResourceReader(String resourcePath) {
+        return Optional.ofNullable(resourcePath)
+                .filter(path -> !path.isEmpty())
+                .map(path -> QuestionSourceImpl.class.getClassLoader().getResourceAsStream(resourcePath))
+                .map(InputStreamReader::new)
+                .orElseThrow(() -> new RuntimeException("No such file " + resourcePath));
     }
 }
