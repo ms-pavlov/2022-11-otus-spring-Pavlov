@@ -1,0 +1,8 @@
+${AnsiBackground.RED}
+${AnsiColor.BLUE}   _____${AnsiColor.DEFAULT} _                 __      ${AnsiColor.YELLOW}  ______${AnsiColor.DEFAULT}          __
+${AnsiColor.BLUE}  / ___/${AnsiColor.DEFAULT}(_)___ ___  ____  / /__    ${AnsiColor.YELLOW} /_  __/${AnsiColor.DEFAULT}__  _____/ /_
+${AnsiColor.BLUE}  \__ \${AnsiColor.DEFAULT}/ / __ `__ \/ __ \/ / _ \   ${AnsiColor.YELLOW}  / / ${AnsiColor.DEFAULT}/ _ \/ ___/ __/
+${AnsiColor.BLUE} ___/ /${AnsiColor.DEFAULT} / / / / / / /_/ / /  __/   ${AnsiColor.YELLOW} / / ${AnsiColor.DEFAULT}/  __(__  ) /_
+${AnsiColor.BLUE}/____/${AnsiColor.DEFAULT}_/_/ /_/ /_/ .___/_/\___/    ${AnsiColor.YELLOW}/_/  ${AnsiColor.DEFAULT}\___/____/\__/
+${AnsiColor.DEFAULT}                /_/
+${AnsiBackground.DEFAULT}
