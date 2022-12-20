@@ -1,6 +1,6 @@
 application:
     path: "test.csv"
-    locale: "ru"
+    locale: "en"
 spring:
     banner:
         location: "banner.txt"

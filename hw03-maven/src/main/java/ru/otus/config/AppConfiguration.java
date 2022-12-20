@@ -26,9 +26,4 @@ public class AppConfiguration {
     public Scanner getScanner() {
         return new Scanner(SYSTEM_IN);
     }
-
-    @Bean
-    public String path(MessageSource messageSource, Locale locale) {
-        return messageSource.getMessage("path", null, locale);
-    }
 }
