@@ -6,7 +6,7 @@ import java.io.PrintStream;
 import java.util.List;
 
 @Component
-public class QuestionFormatViewImpl implements QuestionFormatView{
+public class QuestionFormatViewImpl implements QuestionFormatView {
 
     private final PrintStream printStream;
 

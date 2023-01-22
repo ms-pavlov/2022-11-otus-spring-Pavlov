@@ -1,13 +1,20 @@
 package ru.otus.data.sources;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import ru.otus.config.AppPropertiesConfig;
+import ru.otus.config.PropertiesConfig;
 import ru.otus.data.Question;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class QuestionSourceImplTest {
@@ -19,9 +26,13 @@ public class QuestionSourceImplTest {
             new Question("11 x 11 = ?", List.of("111", "1111"), "121")
     );
 
+    @SpyBean
+    PropertiesConfig config;
+
     @Test
     public void testFindAll() {
-        QuestionDataSource dataSource = new QuestionSourceImpl("./test.csv");
+        when(config.getPath()).thenReturn("./test.csv");
+        QuestionDataSource dataSource = new QuestionSourceImpl(config);
 
         var result = dataSource.getQuestions();
 
@@ -31,13 +42,15 @@ public class QuestionSourceImplTest {
 
     @Test
     public void testFileNotFound() {
-        QuestionDataSource dataSource = new QuestionSourceImpl("/testFileNotFound.csv");
+        when(config.getPath()).thenReturn("/testFileNotFound.csv");
+        QuestionDataSource dataSource = new QuestionSourceImpl(config);
         assertThrows(RuntimeException.class, dataSource::getQuestions);
     }
 
     @Test
     public void testEmptyFilePath() {
-        QuestionDataSource dataSource = new QuestionSourceImpl("");
+        when(config.getPath()).thenReturn("");
+        QuestionDataSource dataSource = new QuestionSourceImpl(config);
         assertThrows(RuntimeException.class, dataSource::getQuestions);
     }
 

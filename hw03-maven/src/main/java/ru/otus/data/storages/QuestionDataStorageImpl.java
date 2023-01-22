@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class QuestionDataStorageImpl implements QuestionDataStorage{
+public class QuestionDataStorageImpl implements QuestionDataStorage {
 
     private final QuestionDataSource dataSource;
 
     public QuestionDataStorageImpl(QuestionDataSource dataSource) {
-         this.dataSource = dataSource;
+        this.dataSource = dataSource;
     }
 
     @Override

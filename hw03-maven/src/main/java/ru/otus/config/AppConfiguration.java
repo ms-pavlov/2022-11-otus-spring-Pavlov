@@ -1,13 +1,11 @@
 package ru.otus.config;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Locale;
 import java.util.Scanner;
 
 @Configuration

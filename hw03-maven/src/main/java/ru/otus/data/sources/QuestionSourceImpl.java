@@ -4,6 +4,8 @@ import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.springframework.stereotype.Component;
+import ru.otus.config.AppPropertiesConfig;
+import ru.otus.config.PropertiesConfig;
 import ru.otus.data.Question;
 
 import java.io.InputStreamReader;
@@ -16,8 +18,9 @@ public class QuestionSourceImpl implements QuestionDataSource {
 
     private final String resourcePath;
 
-    public QuestionSourceImpl(String path) {
-        this.resourcePath = path;
+    public QuestionSourceImpl(PropertiesConfig config) {
+        System.out.println("<><>" + config.getPath());
+        this.resourcePath = config.getPath();
     }
 
     @Override

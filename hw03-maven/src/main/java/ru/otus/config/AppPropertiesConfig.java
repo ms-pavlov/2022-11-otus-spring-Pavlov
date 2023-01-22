@@ -1,8 +1,6 @@
 package ru.otus.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -10,21 +8,24 @@ import java.util.Locale;
 
 @Configuration
 @PropertySource("application.yml")
-public class AppPropertiesConfig {
-
-    @Value("${application.locale}")
+@ConfigurationProperties(prefix = "application")
+public class AppPropertiesConfig implements PropertiesConfig{
     private Locale locale;
-
-    @Value("${application.path}")
     private String path;
 
-    @Bean
-    public Locale locale() {
+    public Locale getLocale() {
         return locale;
     }
 
-    @Bean
-    public String path() {
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    public String getPath() {
         return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }
