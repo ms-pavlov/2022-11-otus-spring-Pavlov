@@ -1,0 +1,9 @@
+application:
+    path: "test-${application.locale}.csv"
+    locale: "en"
+spring:
+    banner:
+        location: "banner.txt"
+    messages:
+        basename: "i18n/messages"
+        encoding: "UTF-8"
