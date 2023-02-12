@@ -2,7 +2,6 @@ package ru.otus.messages;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import ru.otus.config.AppPropertiesConfig;
 import ru.otus.config.PropertiesConfig;
 
 import java.util.Locale;

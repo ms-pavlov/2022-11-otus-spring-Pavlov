@@ -4,7 +4,6 @@ import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.springframework.stereotype.Component;
-import ru.otus.config.AppPropertiesConfig;
 import ru.otus.config.PropertiesConfig;
 import ru.otus.data.Question;
 
