@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="library_v006_tests" author="ms-pavlov" context="test">
+        <insert tableName="authors">
+            <column name="name" value="Ivan"/>
+        </insert>
+        <insert tableName="genres">
+            <column name="name" value="drama"/>
+        </insert>
+        <insert tableName="books">
+            <column name="name" value="books_name"/>
+        </insert>
+        <insert tableName="books_authors">
+            <column name="books" value="1"/>
+            <column name="authors" value="1"/>
+        </insert>
+        <insert tableName="books_genres">
+            <column name="books" value="1"/>
+            <column name="genres" value="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
