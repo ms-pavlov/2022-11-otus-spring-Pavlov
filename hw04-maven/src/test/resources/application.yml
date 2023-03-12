@@ -1,0 +1,12 @@
+application:
+    path: "test.csv"
+    locale: "en"
+spring:
+    banner:
+        location: "banner.txt"
+    messages:
+        basename: "i18n/messages"
+        encoding: "UTF-8"
+    shell:
+        interactive:
+            enabled: false
