@@ -1,8 +1,0 @@
-spring:
-  liquibase:
-    change-log: classpath:/db/changelog/master.xml
-  datasource:
-    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1
-  shell:
-    interactive:
-      enabled: false
