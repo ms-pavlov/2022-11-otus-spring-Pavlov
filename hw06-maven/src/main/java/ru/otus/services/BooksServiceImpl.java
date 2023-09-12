@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 @Service
 public class BooksServiceImpl implements BooksService {
-    private final static Logger log = Logger.getLogger(BooksServiceImpl.class.getName());
     private final BooksRepository booksRepository;
     private final BookRequestMapper mapper;
 
@@ -63,21 +62,21 @@ public class BooksServiceImpl implements BooksService {
                 .toList();
     }
 
-    @Override
-    public List<BooksResponse> findByAuthor(String name) {
-        return booksRepository.getByAuthor(name)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<BooksResponse> findByGenre(String name) {
-        return booksRepository.getByGenre(name)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
-    }
+//    @Override
+//    public List<BooksResponse> findByAuthor(String name) {
+//        return booksRepository.getByAuthor(name)
+//                .stream()
+//                .map(mapper::toDto)
+//                .toList();
+//    }
+//
+//    @Override
+//    public List<BooksResponse> findByGenre(String name) {
+//        return booksRepository.getByGenre(name)
+//                .stream()
+//                .map(mapper::toDto)
+//                .toList();
+//    }
 
     @Override
     public List<BooksResponse> findAll() {

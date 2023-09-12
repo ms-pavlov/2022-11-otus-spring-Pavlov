@@ -12,8 +12,6 @@ import ru.otus.entities.Book;
 import ru.otus.entities.Genre;
 import ru.otus.mappers.BookRequestMapper;
 import ru.otus.repositories.BooksRepository;
-import ru.otus.services.BooksService;
-import ru.otus.services.BooksServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,12 +26,10 @@ import static org.mockito.Mockito.*;
 class BooksServiceImplTest {
     private static final Long BOOKS_ID = 1L;
     private static final String BOOKS_NAME = "books_name";
-    private static final String AUTHORS_NAME = "AUTHORS_NAME";
-    private static final String GENRES_NAME = "GENRES_NAME";
     private final static Book BOOK = new Book(
             1L,
             "name",
-            List.of(new Author(1L, "author", List.of())),
+            List.of(new Author(1L, "author")),
             List.of(new Genre(1L, "genre")));
     private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(BOOK);
     private final static BooksRequest BOOKS_REQUEST = new BooksRequest(BOOK.getName(), List.of("author"), List.of("genre"));
@@ -109,29 +105,29 @@ class BooksServiceImplTest {
 
     }
 
-    @Test
-    @DisplayName("должен найти книги по автору")
-    void findByAuthor() {
-        when(booksRepository.getByAuthor(AUTHORS_NAME)).thenReturn(List.of(BOOK));
-        when(mapper.toDto(BOOK))
-                .thenReturn(BOOKS_RESPONSE);
-
-        var result = service.findByAuthor(AUTHORS_NAME);
-
-        result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
-    }
-
-    @Test
-    @DisplayName("должен найти книги по жанру")
-    void findByGenres() {
-        when(booksRepository.getByGenre(GENRES_NAME)).thenReturn(List.of(BOOK));
-        when(mapper.toDto(BOOK))
-                .thenReturn(BOOKS_RESPONSE);
-
-        var result = service.findByGenre(GENRES_NAME);
-
-        result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
-    }
+//    @Test
+//    @DisplayName("должен найти книги по автору")
+//    void findByAuthor() {
+//        when(booksRepository.getByAuthor(AUTHORS_NAME)).thenReturn(List.of(BOOK));
+//        when(mapper.toDto(BOOK))
+//                .thenReturn(BOOKS_RESPONSE);
+//
+//        var result = service.findByAuthor(AUTHORS_NAME);
+//
+//        result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
+//    }
+//
+//    @Test
+//    @DisplayName("должен найти книги по жанру")
+//    void findByGenres() {
+//        when(booksRepository.getByGenre(GENRES_NAME)).thenReturn(List.of(BOOK));
+//        when(mapper.toDto(BOOK))
+//                .thenReturn(BOOKS_RESPONSE);
+//
+//        var result = service.findByGenre(GENRES_NAME);
+//
+//        result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
+//    }
 
     @Test
     @DisplayName("должен найти все книги")

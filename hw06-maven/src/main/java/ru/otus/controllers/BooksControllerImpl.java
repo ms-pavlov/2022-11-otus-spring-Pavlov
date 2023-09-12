@@ -13,8 +13,6 @@ import java.util.logging.Logger;
 @ShellComponent
 public class BooksControllerImpl implements BooksController {
 
-    private final static Logger log = Logger.getLogger(BooksControllerImpl.class.getName());
-
     private final BooksService service;
     private final PrintStream out;
 
@@ -45,17 +43,17 @@ public class BooksControllerImpl implements BooksController {
         service.findByName(name).forEach(out::println);
     }
 
-    @Override
-    @ShellMethod(value = "Get books by author", key = {"author", "get-author"})
-    public void findByAuthor(String name) {
-        service.findByAuthor(name).forEach(out::println);
-    }
-
-    @Override
-    @ShellMethod(value = "Get books by genre", key = {"genre", "get-genre"})
-    public void findByGenre(String name) {
-        service.findByGenre(name).forEach(out::println);
-    }
+//    @Override
+//    @ShellMethod(value = "Get books by author", key = {"author", "get-author"})
+//    public void findByAuthor(String name) {
+//        service.findByAuthor(name).forEach(out::println);
+//    }
+//
+//    @Override
+//    @ShellMethod(value = "Get books by genre", key = {"genre", "get-genre"})
+//    public void findByGenre(String name) {
+//        service.findByGenre(name).forEach(out::println);
+//    }
 
     @Override
     @ShellMethod(value = "Get all books", key = {"all", "get-all"})

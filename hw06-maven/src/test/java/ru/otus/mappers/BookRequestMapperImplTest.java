@@ -9,8 +9,6 @@ import ru.otus.dto.requests.BooksRequest;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
 import ru.otus.entities.Genre;
-import ru.otus.mappers.BookRequestMapper;
-import ru.otus.mappers.BookRequestMapperImpl;
 import ru.otus.repositories.AuthorsRepository;
 import ru.otus.repositories.GenresRepository;
 
@@ -31,7 +29,7 @@ class BookRequestMapperImplTest {
     private final static String TEST_BOOK_NAME = "name";
     private final static String TEST_AUTHORS_NAME = "Authors";
     private final static String TEST_GENRES_NAME = "Genres";
-    private final static Author TEST_AUTHORS = new Author(null, TEST_AUTHORS_NAME, List.of());
+    private final static Author TEST_AUTHORS = new Author(null, TEST_AUTHORS_NAME);
     private final static Genre TEST_GENRES = new Genre(null, TEST_GENRES_NAME);
     private final static Book TEST_BOOK = new Book(
             null,
@@ -55,8 +53,8 @@ class BookRequestMapperImplTest {
     @Test
     @DisplayName("создавать Books на основе BooksRequest")
     void create() {
-        when(authorsRepository.findByName(TEST_AUTHORS_NAME)).thenReturn(TEST_AUTHORS);
-        when(genresRepository.findByName(TEST_GENRES_NAME)).thenReturn(TEST_GENRES);
+        when(authorsRepository.getByName(TEST_AUTHORS_NAME)).thenReturn(TEST_AUTHORS);
+        when(genresRepository.getByName(TEST_GENRES_NAME)).thenReturn(TEST_GENRES);
 
         var result = mapper.create(TEST_REQUEST);
 
@@ -70,8 +68,8 @@ class BookRequestMapperImplTest {
     @Test
     @DisplayName("обновлять Books на основе BooksRequest и создавать авторов и жанры при необходимости")
     void updateAndCreateAuthorsAndGenres() {
-        when(authorsRepository.findByName(TEST_AUTHORS_NAME)).thenReturn(null);
-        when(genresRepository.findByName(TEST_GENRES_NAME)).thenReturn(null);
+        when(authorsRepository.getByName(TEST_AUTHORS_NAME)).thenReturn(null);
+        when(genresRepository.getByName(TEST_GENRES_NAME)).thenReturn(null);
         when(authorsRepository.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
         when(genresRepository.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
@@ -89,8 +87,8 @@ class BookRequestMapperImplTest {
     @Test
     @DisplayName("обновлять Books на основе BooksRequest")
     void update() {
-        when(authorsRepository.findByName(TEST_AUTHORS_NAME)).thenReturn(TEST_AUTHORS);
-        when(genresRepository.findByName(TEST_GENRES_NAME)).thenReturn(TEST_GENRES);
+        when(authorsRepository.getByName(TEST_AUTHORS_NAME)).thenReturn(TEST_AUTHORS);
+        when(genresRepository.getByName(TEST_GENRES_NAME)).thenReturn(TEST_GENRES);
 
         var result = new Book(null, null, null, null);
 

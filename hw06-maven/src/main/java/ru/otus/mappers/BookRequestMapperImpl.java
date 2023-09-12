@@ -10,8 +10,6 @@ import ru.otus.repositories.GenresRepository;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -53,12 +51,12 @@ public class BookRequestMapperImpl implements BookRequestMapper {
     }
 
     private Author prepareAuthors(String name, Book book) {
-        return Optional.ofNullable(authorsRepository.findByName(name))
-                .orElseGet(() -> authorsRepository.create(new Author(null, name, List.of(book))));
+        return Optional.ofNullable(authorsRepository.getByName(name))
+                .orElseGet(() -> authorsRepository.create(new Author(null, name)));
     }
 
     private Genre prepareGenres(String name) {
-        return Optional.ofNullable(genresRepository.findByName(name))
+        return Optional.ofNullable(genresRepository.getByName(name))
                 .orElseGet(() -> genresRepository.create(new Genre(null, name)));
     }
 }

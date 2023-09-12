@@ -4,25 +4,25 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
-import ru.otus.entities.Author;
+import ru.otus.entities.Genre;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class AuthorsRepositoryImpl implements AuthorsRepository {
+public class GenresRepositoryImpl implements GenresRepository{
 
     @PersistenceContext
     private final EntityManager em;
 
-    public AuthorsRepositoryImpl(EntityManager em) {
+    public GenresRepositoryImpl(EntityManager em) {
         this.em = em;
     }
 
     @Override
-    public Author getByName(String name) {
+    public Genre getByName(String name) {
         try {
-            return em.createQuery("SELECT a FROM Author a WHERE a.name = :name", Author.class)
+            return em.createQuery("SELECT g FROM Genre g WHERE g.name = :name", Genre.class)
                     .setParameter("name", name)
                     .getSingleResult();
         } catch (NoResultException noResultException) {
@@ -31,42 +31,41 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
     }
 
     @Override
-    public Optional<Author> getById(long id) {
+    public Optional<Genre> getById(long id) {
         return Optional.of(id)
-                .map(value -> em.find(Author.class, value));
+                .map(value -> em.find(Genre.class, value));
     }
 
     @Override
-    public List<Author> getAll() {
-        return em.createQuery("SELECT a FROM Author a", Author.class)
+    public List<Genre> getAll() {
+        return em.createQuery("SELECT g FROM Genre g", Genre.class)
                 .getResultList();
     }
 
     @Override
-    public Author create(Author entity) {
+    public Genre create(Genre entity) {
         em.persist(entity);
         return entity;
     }
 
     @Override
-    public Author update(Author entity) {
+    public Genre update(Genre entity) {
         entity.getBooks()
                 .stream()
                 .filter(book -> book.getId() == null)
                 .forEach(em::persist);
-
         return em.merge(entity);
     }
 
     @Override
     public void delete(Long id) {
-        em.remove(em.find(Author.class, id));
+        em.remove(em.find(Genre.class, id));
     }
 
     @Override
     public boolean exist(Long id) {
         try {
-            long count = em.createQuery("select count(a.id) from Author a where a.id = :id", Long.class)
+            long count = em.createQuery("select count(g) from Genre g where g.id = :id", Long.class)
                     .setParameter("id", id)
                     .getSingleResult();
             return count > 0;
@@ -78,7 +77,7 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
     @Override
     public int count() {
         try {
-            return em.createQuery("select count(a.id) from Author a", Long.class)
+            return em.createQuery("select count(g.id) from Genre g", Long.class)
                     .getSingleResult()
                     .intValue();
         } catch (NoResultException noResultException) {

@@ -5,11 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,10 +34,13 @@ public class Author implements Serializable {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Fetch(FetchMode.SUBSELECT)
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_authors",
             joinColumns = @JoinColumn(name = "authors", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "books", referencedColumnName = "id"))
     private List<Book> books;
+
+    public Author(Long id, String name) {
+        this(id, name, new ArrayList<>());
+    }
 }

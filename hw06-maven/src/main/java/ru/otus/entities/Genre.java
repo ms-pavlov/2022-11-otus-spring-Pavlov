@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "genres")
@@ -23,7 +25,7 @@ public class Genre implements Serializable {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "authorsSeq")
+            generator = "genresSeq")
     @SequenceGenerator(
             name = "genresSeq",
             allocationSize = 1,
@@ -32,4 +34,13 @@ public class Genre implements Serializable {
     private Long id;
     @Column(name = "name")
     private String name;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "books_genres",
+            joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"))
+    private List<Book> books;
+
+    public Genre(Long id, String name) {
+        this(id, name, new ArrayList<>());
+    }
 }

@@ -2,11 +2,7 @@ package ru.otus.repositories;
 
 import ru.otus.entities.Genre;
 
-import java.util.List;
-
 public interface GenresRepository extends Repository<Genre, Long>{
+    Genre getByName(String name);
 
-    List<Genre> findByBookId(Long id);
-
-    Genre findByName(String name);
 }

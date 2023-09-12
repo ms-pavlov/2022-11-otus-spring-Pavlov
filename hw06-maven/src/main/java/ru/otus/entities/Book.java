@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,11 +18,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@NamedEntityGraph(name = "avatars-entity-graph",
-        attributeNodes = {
-                @NamedAttributeNode("authors"),
-                @NamedAttributeNode("genres")
-        })
 public class Book implements Serializable {
 
     @Serial
@@ -29,21 +26,23 @@ public class Book implements Serializable {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "authorsSeq")
+            generator = "booksSeq")
     @SequenceGenerator(
-            name = "genresSeq",
+            name = "booksSeq",
             allocationSize = 1,
-            sequenceName = "genres_seq")
+            sequenceName = "books_seq")
     @Column(name = "id")
     private Long id;
     @Column(name = "name")
     private String name;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_authors",
             joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authors", referencedColumnName = "id"))
     private List<Author> authors;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_genres",
             joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"))

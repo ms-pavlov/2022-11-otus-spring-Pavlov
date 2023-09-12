@@ -10,9 +10,9 @@ public interface BooksController {
 
     void findByName(String name);
 
-    void findByAuthor(String name);
-
-    void findByGenre(String name);
+//    void findByAuthor(String name);
+//
+//    void findByGenre(String name);
 
     void update(Long id, String name, List<String> authors, List<String> genres);
 

@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.otus.controllers.BooksController;
-import ru.otus.controllers.BooksControllerImpl;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.entities.Author;
@@ -29,7 +27,7 @@ class BooksControllerImplTest {
     private final static Book BOOK = new Book(
             1L,
             BOOKS_NAME,
-            List.of(new Author(1L, AUTHORS_NAME, List.of())),
+            List.of(new Author(1L, AUTHORS_NAME)),
             List.of(new Genre(1L, GENRES_NAME)));
     private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(BOOK);
     private final static List<BooksResponse> BOOKS_RESPONSE_LIST = List.of(BOOKS_RESPONSE);
@@ -75,27 +73,27 @@ class BooksControllerImplTest {
                 booksResponse -> verify(out, times(1)).println(booksResponse));
     }
 
-    @Test
-    @DisplayName("должен найти книги по автору и вывести результат")
-    void findByAuthor() {
-        when(service.findByGenre(eq(GENRES_NAME))).thenReturn(BOOKS_RESPONSE_LIST);
-
-        controller.findByGenre(GENRES_NAME);
-
-        BOOKS_RESPONSE_LIST.forEach(
-                booksResponse -> verify(out, times(1)).println(booksResponse));
-    }
-
-    @Test
-    @DisplayName("должен найти книги по жанру и вывести результат")
-    void findByGenre() {
-        when(service.findByAuthor(eq(AUTHORS_NAME))).thenReturn(BOOKS_RESPONSE_LIST);
-
-        controller.findByAuthor(AUTHORS_NAME);
-
-        BOOKS_RESPONSE_LIST.forEach(
-                booksResponse -> verify(out, times(1)).println(booksResponse));
-    }
+//    @Test
+//    @DisplayName("должен найти книги по автору и вывести результат")
+//    void findByAuthor() {
+//        when(service.findByGenre(eq(GENRES_NAME))).thenReturn(BOOKS_RESPONSE_LIST);
+//
+//        controller.findByGenre(GENRES_NAME);
+//
+//        BOOKS_RESPONSE_LIST.forEach(
+//                booksResponse -> verify(out, times(1)).println(booksResponse));
+//    }
+//
+//    @Test
+//    @DisplayName("должен найти книги по жанру и вывести результат")
+//    void findByGenre() {
+//        when(service.findByAuthor(eq(AUTHORS_NAME))).thenReturn(BOOKS_RESPONSE_LIST);
+//
+//        controller.findByAuthor(AUTHORS_NAME);
+//
+//        BOOKS_RESPONSE_LIST.forEach(
+//                booksResponse -> verify(out, times(1)).println(booksResponse));
+//    }
 
     @Test
     @DisplayName("должен найти все книги и вывести результат")
