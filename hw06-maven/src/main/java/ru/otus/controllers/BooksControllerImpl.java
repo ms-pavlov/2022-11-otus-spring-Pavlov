@@ -8,7 +8,6 @@ import ru.otus.services.BooksService;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.logging.Logger;
 
 @ShellComponent
 public class BooksControllerImpl implements BooksController {
@@ -23,7 +22,7 @@ public class BooksControllerImpl implements BooksController {
     }
 
     @Override
-    @ShellMethod(value = "Create new book", key = {"c", "create"})
+    @ShellMethod(value = "Create new book", key = {"book-c", "book-create"})
     public void create(String name, List<String> authors, List<String> genres) {
         out.println(
                 service.create(
@@ -31,45 +30,33 @@ public class BooksControllerImpl implements BooksController {
     }
 
     @Override
-    @ShellMethod(value = "Get book by id", key = {"id", "get-id"})
+    @ShellMethod(value = "Get book by id", key = {"book-get-id"})
     public void findById(Long id) {
         out.println(
                 service.findById(id));
     }
 
     @Override
-    @ShellMethod(value = "Get books by name", key = {"name", "get-name"})
+    @ShellMethod(value = "Get books by name", key = {"book-get-name"})
     public void findByName(String name) {
         service.findByName(name).forEach(out::println);
     }
 
-//    @Override
-//    @ShellMethod(value = "Get books by author", key = {"author", "get-author"})
-//    public void findByAuthor(String name) {
-//        service.findByAuthor(name).forEach(out::println);
-//    }
-//
-//    @Override
-//    @ShellMethod(value = "Get books by genre", key = {"genre", "get-genre"})
-//    public void findByGenre(String name) {
-//        service.findByGenre(name).forEach(out::println);
-//    }
-
     @Override
-    @ShellMethod(value = "Get all books", key = {"all", "get-all"})
+    @ShellMethod(value = "Get all books", key = {"book-all"})
     public void findAll() {
         service.findAll().forEach(out::println);
     }
 
     @Override
-    @ShellMethod(value = "Update book", key = {"u", "update"})
+    @ShellMethod(value = "Update book", key = {"book-u", "book-update"})
     public void update(Long id, String name, List<String> authors, List<String> genres) {
         out.println(
                 service.update(id, new BooksRequest(name, authors, genres)));
     }
 
     @Override
-    @ShellMethod(value = "Delete book by id", key = {"d", "delete"})
+    @ShellMethod(value = "Delete book by id", key = {"book-d", "book-delete"})
     public void delete(Long id) {
         service.delete(id);
     }

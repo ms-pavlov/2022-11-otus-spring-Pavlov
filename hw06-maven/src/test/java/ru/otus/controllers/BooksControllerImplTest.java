@@ -73,28 +73,6 @@ class BooksControllerImplTest {
                 booksResponse -> verify(out, times(1)).println(booksResponse));
     }
 
-//    @Test
-//    @DisplayName("должен найти книги по автору и вывести результат")
-//    void findByAuthor() {
-//        when(service.findByGenre(eq(GENRES_NAME))).thenReturn(BOOKS_RESPONSE_LIST);
-//
-//        controller.findByGenre(GENRES_NAME);
-//
-//        BOOKS_RESPONSE_LIST.forEach(
-//                booksResponse -> verify(out, times(1)).println(booksResponse));
-//    }
-//
-//    @Test
-//    @DisplayName("должен найти книги по жанру и вывести результат")
-//    void findByGenre() {
-//        when(service.findByAuthor(eq(AUTHORS_NAME))).thenReturn(BOOKS_RESPONSE_LIST);
-//
-//        controller.findByAuthor(AUTHORS_NAME);
-//
-//        BOOKS_RESPONSE_LIST.forEach(
-//                booksResponse -> verify(out, times(1)).println(booksResponse));
-//    }
-
     @Test
     @DisplayName("должен найти все книги и вывести результат")
     void findAll() {

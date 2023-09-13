@@ -2,14 +2,16 @@ package ru.otus.mappers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.otus.dto.requests.BooksRequest;
+import ru.otus.dto.responses.BooksResponse;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
 import ru.otus.entities.Genre;
 import ru.otus.repositories.AuthorsRepository;
 import ru.otus.repositories.GenresRepository;
-import ru.otus.dto.requests.BooksRequest;
-import ru.otus.dto.responses.BooksResponse;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -34,13 +36,21 @@ public class BookRequestMapperImpl implements BookRequestMapper {
     @Override
     public void update(Book entity, BooksRequest request) {
         entity.setName(request.name());
-        entity.setAuthors(request.authors()
+        var authors = Optional.of(entity)
+                .map(Book::getAuthors)
+                .orElseGet(ArrayList::new);
+        authors.clear();
+        authors.addAll(request.authors()
                 .stream()
                 .map(name -> prepareAuthors(name, entity))
                 .toList());
-        entity.setGenres(request.genres()
+        var genres = Optional.of(entity)
+                .map(Book::getGenres)
+                .orElseGet(ArrayList::new);
+        genres.clear();
+        genres.addAll(request.genres()
                 .stream()
-                .map(this::prepareGenres)
+                .map(name -> prepareGenres(name, entity))
                 .toList());
 
     }
@@ -52,11 +62,11 @@ public class BookRequestMapperImpl implements BookRequestMapper {
 
     private Author prepareAuthors(String name, Book book) {
         return Optional.ofNullable(authorsRepository.getByName(name))
-                .orElseGet(() -> authorsRepository.create(new Author(null, name)));
+                .orElseGet(() -> authorsRepository.create(new Author(null, name, List.of(book))));
     }
 
-    private Genre prepareGenres(String name) {
+    private Genre prepareGenres(String name, Book book) {
         return Optional.ofNullable(genresRepository.getByName(name))
-                .orElseGet(() -> genresRepository.create(new Genre(null, name)));
+                .orElseGet(() -> genresRepository.create(new Genre(null, name, List.of(book))));
     }
 }

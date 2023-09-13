@@ -2,6 +2,7 @@ package ru.otus.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.mappers.BookRequestMapper;
@@ -9,7 +10,6 @@ import ru.otus.repositories.BooksRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 public class BooksServiceImpl implements BooksService {
@@ -23,6 +23,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
+    @Transactional
     public BooksResponse create(BooksRequest request) {
         return Optional.ofNullable(request)
                 .map(mapper::create)
@@ -32,6 +33,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
+    @Transactional
     public BooksResponse findById(Long id) {
         return booksRepository.getById(id)
                 .map(mapper::toDto)
@@ -39,22 +41,26 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
+    @Transactional
     public BooksResponse update(Long id, BooksRequest request) {
         return booksRepository.getById(id)
                 .map(books -> {
                     mapper.update(books, request);
                     return books;
                 })
+                .map(booksRepository::update)
                 .map(mapper::toDto)
                 .orElse(null);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         booksRepository.delete(id);
     }
 
     @Override
+    @Transactional
     public List<BooksResponse> findByName(String name) {
         return booksRepository.getByName(name)
                 .stream()
@@ -62,23 +68,9 @@ public class BooksServiceImpl implements BooksService {
                 .toList();
     }
 
-//    @Override
-//    public List<BooksResponse> findByAuthor(String name) {
-//        return booksRepository.getByAuthor(name)
-//                .stream()
-//                .map(mapper::toDto)
-//                .toList();
-//    }
-//
-//    @Override
-//    public List<BooksResponse> findByGenre(String name) {
-//        return booksRepository.getByGenre(name)
-//                .stream()
-//                .map(mapper::toDto)
-//                .toList();
-//    }
 
     @Override
+    @Transactional
     public List<BooksResponse> findAll() {
         return booksRepository.getAll()
                 .stream()

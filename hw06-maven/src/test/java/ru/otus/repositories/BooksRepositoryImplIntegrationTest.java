@@ -13,6 +13,7 @@ import ru.otus.entities.Book;
 import ru.otus.entities.Genre;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BooksRepositoryImplIntegrationTest {
 
     private static final int EXPECTED_QUERIES_COUNT = 3;
-    private static final Long EXPECTED_BOOKS_COUNT = 1L;
+    private static final Long EXPECTED_BOOKS_COUNT = 3L;
     private static final Long EXISTING_BOOKS_ID = 1L;
     private static final Long OTHER_BOOKS_ID = EXISTING_BOOKS_ID + 2L;
     private static final String EXISTING_BOOKS_NAME = "books_name";
@@ -50,14 +51,26 @@ class BooksRepositoryImplIntegrationTest {
     }
 
     @Test
-    @DisplayName("возвращать список книг по названию")
+    @DisplayName("возвращать книгу по названию")
     void getByName() {
         var result = repository.getByName(EXISTING_BOOKS_NAME);
 
-        assertEquals(EXPECTED_BOOKS_COUNT, result.size());
-        assertEquals(EXISTING_BOOKS_NAME, result.get(0).getName());
-        assertEquals(EXISTING_AUTHOR_NAME, result.get(0).getAuthors().get(0).getName());
-//        assertEquals(EXISTING_GENRES_NAME, result.get(0).getGenres().get(0).getName());
+        assertEquals(1, result.size());
+        assertTrue(
+                result.stream()
+                        .anyMatch(
+                                book -> Objects.equals(book.getName(), EXISTING_BOOKS_NAME)));
+        assertTrue(
+                result.stream()
+                        .anyMatch(
+                                book -> book.getAuthors().stream()
+                                        .anyMatch(
+                                                author -> Objects.equals(author.getName(), EXISTING_AUTHOR_NAME))));
+        assertTrue(result.stream()
+                .anyMatch(
+                        book -> book.getGenres().stream()
+                                .anyMatch(
+                                        genre -> Objects.equals(genre.getName(), EXISTING_GENRES_NAME))));
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
@@ -77,14 +90,14 @@ class BooksRepositoryImplIntegrationTest {
                         .map(authors -> authors.get(0))
                         .map(Author::getName)
                         .orElse(null));
-//        assertEquals(
-//                EXISTING_GENRES_NAME,
-//                result
-//                        .map(Book::getGenres)
-//                        .map(genres -> genres.get(0))
-//                        .map(Genre::getName)
-//                        .orElse(null));
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(2);
+        assertEquals(
+                EXISTING_GENRES_NAME,
+                result
+                        .map(Book::getGenres)
+                        .map(genres -> genres.get(0))
+                        .map(Genre::getName)
+                        .orElse(null));
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
     @Test
@@ -93,8 +106,17 @@ class BooksRepositoryImplIntegrationTest {
         var result = repository.getAll();
 
         assertEquals(EXPECTED_BOOKS_COUNT, result.size());
-        assertEquals(EXISTING_AUTHOR_NAME, result.get(0).getAuthors().get(0).getName());
-//        assertEquals(EXISTING_GENRES_NAME, result.get(0).getGenres().get(0).getName());
+        assertTrue(result.stream()
+                .anyMatch(
+                        book -> book.getAuthors().stream()
+                                .anyMatch(
+                                        author -> Objects.equals(author.getName(), EXISTING_AUTHOR_NAME))));
+        assertTrue(result.stream()
+                .anyMatch(
+                        book -> book.getGenres().stream()
+                                .anyMatch(
+                                        genre -> Objects.equals(genre.getName(), EXISTING_GENRES_NAME))));
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
     @Test
@@ -120,6 +142,7 @@ class BooksRepositoryImplIntegrationTest {
     }
 
     @Test
+    @DisplayName("Обновляет книги в БД")
     void update() {
         var book = repository.getById(EXISTING_BOOKS_ID)
                 .orElse(null);

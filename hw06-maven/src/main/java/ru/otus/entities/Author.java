@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -34,6 +37,8 @@ public class Author implements Serializable {
     private Long id;
     @Column(name = "name")
     private String name;
+    @Fetch(FetchMode.SUBSELECT)
+    @BatchSize(size = 100)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_authors",
             joinColumns = @JoinColumn(name = "authors", referencedColumnName = "id"),

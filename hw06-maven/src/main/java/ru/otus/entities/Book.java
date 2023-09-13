@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -35,13 +36,15 @@ public class Book implements Serializable {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
+    @BatchSize(size = 100)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_authors",
             joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authors", referencedColumnName = "id"))
     private List<Author> authors;
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
+    @BatchSize(size = 100)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_genres",
             joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),

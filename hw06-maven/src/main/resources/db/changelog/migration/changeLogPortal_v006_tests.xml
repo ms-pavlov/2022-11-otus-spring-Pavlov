@@ -8,19 +8,71 @@
         <insert tableName="authors">
             <column name="name" value="Ivan"/>
         </insert>
+        <insert tableName="authors">
+            <column name="name" value="Ivan2"/>
+        </insert>
         <insert tableName="genres">
             <column name="name" value="drama"/>
         </insert>
+        <insert tableName="genres">
+            <column name="name" value="drama2"/>
+        </insert>
         <insert tableName="books">
             <column name="name" value="books_name"/>
+        </insert>
+        <insert tableName="books">
+            <column name="name" value="books_name2"/>
+        </insert>
+        <insert tableName="books">
+            <column name="name" value="books_name3"/>
         </insert>
         <insert tableName="books_authors">
             <column name="books" value="1"/>
             <column name="authors" value="1"/>
         </insert>
+        <insert tableName="books_authors">
+            <column name="books" value="2"/>
+            <column name="authors" value="1"/>
+        </insert>
+        <insert tableName="books_authors">
+            <column name="books" value="3"/>
+            <column name="authors" value="1"/>
+        </insert>
+        <insert tableName="books_authors">
+            <column name="books" value="1"/>
+            <column name="authors" value="2"/>
+        </insert>
+        <insert tableName="books_authors">
+            <column name="books" value="2"/>
+            <column name="authors" value="2"/>
+        </insert>
+        <insert tableName="books_authors">
+            <column name="books" value="3"/>
+            <column name="authors" value="2"/>
+        </insert>
         <insert tableName="books_genres">
             <column name="books" value="1"/>
             <column name="genres" value="1"/>
+        </insert>
+        <insert tableName="books_genres">
+            <column name="books" value="2"/>
+            <column name="genres" value="1"/>
+        </insert>
+        <insert tableName="books_genres">
+            <column name="books" value="3"/>
+            <column name="genres" value="1"/>
+        </insert>
+        <insert tableName="books_genres">
+            <column name="books" value="1"/>
+            <column name="genres" value="2"/>
+        </insert>
+        <insert tableName="books_genres">
+            <column name="books" value="2"/>
+            <column name="genres" value="2"/>
+        </insert>
+        <insert tableName="books_genres">
+            <column name="books" value="3"/>
+            <column name="genres" value="2"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

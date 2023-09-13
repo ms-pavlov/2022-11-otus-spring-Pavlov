@@ -12,6 +12,7 @@ import ru.otus.entities.Author;
 import ru.otus.entities.Book;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,14 +22,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(AuthorsRepositoryImpl.class)
 class AuthorsRepositoryImplIntegrationTest {
 
-    private static final int EXPECTED_QUERIES_COUNT = 1;
-    private static final Integer EXPECTED_AUTHOR_COUNT = 1;
+    private static final int EXPECTED_QUERIES_COUNT = 2;
+    private static final Integer EXPECTED_AUTHOR_COUNT = 2;
     private static final Long EXISTING_BOOKS_ID = 1L;
     private static final Long EXISTING_AUTHOR_ID = 1L;
     private static final Long OTHER_AUTHOR_ID = 2L;
     private static final String EXISTING_AUTHOR_NAME = "Ivan";
     private static final String OTHER_AUTHOR_NAME = "Petr";
     private static final String BOOK_NAME = "test";
+
     @Autowired
     private AuthorsRepository repository;
 
@@ -51,7 +53,12 @@ class AuthorsRepositoryImplIntegrationTest {
         var result = repository.getById(EXISTING_AUTHOR_ID);
 
         assertTrue(result.isPresent());
-        assertEquals(EXISTING_AUTHOR_NAME, result.map(Author::getName).orElse(null));
+        assertTrue( result.stream().anyMatch(author -> Objects.equals(author.getName(), EXISTING_AUTHOR_NAME)));
+        assertTrue( result.stream()
+                .anyMatch(
+                        author -> author.getBooks()
+                                .stream()
+                                .anyMatch(book -> Objects.equals(book.getId(), EXISTING_BOOKS_ID))));
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
@@ -62,6 +69,12 @@ class AuthorsRepositoryImplIntegrationTest {
         var result = repository.getAll();
 
         assertEquals(EXPECTED_AUTHOR_COUNT, result.size());
+        assertTrue( result.stream().anyMatch(author -> Objects.equals(author.getName(), EXISTING_AUTHOR_NAME)));
+        assertTrue( result.stream()
+                .anyMatch(
+                author -> author.getBooks()
+                        .stream()
+                        .anyMatch(book -> Objects.equals(book.getId(), EXISTING_BOOKS_ID))));
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
@@ -129,13 +142,15 @@ class AuthorsRepositoryImplIntegrationTest {
     }
 
     @Test
-    @DisplayName("возвращать список авторов по имени")
+    @DisplayName("возвращать автора по имени")
     void findByName() {
         var result = repository.getByName(EXISTING_AUTHOR_NAME);
 
-        assertNotNull(result);
-        assertEquals(EXISTING_AUTHOR_ID, result.getId());
-        assertEquals(EXISTING_AUTHOR_NAME, result.getName());
+        assertEquals(EXISTING_AUTHOR_NAME, result.getName() );
+        assertTrue(
+                result.getBooks()
+                                .stream()
+                                .anyMatch(book -> Objects.equals(book.getId(), EXISTING_BOOKS_ID)));
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 

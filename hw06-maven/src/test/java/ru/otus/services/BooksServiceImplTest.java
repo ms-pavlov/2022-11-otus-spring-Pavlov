@@ -82,6 +82,7 @@ class BooksServiceImplTest {
 
         assertEquals(BOOKS_RESPONSE, result);
         verify(mapper, times(1)).update(BOOK, BOOKS_REQUEST);
+        verify(booksRepository, times(1)).update(BOOK);
     }
 
     @Test
@@ -104,30 +105,6 @@ class BooksServiceImplTest {
         result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
 
     }
-
-//    @Test
-//    @DisplayName("должен найти книги по автору")
-//    void findByAuthor() {
-//        when(booksRepository.getByAuthor(AUTHORS_NAME)).thenReturn(List.of(BOOK));
-//        when(mapper.toDto(BOOK))
-//                .thenReturn(BOOKS_RESPONSE);
-//
-//        var result = service.findByAuthor(AUTHORS_NAME);
-//
-//        result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
-//    }
-//
-//    @Test
-//    @DisplayName("должен найти книги по жанру")
-//    void findByGenres() {
-//        when(booksRepository.getByGenre(GENRES_NAME)).thenReturn(List.of(BOOK));
-//        when(mapper.toDto(BOOK))
-//                .thenReturn(BOOKS_RESPONSE);
-//
-//        var result = service.findByGenre(GENRES_NAME);
-//
-//        result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
-//    }
 
     @Test
     @DisplayName("должен найти все книги")
