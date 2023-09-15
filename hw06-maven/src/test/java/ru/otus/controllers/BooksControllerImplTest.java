@@ -15,6 +15,7 @@ import ru.otus.services.BooksService;
 import java.io.PrintStream;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Controller для работы с книгами должен")
@@ -31,7 +32,6 @@ class BooksControllerImplTest {
             List.of(new Genre(1L, GENRES_NAME)));
     private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(BOOK);
     private final static List<BooksResponse> BOOKS_RESPONSE_LIST = List.of(BOOKS_RESPONSE);
-    private final static BooksRequest BOOKS_REQUEST = new BooksRequest(BOOK.getName(), List.of(AUTHORS_NAME), List.of(GENRES_NAME));
 
     @MockBean
     private BooksService service;
@@ -45,11 +45,19 @@ class BooksControllerImplTest {
     @Test
     @DisplayName("должен создать книгу и вывести результат")
     void create() {
-        when(service.create(eq(BOOKS_REQUEST))).thenReturn(BOOKS_RESPONSE);
+        doAnswer(invocationOnMock -> {
+            BooksRequest request = invocationOnMock.getArgument(0);
+            return new BooksResponse(
+                    BOOK_ID,
+                    request.getName(),
+                    request.getAuthors(),
+                    request.getGenres());
+        }).when(service).create(any());
 
         controller.create(BOOK.getName(), List.of(AUTHORS_NAME), List.of(GENRES_NAME));
 
-        verify(out, times(1)).println(BOOKS_RESPONSE);
+        verify(service, times(1)).create(any());
+        verify(out, times(1)).println(eq(BOOKS_RESPONSE.toString()));
     }
 
     @Test
@@ -87,11 +95,18 @@ class BooksControllerImplTest {
     @Test
     @DisplayName("должен обновить данные о книге и вывести результат")
     void update() {
-        when(service.update(eq(BOOK_ID), eq(BOOKS_REQUEST))).thenReturn(BOOKS_RESPONSE);
+        doAnswer(invocationOnMock -> {
+            BooksRequest request = invocationOnMock.getArgument(1);
+            return new BooksResponse(
+                    invocationOnMock.getArgument(0),
+                    request.getName(),
+                    request.getAuthors(),
+                    request.getGenres());
+        }).when(service).update(eq(BOOK_ID), any());
 
         controller.update(BOOK_ID, BOOKS_NAME, List.of(AUTHORS_NAME), List.of(GENRES_NAME));
 
-        verify(out, times(1)).println(BOOKS_RESPONSE);
+        verify(out, times(1)).println(eq(BOOKS_RESPONSE.toString()));
     }
 
     @Test

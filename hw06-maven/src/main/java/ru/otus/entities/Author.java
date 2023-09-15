@@ -3,7 +3,6 @@ package ru.otus.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
@@ -19,7 +18,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Author implements Serializable {
 
     @Serial
@@ -47,5 +45,9 @@ public class Author implements Serializable {
 
     public Author(Long id, String name) {
         this(id, name, new ArrayList<>());
+    }
+
+    public Author() {
+        this.books = new ArrayList<>();
     }
 }

@@ -12,6 +12,7 @@ import ru.otus.entities.Genre;
 import ru.otus.repositories.AuthorsRepository;
 import ru.otus.repositories.GenresRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,9 +60,9 @@ class BookRequestMapperImplTest {
         var result = mapper.create(TEST_REQUEST);
 
         assertEquals(TEST_BOOK_NAME, result.getName());
-        assertEquals(TEST_REQUEST.authors().size(), result.getAuthors().size());
+        assertEquals(TEST_REQUEST.getAuthors().size(), result.getAuthors().size());
         assertTrue(result.getAuthors().contains(TEST_AUTHORS));
-        assertEquals(TEST_REQUEST.genres().size(), result.getGenres().size());
+        assertEquals(TEST_REQUEST.getGenres().size(), result.getGenres().size());
         assertTrue(result.getGenres().contains(TEST_GENRES));
     }
 
@@ -73,14 +74,14 @@ class BookRequestMapperImplTest {
         when(authorsRepository.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
         when(genresRepository.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        var result = new Book(null, null, null, null);
+        var result = new Book(null, null, new ArrayList<>(), new ArrayList<>());
 
         mapper.update(result, TEST_REQUEST);
 
         assertEquals(TEST_BOOK_NAME, result.getName());
-        assertEquals(TEST_REQUEST.authors().size(), result.getAuthors().size());
+        assertEquals(TEST_REQUEST.getAuthors().size(), result.getAuthors().size());
         assertTrue(result.getAuthors().stream().allMatch(authors -> TEST_AUTHORS_NAME.equals(authors.getName())));
-        assertEquals(TEST_REQUEST.genres().size(), result.getGenres().size());
+        assertEquals(TEST_REQUEST.getGenres().size(), result.getGenres().size());
         assertTrue(result.getGenres().stream().allMatch(genres -> TEST_GENRES_NAME.equals(genres.getName())));
     }
 
@@ -90,14 +91,14 @@ class BookRequestMapperImplTest {
         when(authorsRepository.getByName(TEST_AUTHORS_NAME)).thenReturn(TEST_AUTHORS);
         when(genresRepository.getByName(TEST_GENRES_NAME)).thenReturn(TEST_GENRES);
 
-        var result = new Book(null, null, null, null);
+        var result = new Book(null, null, new ArrayList<>(), new ArrayList<>());
 
         mapper.update(result, TEST_REQUEST);
 
         assertEquals(TEST_BOOK_NAME, result.getName());
-        assertEquals(TEST_REQUEST.authors().size(), result.getAuthors().size());
+        assertEquals(TEST_REQUEST.getAuthors().size(), result.getAuthors().size());
         assertTrue(result.getAuthors().contains(TEST_AUTHORS));
-        assertEquals(TEST_REQUEST.genres().size(), result.getGenres().size());
+        assertEquals(TEST_REQUEST.getGenres().size(), result.getGenres().size());
         assertTrue(result.getGenres().contains(TEST_GENRES));
     }
 

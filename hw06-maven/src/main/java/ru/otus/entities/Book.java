@@ -3,7 +3,6 @@ package ru.otus.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
@@ -11,6 +10,7 @@ import org.hibernate.annotations.FetchMode;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +18,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Book implements Serializable {
 
     @Serial
@@ -51,5 +50,9 @@ public class Book implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"))
     private List<Genre> genres;
 
+    public Book() {
+        this.authors = new ArrayList<>();
+        this.genres = new ArrayList<>();
+    }
 }
 

@@ -1,5 +1,6 @@
 package ru.otus.dto.responses;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
@@ -8,6 +9,7 @@ import ru.otus.entities.Genre;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class BooksResponse {
     private final Long id;
     private final String name;

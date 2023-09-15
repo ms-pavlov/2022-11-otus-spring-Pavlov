@@ -35,12 +35,12 @@ public class BookRequestMapperImpl implements BookRequestMapper {
 
     @Override
     public void update(Book entity, BooksRequest request) {
-        entity.setName(request.name());
+        entity.setName(request.getName());
         var authors = Optional.of(entity)
                 .map(Book::getAuthors)
                 .orElseGet(ArrayList::new);
         authors.clear();
-        authors.addAll(request.authors()
+        authors.addAll(request.getAuthors()
                 .stream()
                 .map(name -> prepareAuthors(name, entity))
                 .toList());
@@ -48,7 +48,7 @@ public class BookRequestMapperImpl implements BookRequestMapper {
                 .map(Book::getGenres)
                 .orElseGet(ArrayList::new);
         genres.clear();
-        genres.addAll(request.genres()
+        genres.addAll(request.getGenres()
                 .stream()
                 .map(name -> prepareGenres(name, entity))
                 .toList());

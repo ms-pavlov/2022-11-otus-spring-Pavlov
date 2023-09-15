@@ -26,7 +26,8 @@ public class BooksControllerImpl implements BooksController {
     public void create(String name, List<String> authors, List<String> genres) {
         out.println(
                 service.create(
-                        new BooksRequest(name, authors, genres)));
+                        new BooksRequest(name, authors, genres))
+                        .toString());
     }
 
     @Override
@@ -52,7 +53,8 @@ public class BooksControllerImpl implements BooksController {
     @ShellMethod(value = "Update book", key = {"book-u", "book-update"})
     public void update(Long id, String name, List<String> authors, List<String> genres) {
         out.println(
-                service.update(id, new BooksRequest(name, authors, genres)));
+                service.update(id, new BooksRequest(name, authors, genres))
+                        .toString());
     }
 
     @Override
