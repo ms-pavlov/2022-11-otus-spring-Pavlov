@@ -1,7 +1,7 @@
 package ru.otus.repositories;
 
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -212,5 +212,15 @@ class BooksRepositoryImplTest {
                         eq("select count(b.id) from Book b"),
                         eq(Long.class));
         verify(countQuery, times(1)).getSingleResult();
+    }
+
+    @Test
+    @DisplayName("обрабатывает NoResultException")
+    void existNameNoResult() {
+        when(entityManager.createQuery(any(), any()))
+                .thenThrow(new NoResultException());
+
+        assertFalse(booksRepository.exist(EXISTING_BOOKS_ID));
+        assertEquals(0, booksRepository.count());
     }
 }

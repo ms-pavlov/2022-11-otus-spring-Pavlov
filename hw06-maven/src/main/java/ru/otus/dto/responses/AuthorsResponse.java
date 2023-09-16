@@ -15,8 +15,9 @@ public class AuthorsResponse {
 
     @Override
     public String toString() {
-        return "Name : '" + name
-                + "\n\r Bibliography:" +
+        return "\n\rName : '" + name
+                + "\n\r Id: " + id + "\n\r"
+                + "\n\r Bibliography: \n\r" +
                 books.stream()
                         .map(this::getBibliographyBook)
                         .collect(Collectors.joining("\n\r"));
@@ -25,13 +26,13 @@ public class AuthorsResponse {
     private String getBibliographyBook(BooksResponse book) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(String.format("\n\r Title : %s ", book.getName()));
+        stringBuilder.append(String.format("   BookTitle : %s ", book.getName()));
 
         String coAuthors = book.getAuthors().stream()
                 .filter(author -> !author.equals(name))
                 .collect(Collectors.joining(", "));
         if (!coAuthors.isEmpty()) {
-            stringBuilder.append(String.format("\n\r co - authors : %s ", coAuthors));
+            stringBuilder.append(String.format("\n\r   Co - authors : %s ", coAuthors));
         }
         return stringBuilder.toString();
     }

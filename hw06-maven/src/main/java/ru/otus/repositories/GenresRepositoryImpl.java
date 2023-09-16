@@ -84,4 +84,16 @@ public class GenresRepositoryImpl implements GenresRepository{
             return 0;
         }
     }
+
+    @Override
+    public boolean existName(String name) {
+        try {
+            long count = em.createQuery("select count(g) from Genre g where g.name = :name", Long.class)
+                    .setParameter("name", name)
+                    .getSingleResult();
+            return count > 0;
+        } catch (NoResultException noResultException) {
+            return false;
+        }
+    }
 }

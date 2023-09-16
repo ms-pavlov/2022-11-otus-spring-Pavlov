@@ -39,8 +39,8 @@ public class Genre implements Serializable {
     @BatchSize(size = 100)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_genres",
-            joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "books", referencedColumnName = "id"))
     private List<Book> books;
 
     public Genre(Long id, String name) {

@@ -15,6 +15,7 @@ public class GenresResponse {
     @Override
     public String toString() {
         return "Genre : " + name +
+                "\n\r Id: " + id + "\n\r" +
                 "\n\r Books : " + books;
     }
 }

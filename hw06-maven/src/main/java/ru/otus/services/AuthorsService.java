@@ -15,7 +15,7 @@ public interface AuthorsService {
 
     void delete(Long id);
 
-    List<AuthorsResponse> findByName(String name);
+    AuthorsResponse findByName(String name);
 
     List<AuthorsResponse> findAll();
 }

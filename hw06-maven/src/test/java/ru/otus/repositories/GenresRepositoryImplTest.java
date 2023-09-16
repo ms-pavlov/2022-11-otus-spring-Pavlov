@@ -1,6 +1,7 @@
 package ru.otus.repositories;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -196,5 +197,59 @@ class GenresRepositoryImplTest {
                         eq("select count(g.id) from Genre g"),
                         eq(Long.class));
         verify(countQuery, times(1)).getSingleResult();
+    }
+
+    @Test
+    @DisplayName("при проверке на то что Автор уже существует должен выполнить sql запрос к БД и вернуть логическое значение")
+    void existNameTrue() {
+        when(
+                entityManager.createQuery(
+                        eq("select count(g) from Genre g where g.name = :name"),
+                        eq(Long.class)))
+                .thenReturn(countQuery);
+        when(countQuery.setParameter("name", GENRE_NAME)).thenReturn(countQuery);
+        when(countQuery.getSingleResult()).thenReturn(TEST_INT);
+
+        var result = repository.existName(GENRE_NAME);
+
+        assertTrue(result);
+        verify(entityManager, times(1))
+                .createQuery(
+                        eq("select count(g) from Genre g where g.name = :name"),
+                        eq(Long.class));
+        verify(countQuery, times(1)).setParameter(eq("name"), eq(GENRE_NAME));
+        verify(countQuery, times(1)).getSingleResult();
+    }
+
+    @Test
+    @DisplayName("при проверке на то что Автор уже существует должен выполнить sql запрос к БД и вернуть логическое значение")
+    void existNameFalse() {
+        when(entityManager.createQuery(
+                "select count(g) from Genre g where g.name = :name",
+                Long.class))
+                .thenReturn(countQuery);
+        when(countQuery.setParameter(eq("name"), eq(GENRE_NAME))).thenReturn(countQuery);
+        when(countQuery.getSingleResult()).thenReturn(0L);
+
+        var result = repository.existName(GENRE_NAME);
+
+        assertFalse(result);
+        verify(entityManager, times(1))
+                .createQuery(
+                        eq("select count(g) from Genre g where g.name = :name"),
+                        eq(Long.class));
+        verify(countQuery, times(1)).setParameter(eq("name"), eq(GENRE_NAME));
+        verify(countQuery, times(1)).getSingleResult();
+    }
+
+    @Test
+    @DisplayName("обрабатывает NoResultException")
+    void existNameNoResult() {
+        when(entityManager.createQuery(any(), any()))
+                .thenThrow(new NoResultException());
+
+        assertFalse(repository.existName(GENRE_NAME));
+        assertFalse(repository.exist(GENRE_ID));
+        assertEquals(0, repository.count());
     }
 }

@@ -85,4 +85,16 @@ public class AuthorsRepositoryImpl implements AuthorsRepository {
             return 0;
         }
     }
+
+    @Override
+    public boolean existName(String name) {
+        try {
+            long count = em.createQuery("select count(a.id) from Author a where a.name = :name", Long.class)
+                    .setParameter("name", name)
+                    .getSingleResult();
+            return count > 0;
+        } catch (NoResultException noResultException) {
+            return false;
+        }
+    }
 }

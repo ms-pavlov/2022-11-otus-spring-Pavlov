@@ -15,7 +15,7 @@ public interface GenresService {
 
     void delete(Long id);
 
-    List<GenresResponse> findByName(String name);
+    GenresResponse findByName(String name);
 
     List<GenresResponse> findAll();
 }

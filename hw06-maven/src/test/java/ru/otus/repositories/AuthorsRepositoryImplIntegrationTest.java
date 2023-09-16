@@ -127,7 +127,7 @@ class AuthorsRepositoryImplIntegrationTest {
     }
 
     @Test
-    @DisplayName("определять что автор с заданым id существует в БД")
+    @DisplayName("определять что автор с заданным id существует в БД")
     void exist() {
 
         assertTrue(repository.exist(EXISTING_AUTHOR_ID));
@@ -160,5 +160,14 @@ class AuthorsRepositoryImplIntegrationTest {
         var result = repository.getByName(OTHER_AUTHOR_NAME);
 
         assertNull(result);
+    }
+
+    @Test
+    @DisplayName("определять что автор с заданным именем существует в БД")
+    void existName() {
+
+        assertTrue(repository.existName(EXISTING_AUTHOR_NAME));
+        assertFalse(repository.existName(EXISTING_AUTHOR_NAME.concat(OTHER_AUTHOR_NAME)));
+
     }
 }

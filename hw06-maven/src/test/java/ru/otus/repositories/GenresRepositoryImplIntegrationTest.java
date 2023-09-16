@@ -142,7 +142,7 @@ class GenresRepositoryImplIntegrationTest {
     }
 
     @Test
-    @DisplayName("определять что жанр с заданым id существует в БД")
+    @DisplayName("определять что жанр с заданным id существует в БД")
     void exist() {
 
         assertTrue(repository.exist(EXISTING_GENRES_ID));
@@ -175,5 +175,14 @@ class GenresRepositoryImplIntegrationTest {
         var result = repository.getByName(OTHER_GENRES_NAME);
 
         assertNull(result);
+    }
+
+    @Test
+    @DisplayName("определять что жанр с заданным названием существует в БД")
+    void existName() {
+
+        assertTrue(repository.existName(EXISTING_GENRES_NAME));
+        assertFalse(repository.existName(EXISTING_GENRES_NAME + OTHER_GENRES_NAME));
+
     }
 }
