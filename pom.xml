@@ -16,5 +16,6 @@
         <module>hw03-maven</module>
         <module>hw04-maven</module>
         <module>hw05-maven</module>
+        <module>hw15-maven</module>
     </modules>
 </project>
