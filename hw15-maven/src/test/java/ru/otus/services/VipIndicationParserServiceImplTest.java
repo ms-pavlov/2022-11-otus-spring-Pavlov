@@ -12,7 +12,9 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(classes = {
+        VipIndicationParserServiceImpl.class
+})
 class VipIndicationParserServiceImplTest {
 
     private final static String PARAM_NAME = "test_name";

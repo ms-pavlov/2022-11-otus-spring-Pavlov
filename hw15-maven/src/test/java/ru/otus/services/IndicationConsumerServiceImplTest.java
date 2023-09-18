@@ -3,16 +3,21 @@ package ru.otus.services;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.domains.IndicationEntity;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@SpringBootTest(classes = {
+        IndicationConsumerServiceImpl.class
+})
 class IndicationConsumerServiceImplTest {
     private final static String PARAM_NAME = "test_name";
     private final static BigDecimal VALUE = BigDecimal.TEN;
@@ -28,11 +33,16 @@ class IndicationConsumerServiceImplTest {
             .value(VALUE.doubleValue())
             .build();
 
+    @MockBean
+    private Function<Date, String> dateStringMapper;
+
     @Autowired
     private IndicationConsumerService service;
 
     @Test
     void consume() {
+        when(dateStringMapper.apply(DATE)).thenReturn(DATE_FORMAT);
+
         var result = service.consume(ENTITY);
 
         assertEquals(MESSAGE, result);

@@ -3,14 +3,15 @@ package ru.otus.services;
 import org.springframework.stereotype.Service;
 import ru.otus.domains.VipIndicationEntity;
 
-import java.text.DateFormat;
+import java.util.Date;
+import java.util.function.Function;
 
 @Service
 public class VipIndicationConsumerServiceImpl implements VipIndicationConsumerService{
 
-    private final DateFormat dateFormat;
+    private final Function<Date, String> dateFormat;
 
-    public VipIndicationConsumerServiceImpl(DateFormat dateFormat) {
+    public VipIndicationConsumerServiceImpl(Function<Date, String> dateFormat) {
         this.dateFormat = dateFormat;
     }
 
@@ -19,7 +20,7 @@ public class VipIndicationConsumerServiceImpl implements VipIndicationConsumerSe
         return String.format(
                 "Важные показания от %s в %s - %s : %s%n",
                 entity.getSource(),
-                dateFormat.format(entity.getTimestamp()),
+                dateFormat.apply(entity.getTimestamp()),
                 entity.getName(),
                 entity.getValue());
     }

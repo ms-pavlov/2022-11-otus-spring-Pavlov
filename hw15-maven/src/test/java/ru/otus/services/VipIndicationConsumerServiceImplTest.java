@@ -4,16 +4,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.domains.VipIndicationEntity;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@SpringBootTest(classes = {
+        VipIndicationConsumerServiceImpl.class
+})
 class VipIndicationConsumerServiceImplTest {
 
     private final static String PARAM_NAME = "test_name";
@@ -32,7 +37,8 @@ class VipIndicationConsumerServiceImplTest {
             .value(VALUE)
             .build();
 
-
+    @MockBean
+    private Function<Date, String> dateStringMapper;
 
     @Autowired
     private VipIndicationConsumerService service;
@@ -40,6 +46,8 @@ class VipIndicationConsumerServiceImplTest {
     @Test
     @DisplayName("формирует ответ из VipIndicationEntity")
     void consume() {
+        when(dateStringMapper.apply(DATE)).thenReturn(DATE_FORMAT);
+
         var result = service.consume(ENTITY);
 
         assertEquals(MESSAGE, result);

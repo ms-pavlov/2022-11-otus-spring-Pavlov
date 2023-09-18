@@ -12,7 +12,9 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(classes = {
+        IndicationParserServiceImpl.class
+})
 class IndicationParserServiceImplTest {
 
     private final static String PARAM_NAME = "test_name";
