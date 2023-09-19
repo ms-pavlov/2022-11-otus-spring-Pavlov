@@ -151,50 +151,6 @@ class BooksRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("при проверке на существование должен выполнить sql запрос к БД и вернуть логическое значение")
-    void existTrue() {
-        when(
-                entityManager.createQuery(
-                        eq("select count(b.id) from Book b where b.id = :id"),
-                        eq(Long.class)))
-                .thenReturn(countQuery);
-        when(countQuery.setParameter("id", EXISTING_BOOKS_ID)).thenReturn(countQuery);
-        when(countQuery.getSingleResult()).thenReturn(EXPECTED_BOOKS_COUNT);
-
-        var result = booksRepository.exist(EXISTING_BOOKS_ID);
-
-        assertTrue(result);
-        verify(entityManager, times(1))
-                .createQuery(
-                        eq("select count(b.id) from Book b where b.id = :id"),
-                        eq(Long.class));
-        verify(countQuery, times(1)).setParameter(eq("id"), eq(EXISTING_BOOKS_ID));
-        verify(countQuery, times(1)).getSingleResult();
-    }
-
-    @Test
-    @DisplayName("при проверке на существование должен выполнить sql запрос к БД и вернуть логическое значение")
-    void existFalse() {
-        when(
-                entityManager.createQuery(
-                        eq("select count(b.id) from Book b where b.id = :id"),
-                        eq(Long.class)))
-                .thenReturn(countQuery);
-        when(countQuery.setParameter("id", EXISTING_BOOKS_ID)).thenReturn(countQuery);
-        when(countQuery.getSingleResult()).thenReturn(0L);
-
-        var result = booksRepository.exist(EXISTING_BOOKS_ID);
-
-        assertFalse(result);
-        verify(entityManager, times(1))
-                .createQuery(
-                        eq("select count(b.id) from Book b where b.id = :id"),
-                        eq(Long.class));
-        verify(countQuery, times(1)).setParameter(eq("id"), eq(EXISTING_BOOKS_ID));
-        verify(countQuery, times(1)).getSingleResult();
-    }
-
-    @Test
     @DisplayName("при получении количества выполнить sql запрос к БД и вернуть число")
     void count() {
         when(
@@ -220,7 +176,6 @@ class BooksRepositoryImplTest {
         when(entityManager.createQuery(any(), any()))
                 .thenThrow(new NoResultException());
 
-        assertFalse(booksRepository.exist(EXISTING_BOOKS_ID));
         assertEquals(0, booksRepository.count());
     }
 }

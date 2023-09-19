@@ -33,11 +33,13 @@ public class Author implements Serializable {
             sequenceName = "authors_seq")
     @Column(name = "id")
     private Long id;
+
     @Column(name = "name")
     private String name;
+
     @Fetch(FetchMode.SUBSELECT)
     @BatchSize(size = 100)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "books_authors",
             joinColumns = @JoinColumn(name = "authors", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "books", referencedColumnName = "id"))

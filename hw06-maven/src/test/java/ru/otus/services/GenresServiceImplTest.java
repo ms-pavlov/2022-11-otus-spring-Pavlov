@@ -25,10 +25,15 @@ import static org.mockito.Mockito.*;
 class GenresServiceImplTest {
 
     private static final Long GENRES_ID = 1L;
+    private static final Long OTHER_GENRES_ID = 100L + GENRES_ID;
     private static final String GENRES_NAME = "name";
+    private static final String OTHER_GENRES_NAME = "other_" + GENRES_NAME;
     private final static Genre GENRE = new Genre(
             GENRES_ID,
             GENRES_NAME);
+    private final static Genre OTHER_GENRE = new Genre(
+            OTHER_GENRES_ID,
+            OTHER_GENRES_NAME);
     private final static GenresResponse GENRES_RESPONSE = new GenresResponse(
             GENRES_ID,
             GENRES_NAME,
@@ -46,7 +51,7 @@ class GenresServiceImplTest {
     @Test
     @DisplayName("должен проверить что такой жанр ещё не создан, сохранить и вернуть результат")
     void create() {
-        when(repository.existName(GENRES_NAME)).thenReturn(false);
+        when(repository.getByName(GENRES_NAME)).thenReturn(null);
         when(mapper.create(GENRE_REQUEST)).thenReturn(GENRE);
         when(repository.create(GENRE))
                 .thenReturn(GENRE);
@@ -56,7 +61,7 @@ class GenresServiceImplTest {
         var result = service.create(GENRE_REQUEST);
 
         assertEquals(GENRES_RESPONSE, result);
-        verify(repository, times(1)).existName(GENRES_NAME);
+        verify(repository, times(1)).getByName(GENRES_NAME);
         verify(repository, times(1)).create(GENRE);
         verify(mapper, times(1)).create(GENRE_REQUEST);
         verify(mapper, times(1)).toDto(GENRE);
@@ -65,7 +70,7 @@ class GenresServiceImplTest {
     @Test
     @DisplayName("должен проверить, что такой жанр создан, и вернуть исключение")
     void createExistGenre() {
-        when(repository.existName(GENRES_NAME)).thenReturn(true);
+        when(repository.getByName(GENRES_NAME)).thenReturn(GENRE);
 
         assertThrows(GenreExistException.class, () -> service.create(GENRE_REQUEST));
     }
@@ -103,7 +108,7 @@ class GenresServiceImplTest {
     @Test
     @DisplayName("должен проверить, что такой жанр создан, и вернуть исключение")
     void updateExistGenre() {
-        when(repository.existName(GENRES_NAME)).thenReturn(true);
+        when(repository.getByName(GENRES_NAME)).thenReturn(OTHER_GENRE);
 
         assertThrows(GenreExistException.class, () -> service.update(GENRES_ID, GENRE_REQUEST));
     }

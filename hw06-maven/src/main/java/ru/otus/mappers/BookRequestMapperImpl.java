@@ -57,7 +57,18 @@ public class BookRequestMapperImpl implements BookRequestMapper {
 
     @Override
     public BooksResponse toDto(Book entity) {
-        return new BooksResponse(entity);
+        return new BooksResponse(
+                entity.getId(),
+                entity.getName(),
+                entity.getAuthors()
+                        .stream()
+                        .map(Author::getName)
+                        .toList(),
+                entity.getGenres()
+                        .stream()
+                        .map(Genre::getName)
+                        .toList()
+        );
     }
 
     private Author prepareAuthors(String name, Book book) {

@@ -27,11 +27,21 @@ class BooksServiceImplTest {
     private static final Long BOOKS_ID = 1L;
     private static final String BOOKS_NAME = "books_name";
     private final static Book BOOK = new Book(
-            1L,
-            "name",
+            BOOKS_ID,
+            BOOKS_NAME,
             List.of(new Author(1L, "author")),
             List.of(new Genre(1L, "genre")));
-    private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(BOOK);
+    private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(
+            BOOK.getId(),
+            BOOK.getName(),
+            BOOK.getAuthors()
+                    .stream()
+                    .map(Author::getName)
+                    .toList(),
+            BOOK.getGenres()
+                    .stream()
+                    .map(Genre::getName)
+                    .toList());
     private final static BooksRequest BOOKS_REQUEST = new BooksRequest(BOOK.getName(), List.of("author"), List.of("genre"));
 
     @MockBean

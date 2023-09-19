@@ -15,7 +15,5 @@ public interface Repository<T, ID> {
 
     void delete(ID id);
 
-    boolean exist(ID id);
-
     int count();
 }

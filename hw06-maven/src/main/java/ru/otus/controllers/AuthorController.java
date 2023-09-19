@@ -1,15 +1,64 @@
 package ru.otus.controllers;
 
-public interface AuthorController {
-    void create(String name);
+import org.springframework.shell.standard.ShellComponent;
+import org.springframework.shell.standard.ShellMethod;
+import ru.otus.dto.requests.AuthorsRequest;
+import ru.otus.services.AuthorExistException;
+import ru.otus.services.AuthorsService;
 
-    void findById(Long id);
+import java.io.PrintStream;
 
-    void findByName(String name);
+@ShellComponent
+public class AuthorController {
 
-    void update(Long id, String name);
+    private final AuthorsService service;
+    private final PrintStream out;
 
-    void delete(Long id);
+    public AuthorController(AuthorsService service, PrintStream out) {
+        this.service = service;
+        this.out = out;
+    }
 
-    void findAll();
+    @ShellMethod(value = "Create new author", key = {"author-c", "author-create"})
+    public void create(String name) {
+        try {
+            out.println(
+                    service.create(new AuthorsRequest(name))
+                            .toString());
+        } catch (AuthorExistException existException) {
+            out.printf("Author %s already exist%n", name);
+        }
+    }
+
+    @ShellMethod(value = "Get author by id", key = {"author-get-id"})
+    public void findById(Long id) {
+        out.println(
+                service.findById(id));
+    }
+
+    @ShellMethod(value = "Get author by name", key = {"author-get-name"})
+    public void findByName(String name) {
+        out.println(service.findByName(name));
+    }
+
+    @ShellMethod(value = "Update author", key = {"author-u", "author-update"})
+    public void update(Long id, String name) {
+        try {
+            out.println(
+                    service.update(id, new AuthorsRequest(name))
+                            .toString());
+        } catch (AuthorExistException existException) {
+            out.printf("Author %s already exist%n", name);
+        }
+    }
+
+    @ShellMethod(value = "Delete author by id", key = {"author-d", "author-delete"})
+    public void delete(Long id) {
+        service.delete(id);
+    }
+
+    @ShellMethod(value = "Get all author", key = {"author-all"})
+    public void findAll() {
+        service.findAll().forEach(out::println);
+    }
 }

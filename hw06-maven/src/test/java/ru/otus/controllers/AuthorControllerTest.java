@@ -19,8 +19,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Controller для работы с авторами должен")
-@SpringBootTest(classes = {AuthorControllerImpl.class})
-class AuthorControllerImplTest {
+@SpringBootTest(classes = {AuthorController.class})
+class AuthorControllerTest {
 
     private static final Long AUTHORS_ID = 1L;
     private static final String AUTHORS_NAME = "name";

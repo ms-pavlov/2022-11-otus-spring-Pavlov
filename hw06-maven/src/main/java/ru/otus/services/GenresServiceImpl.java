@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.GenresRequest;
 import ru.otus.dto.responses.GenresResponse;
+import ru.otus.entities.Genre;
 import ru.otus.mappers.GenresMapper;
 import ru.otus.repositories.GenresRepository;
 
@@ -26,7 +27,7 @@ public class GenresServiceImpl implements GenresService{
     @Override
     @Transactional
     public GenresResponse create(GenresRequest request) {
-        if(repository.existName(request.getName())) {
+        if(repository.getByName(request.getName()) != null) {
             throw new GenreExistException();
         }
         return Optional.of(request)
@@ -47,9 +48,15 @@ public class GenresServiceImpl implements GenresService{
     @Override
     @Transactional
     public GenresResponse update(Long id, GenresRequest request) {
-        if(repository.existName(request.getName())) {
-            throw new GenreExistException();
-        }
+        Optional.ofNullable(request)
+                .map(GenresRequest::getName)
+                .map(repository::getByName)
+                .map(Genre::getId)
+                .ifPresent(value -> {
+                    if(!value.equals(id)) {
+                        throw new GenreExistException();
+                    }});
+
         return repository.getById(id)
                 .map(author -> {
                     mapper.update(author, request);

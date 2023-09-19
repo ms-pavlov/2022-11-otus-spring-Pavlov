@@ -1,8 +1,6 @@
 package ru.otus.dto.responses;
 
 import org.junit.jupiter.api.Test;
-import ru.otus.dto.responses.BooksResponse;
-import ru.otus.entities.Book;
 
 import java.util.List;
 
@@ -14,11 +12,10 @@ class BooksResponseTest {
     @Test
     void testToString() {
         var result = new BooksResponse(
-                new Book(
                         null,
                         null,
                         List.of(),
-                        List.of()))
+                        List.of())
                 .toString();
 
         assertNotNull(result);

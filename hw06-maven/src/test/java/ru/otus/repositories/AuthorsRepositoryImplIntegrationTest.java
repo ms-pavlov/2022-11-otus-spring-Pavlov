@@ -26,7 +26,6 @@ class AuthorsRepositoryImplIntegrationTest {
     private static final Integer EXPECTED_AUTHOR_COUNT = 2;
     private static final Long EXISTING_BOOKS_ID = 1L;
     private static final Long EXISTING_AUTHOR_ID = 1L;
-    private static final Long OTHER_AUTHOR_ID = 2L;
     private static final String EXISTING_AUTHOR_NAME = "Ivan";
     private static final String OTHER_AUTHOR_NAME = "Petr";
     private static final String BOOK_NAME = "test";
@@ -113,29 +112,6 @@ class AuthorsRepositoryImplIntegrationTest {
     }
 
     @Test
-    @DisplayName("удалять заданного автора по его id")
-    void delete() {
-
-        var authors = repository.create(new Author(null, OTHER_AUTHOR_NAME));
-
-        assertTrue(repository.exist(authors.getId()));
-
-        repository.delete(authors.getId());
-
-        assertFalse(repository.exist(authors.getId()));
-        assertFalse(repository.getById(authors.getId()).isPresent());
-    }
-
-    @Test
-    @DisplayName("определять что автор с заданным id существует в БД")
-    void exist() {
-
-        assertTrue(repository.exist(EXISTING_AUTHOR_ID));
-        assertFalse(repository.exist(EXISTING_AUTHOR_ID + OTHER_AUTHOR_ID));
-
-    }
-
-    @Test
     @DisplayName("возвращать ожидаемое количество авторов в БД")
     void count() {
         assertEquals(EXPECTED_AUTHOR_COUNT, repository.count());
@@ -162,12 +138,4 @@ class AuthorsRepositoryImplIntegrationTest {
         assertNull(result);
     }
 
-    @Test
-    @DisplayName("определять что автор с заданным именем существует в БД")
-    void existName() {
-
-        assertTrue(repository.existName(EXISTING_AUTHOR_NAME));
-        assertFalse(repository.existName(EXISTING_AUTHOR_NAME.concat(OTHER_AUTHOR_NAME)));
-
-    }
 }

@@ -19,8 +19,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Controller для работы с книгами должен")
-@SpringBootTest(classes = {BooksControllerImpl.class})
-class BooksControllerImplTest {
+@SpringBootTest(classes = {BooksController.class})
+class BooksControllerTest {
     private final static long BOOK_ID = 1L;
     private static final String BOOKS_NAME = "books_name";
     private static final String AUTHORS_NAME = "AUTHORS_NAME";
@@ -30,7 +30,17 @@ class BooksControllerImplTest {
             BOOKS_NAME,
             List.of(new Author(1L, AUTHORS_NAME)),
             List.of(new Genre(1L, GENRES_NAME)));
-    private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(BOOK);
+    private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(
+            BOOK.getId(),
+            BOOK.getName(),
+            BOOK.getAuthors()
+                    .stream()
+                    .map(Author::getName)
+                    .toList(),
+            BOOK.getGenres()
+                    .stream()
+                    .map(Genre::getName)
+                    .toList());
     private final static List<BooksResponse> BOOKS_RESPONSE_LIST = List.of(BOOKS_RESPONSE);
 
     @MockBean

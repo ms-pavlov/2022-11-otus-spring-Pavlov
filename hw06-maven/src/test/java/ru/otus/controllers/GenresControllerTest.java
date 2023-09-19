@@ -19,8 +19,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Controller для работы с жанрами должен")
-@SpringBootTest(classes = {GenresControllerImpl.class})
-class GenresControllerImplTest {
+@SpringBootTest(classes = {GenresController.class})
+class GenresControllerTest {
 
     private static final Long GENRES_ID = 1L;
     private static final String GENRES_NAME = "name";

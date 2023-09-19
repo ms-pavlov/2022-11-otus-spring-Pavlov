@@ -3,13 +3,13 @@ package ru.otus.repositories;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.otus.entities.Genre;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Component
 public class GenresRepositoryImpl implements GenresRepository{
 
     @PersistenceContext
@@ -50,28 +50,12 @@ public class GenresRepositoryImpl implements GenresRepository{
 
     @Override
     public Genre update(Genre entity) {
-        entity.getBooks()
-                .stream()
-                .filter(book -> book.getId() == null)
-                .forEach(em::persist);
         return em.merge(entity);
     }
 
     @Override
     public void delete(Long id) {
         em.remove(em.find(Genre.class, id));
-    }
-
-    @Override
-    public boolean exist(Long id) {
-        try {
-            long count = em.createQuery("select count(g) from Genre g where g.id = :id", Long.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-            return count > 0;
-        } catch (NoResultException noResultException) {
-            return false;
-        }
     }
 
     @Override
@@ -85,15 +69,4 @@ public class GenresRepositoryImpl implements GenresRepository{
         }
     }
 
-    @Override
-    public boolean existName(String name) {
-        try {
-            long count = em.createQuery("select count(g) from Genre g where g.name = :name", Long.class)
-                    .setParameter("name", name)
-                    .getSingleResult();
-            return count > 0;
-        } catch (NoResultException noResultException) {
-            return false;
-        }
-    }
 }

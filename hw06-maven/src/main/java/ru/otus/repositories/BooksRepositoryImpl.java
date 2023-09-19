@@ -3,13 +3,13 @@ package ru.otus.repositories;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.otus.entities.Book;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Component
 public class BooksRepositoryImpl implements BooksRepository {
 
     @PersistenceContext
@@ -49,32 +49,12 @@ public class BooksRepositoryImpl implements BooksRepository {
 
     @Override
     public Book update(Book entity) {
-        entity.getAuthors()
-                .stream()
-                .filter(author -> author.getId() == null)
-                .forEach(em::persist);
-        entity.getGenres()
-                .stream()
-                .filter(genre -> genre.getId() == null)
-                .forEach(em::persist);
         return em.merge(entity);
     }
 
     @Override
     public void delete(Long id) {
         em.remove(em.find(Book.class, id));
-    }
-
-    @Override
-    public boolean exist(Long id) {
-        try {
-            long count = em.createQuery("select count(b.id) from Book b where b.id = :id", Long.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-            return count > 0;
-        } catch (NoResultException noResultException) {
-            return false;
-        }
     }
 
     @Override

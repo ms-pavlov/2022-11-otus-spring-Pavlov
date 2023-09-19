@@ -137,49 +137,6 @@ class AuthorsRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("при проверке на существование должен выполнить sql запрос к БД и вернуть логическое значение")
-    void existTrue() {
-        when(
-                entityManager.createQuery(
-                        eq("select count(a.id) from Author a where a.id = :id"),
-                        eq(Long.class)))
-                .thenReturn(countQuery);
-        when(countQuery.setParameter("id", AUTHOR_ID)).thenReturn(countQuery);
-        when(countQuery.getSingleResult()).thenReturn(TEST_INT);
-
-        var result = authorsRepository.exist(AUTHOR_ID);
-
-        assertTrue(result);
-        verify(entityManager, times(1))
-                .createQuery(
-                        eq("select count(a.id) from Author a where a.id = :id"),
-                        eq(Long.class));
-        verify(countQuery, times(1)).setParameter(eq("id"), eq(AUTHOR_ID));
-        verify(countQuery, times(1)).getSingleResult();
-    }
-
-    @Test
-    @DisplayName("при проверке на существование должен выполнить sql запрос к БД и вернуть логическое значение")
-    void existFalse() {
-        when(entityManager.createQuery(
-                "select count(a.id) from Author a where a.id = :id",
-                        Long.class))
-                .thenReturn(countQuery);
-        when(countQuery.setParameter(eq("id"), eq(AUTHOR_ID))).thenReturn(countQuery);
-        when(countQuery.getSingleResult()).thenReturn(0L);
-
-        var result = authorsRepository.exist(AUTHOR_ID);
-
-        assertFalse(result);
-        verify(entityManager, times(1))
-                .createQuery(
-                        eq("select count(a.id) from Author a where a.id = :id"),
-                        eq(Long.class));
-        verify(countQuery, times(1)).setParameter(eq("id"), eq(AUTHOR_ID));
-        verify(countQuery, times(1)).getSingleResult();
-    }
-
-    @Test
     @DisplayName("при получении количества выполнить sql запрос к БД и вернуть число")
     void count() {
         when(
@@ -200,56 +157,11 @@ class AuthorsRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("при проверке на то что Автор уже существует должен выполнить sql запрос к БД и вернуть логическое значение")
-    void existNameTrue() {
-        when(
-                entityManager.createQuery(
-                        eq("select count(a.id) from Author a where a.name = :name"),
-                        eq(Long.class)))
-                .thenReturn(countQuery);
-        when(countQuery.setParameter("name", AUTHOR_NAME)).thenReturn(countQuery);
-        when(countQuery.getSingleResult()).thenReturn(TEST_INT);
-
-        var result = authorsRepository.existName(AUTHOR_NAME);
-
-        assertTrue(result);
-        verify(entityManager, times(1))
-                .createQuery(
-                        eq("select count(a.id) from Author a where a.name = :name"),
-                        eq(Long.class));
-        verify(countQuery, times(1)).setParameter(eq("name"), eq(AUTHOR_NAME));
-        verify(countQuery, times(1)).getSingleResult();
-    }
-
-    @Test
-    @DisplayName("при проверке на то что Автор уже существует должен выполнить sql запрос к БД и вернуть логическое значение")
-    void existNameFalse() {
-        when(entityManager.createQuery(
-                "select count(a.id) from Author a where a.name = :name",
-                Long.class))
-                .thenReturn(countQuery);
-        when(countQuery.setParameter(eq("name"), eq(AUTHOR_NAME))).thenReturn(countQuery);
-        when(countQuery.getSingleResult()).thenReturn(0L);
-
-        var result = authorsRepository.existName(AUTHOR_NAME);
-
-        assertFalse(result);
-        verify(entityManager, times(1))
-                .createQuery(
-                        eq("select count(a.id) from Author a where a.name = :name"),
-                        eq(Long.class));
-        verify(countQuery, times(1)).setParameter(eq("name"), eq(AUTHOR_NAME));
-        verify(countQuery, times(1)).getSingleResult();
-    }
-
-    @Test
     @DisplayName("обрабатывает NoResultException")
     void existNameNoResult() {
         when(entityManager.createQuery(any(), any()))
                 .thenThrow(new NoResultException());
 
-        assertFalse(authorsRepository.existName(AUTHOR_NAME));
-        assertFalse(authorsRepository.exist(AUTHOR_ID));
         assertEquals(0, authorsRepository.count());
     }
 }

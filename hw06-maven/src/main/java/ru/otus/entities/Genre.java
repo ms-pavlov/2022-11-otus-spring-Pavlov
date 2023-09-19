@@ -33,11 +33,13 @@ public class Genre implements Serializable {
             sequenceName = "genres_seq")
     @Column(name = "id")
     private Long id;
+
     @Column(name = "name")
     private String name;
+
     @Fetch(FetchMode.SUBSELECT)
     @BatchSize(size = 100)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "books_genres",
             joinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "books", referencedColumnName = "id"))

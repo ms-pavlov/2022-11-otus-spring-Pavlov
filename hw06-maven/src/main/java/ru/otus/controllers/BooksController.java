@@ -1,18 +1,59 @@
 package ru.otus.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.shell.standard.ShellComponent;
+import org.springframework.shell.standard.ShellMethod;
+import ru.otus.dto.requests.BooksRequest;
+import ru.otus.services.BooksService;
+
+import java.io.PrintStream;
 import java.util.List;
 
-public interface BooksController {
+@ShellComponent
+public class BooksController {
 
-    void create(String name, List<String> authors, List<String> genres);
+    private final BooksService service;
+    private final PrintStream out;
 
-    void findById(Long id);
+    @Autowired
+    public BooksController(BooksService service, PrintStream out) {
+        this.service = service;
+        this.out = out;
+    }
 
-    void findByName(String name);
+    @ShellMethod(value = "Create new book", key = {"book-c", "book-create"})
+    public void create(String name, List<String> authors, List<String> genres) {
+        out.println(
+                service.create(
+                                new BooksRequest(name, authors, genres))
+                        .toString());
+    }
 
-    void update(Long id, String name, List<String> authors, List<String> genres);
+    @ShellMethod(value = "Get book by id", key = {"book-get-id"})
+    public void findById(Long id) {
+        out.println(
+                service.findById(id));
+    }
 
-    void delete(Long id);
+    @ShellMethod(value = "Get books by name", key = {"book-get-name"})
+    public void findByName(String name) {
+        service.findByName(name).forEach(out::println);
+    }
 
-    void findAll();
+    @ShellMethod(value = "Get all books", key = {"book-all"})
+    public void findAll() {
+        service.findAll().forEach(out::println);
+    }
+
+    @ShellMethod(value = "Update book", key = {"book-u", "book-update"})
+    public void update(Long id, String name, List<String> authors, List<String> genres) {
+        out.println(
+                service.update(id, new BooksRequest(name, authors, genres))
+                        .toString());
+    }
+
+    @ShellMethod(value = "Delete book by id", key = {"book-d", "book-delete"})
+    public void delete(Long id) {
+        service.delete(id);
+    }
 }

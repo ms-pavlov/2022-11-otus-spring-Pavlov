@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.AuthorsRequest;
 import ru.otus.dto.responses.AuthorsResponse;
+import ru.otus.entities.Author;
 import ru.otus.mappers.AuthorsMapper;
 import ru.otus.repositories.AuthorsRepository;
 
@@ -26,7 +27,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     @Override
     @Transactional
     public AuthorsResponse create(AuthorsRequest request) {
-        if(repository.existName(request.getName())) {
+        if(repository.getByName(request.getName()) != null) {
             throw new AuthorExistException();
         }
         return Optional.of(request)
@@ -47,9 +48,14 @@ public class AuthorsServiceImpl implements AuthorsService {
     @Override
     @Transactional
     public AuthorsResponse update(Long id, AuthorsRequest request) {
-        if(repository.existName(request.getName())) {
-            throw new AuthorExistException();
-        }
+        Optional.ofNullable(request)
+                .map(AuthorsRequest::getName)
+                .map(repository::getByName)
+                .map(Author::getId)
+                .ifPresent(value -> {
+                    if(!value.equals(id)) {
+                        throw new AuthorExistException();
+                    }});
         return repository.getById(id)
                 .map(author -> {
                     mapper.update(author, request);

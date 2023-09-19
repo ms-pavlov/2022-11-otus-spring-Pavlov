@@ -29,6 +29,10 @@ class AuthorsServiceImplTest {
     private final static Author AUTHOR = new Author(
             AUTHORS_ID,
             AUTHORS_NAME);
+
+    private final static Author OTHERT_AUTHOR = new Author(
+            100L + AUTHORS_ID,
+            "other" + AUTHORS_NAME);
     private final static AuthorsResponse AUTHORS_RESPONSE = new AuthorsResponse(
             AUTHORS_ID,
             AUTHORS_NAME,
@@ -46,7 +50,7 @@ class AuthorsServiceImplTest {
     @Test
     @DisplayName("должен проверить что такой автор ещё не создан, сохранить и вернуть результат")
     void create() {
-        when(repository.existName(AUTHORS_NAME)).thenReturn(false);
+        when(repository.getByName(AUTHORS_NAME)).thenReturn(null);
         when(mapper.create(AUTHOR_REQUEST)).thenReturn(AUTHOR);
         when(repository.create(AUTHOR))
                 .thenReturn(AUTHOR);
@@ -56,7 +60,7 @@ class AuthorsServiceImplTest {
         var result = service.create(AUTHOR_REQUEST);
 
         assertEquals(AUTHORS_RESPONSE, result);
-        verify(repository, times(1)).existName(AUTHORS_NAME);
+        verify(repository, times(1)).getByName(AUTHORS_NAME);
         verify(repository, times(1)).create(AUTHOR);
         verify(mapper, times(1)).create(AUTHOR_REQUEST);
         verify(mapper, times(1)).toDto(AUTHOR);
@@ -65,7 +69,7 @@ class AuthorsServiceImplTest {
     @Test
     @DisplayName("должен проверить, что такой автор создан, и вернуть исключение")
     void createExistAuthor() {
-        when(repository.existName(AUTHORS_NAME)).thenReturn(true);
+        when(repository.getByName(AUTHORS_NAME)).thenReturn(AUTHOR);
 
         assertThrows(AuthorExistException.class, () -> service.create(AUTHOR_REQUEST));
     }
@@ -103,7 +107,7 @@ class AuthorsServiceImplTest {
     @Test
     @DisplayName("должен проверить, что такой автор создан, и вернуть исключение")
     void updateExistAuthor() {
-        when(repository.existName(AUTHORS_NAME)).thenReturn(true);
+        when(repository.getByName(AUTHORS_NAME)).thenReturn(OTHERT_AUTHOR);
 
         assertThrows(AuthorExistException.class, () -> service.update(AUTHORS_ID, AUTHOR_REQUEST));
     }

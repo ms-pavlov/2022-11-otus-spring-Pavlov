@@ -26,7 +26,6 @@ class GenresRepositoryImplIntegrationTest {
     private static final Integer EXPECTED_GENRES_COUNT = 2;
     private static final Long EXISTING_BOOKS_ID = 1L;
     private static final Long EXISTING_GENRES_ID = 1L;
-    private static final Long OTHER_GENRES_ID = 200L;
     private static final String EXISTING_GENRES_NAME = "drama";
     private static final String OTHER_GENRES_NAME = "comedy";
     private static final String BOOK_NAME = "test";
@@ -129,28 +128,6 @@ class GenresRepositoryImplIntegrationTest {
     }
 
     @Test
-    @DisplayName("удалять заданного жанр по его id")
-    void delete() {
-        var genre = repository.create(new Genre(null, OTHER_GENRES_NAME));
-
-        assertTrue(repository.exist(genre.getId()));
-
-        repository.delete(genre.getId());
-
-        assertFalse(repository.exist(genre.getId()));
-        assertFalse(repository.getById(genre.getId()).isPresent());
-    }
-
-    @Test
-    @DisplayName("определять что жанр с заданным id существует в БД")
-    void exist() {
-
-        assertTrue(repository.exist(EXISTING_GENRES_ID));
-        assertFalse(repository.exist(EXISTING_GENRES_ID + OTHER_GENRES_ID));
-
-    }
-
-    @Test
     @DisplayName("возвращать ожидаемое количество жанров в БД")
     void count() {
         assertEquals(EXPECTED_GENRES_COUNT, repository.count());
@@ -177,12 +154,4 @@ class GenresRepositoryImplIntegrationTest {
         assertNull(result);
     }
 
-    @Test
-    @DisplayName("определять что жанр с заданным названием существует в БД")
-    void existName() {
-
-        assertTrue(repository.existName(EXISTING_GENRES_NAME));
-        assertFalse(repository.existName(EXISTING_GENRES_NAME + OTHER_GENRES_NAME));
-
-    }
 }

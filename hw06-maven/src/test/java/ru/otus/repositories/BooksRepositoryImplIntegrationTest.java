@@ -26,7 +26,6 @@ class BooksRepositoryImplIntegrationTest {
     private static final int EXPECTED_QUERIES_COUNT = 3;
     private static final Long EXPECTED_BOOKS_COUNT = 3L;
     private static final Long EXISTING_BOOKS_ID = 1L;
-    private static final Long OTHER_BOOKS_ID = EXISTING_BOOKS_ID + 2L;
     private static final String EXISTING_BOOKS_NAME = "books_name";
     private static final String OTHER_BOOKS_NAME = "books_name_alt";
     private static final String EXISTING_AUTHOR_NAME = "Ivan";
@@ -166,27 +165,6 @@ class BooksRepositoryImplIntegrationTest {
         assertFalse(result.getGenres().isEmpty());
         assertEquals(1, result.getGenres().size());
         assertEquals(OTHER_GENRES_NAME, result.getGenres().get(0).getName());
-    }
-
-
-    @Test
-    @DisplayName("удалять книгу по её id")
-    void delete() {
-        var book = repository.create(new Book(null, OTHER_BOOKS_NAME, List.of(), List.of()));
-
-        assertTrue(repository.exist(book.getId()));
-
-        repository.delete(book.getId());
-
-        assertFalse(repository.exist(book.getId()));
-        assertFalse(repository.getById(book.getId()).isPresent());
-    }
-
-    @Test
-    @DisplayName("определять что книга с заданым id существует в БД")
-    void exist() {
-        assertTrue(repository.exist(EXISTING_BOOKS_ID));
-        assertFalse(repository.exist(EXISTING_BOOKS_ID + OTHER_BOOKS_ID));
     }
 
     @Test
