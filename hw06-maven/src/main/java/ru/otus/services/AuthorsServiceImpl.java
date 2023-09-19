@@ -38,7 +38,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public AuthorsResponse findById(Long id) {
         return repository.getById(id)
                 .map(mapper::toDto)
@@ -73,7 +73,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public AuthorsResponse findByName(String name) {
         return Optional.ofNullable(name)
                 .map(repository::getByName)
@@ -82,7 +82,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<AuthorsResponse> findAll() {
         return repository.getAll()
                 .stream()

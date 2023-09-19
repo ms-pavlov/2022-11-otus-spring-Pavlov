@@ -33,7 +33,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public BooksResponse findById(Long id) {
         return booksRepository.getById(id)
                 .map(mapper::toDto)
@@ -60,7 +60,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BooksResponse> findByName(String name) {
         return booksRepository.getByName(name)
                 .stream()
@@ -70,7 +70,7 @@ public class BooksServiceImpl implements BooksService {
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BooksResponse> findAll() {
         return booksRepository.getAll()
                 .stream()

@@ -38,7 +38,7 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public GenresResponse findById(Long id) {
         return repository.getById(id)
                 .map(mapper::toDto)
@@ -74,7 +74,7 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public GenresResponse findByName(String name) {
         return Optional.ofNullable(name)
                 .map(repository::getByName)
@@ -83,7 +83,7 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<GenresResponse> findAll() {
         return repository.getAll()
                 .stream()
