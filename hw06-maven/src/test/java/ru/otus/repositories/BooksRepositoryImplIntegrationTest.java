@@ -112,10 +112,20 @@ class BooksRepositoryImplIntegrationTest {
                                         author -> Objects.equals(author.getName(), EXISTING_AUTHOR_NAME))));
         assertTrue(result.stream()
                 .anyMatch(
+                        book -> book.getAuthors().stream()
+                                .anyMatch(
+                                        author -> author.getBooks().stream().anyMatch(book1 -> Objects.equals(book.getId(), book1.getId())))));
+        assertTrue(result.stream()
+                .anyMatch(
                         book -> book.getGenres().stream()
                                 .anyMatch(
                                         genre -> Objects.equals(genre.getName(), EXISTING_GENRES_NAME))));
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
+        assertTrue(result.stream()
+                .anyMatch(
+                        book -> book.getGenres().stream()
+                                .anyMatch(
+                                        genre -> genre.getBooks().stream().anyMatch(book1 -> Objects.equals(book.getId(), book1.getId())))));
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(5L);
     }
 
     @Test
