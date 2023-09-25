@@ -78,7 +78,7 @@ class BooksRepositoryImplIntegrationTest {
                         .map(Book::getComments)
                         .mapToLong(Collection::size)
                         .sum());
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(4);
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(3);
     }
 
     @Test
@@ -131,7 +131,7 @@ class BooksRepositoryImplIntegrationTest {
                         .map(Book::getComments)
                         .mapToLong(Collection::size)
                         .sum());
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(4);
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(3);
     }
 
     @Test

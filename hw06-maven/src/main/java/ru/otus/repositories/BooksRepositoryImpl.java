@@ -22,7 +22,7 @@ public class BooksRepositoryImpl implements BooksRepository {
 
     @Override
     public List<Book> getByName(String name) {
-        return em.createQuery("SELECT b FROM Book b WHERE b.name = :name", Book.class)
+        return em.createQuery("SELECT b FROM Book b JOIN FETCH b.comments WHERE b.name = :name", Book.class)
                 .setParameter("name", name)
                 .getResultList();
     }
@@ -37,7 +37,7 @@ public class BooksRepositoryImpl implements BooksRepository {
 
     @Override
     public List<Book> getAll() {
-        return em.createQuery("SELECT b FROM Book b", Book.class)
+        return em.createQuery("SELECT b FROM Book b JOIN FETCH b.comments", Book.class)
                 .getResultList();
     }
 
