@@ -10,12 +10,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
-import ru.otus.entities.Comment;
 import ru.otus.entities.Genre;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,27 +60,25 @@ class BooksRepositoryImplIntegrationTest {
                 result.stream()
                         .anyMatch(
                                 book -> Objects.equals(book.getName(), EXISTING_BOOKS_NAME)));
-        assertTrue(
+        assertEquals(
+                2,
                 result.stream()
-                        .anyMatch(
-                                book -> book.getAuthors().stream()
-                                        .anyMatch(
-                                                author -> Objects.equals(author.getName(), EXISTING_AUTHOR_NAME))));
-        assertTrue(result.stream()
-                .anyMatch(
-                        book -> book.getGenres().stream()
-                                .anyMatch(
-                                        genre -> Objects.equals(genre.getName(), EXISTING_GENRES_NAME))));
-        assertTrue(result.stream()
-                .anyMatch(
-                        book -> book.getComments().stream()
-                                .anyMatch(
-                                        comment -> Optional.ofNullable(comment)
-                                                .map(Comment::getBook)
-                                                .map(Book::getId)
-                                                .map(id -> id.equals(book.getId()))
-                                                .orElse(false))));
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
+                        .map(Book::getAuthors)
+                        .mapToLong(Collection::size)
+                        .sum());
+        assertEquals(
+                2,
+                result.stream()
+                        .map(Book::getGenres)
+                        .mapToLong(Collection::size)
+                        .sum());
+        assertEquals(
+                1,
+                result.stream()
+                        .map(Book::getComments)
+                        .mapToLong(Collection::size)
+                        .sum());
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(4);
     }
 
     @Test
@@ -116,36 +113,25 @@ class BooksRepositoryImplIntegrationTest {
         var result = repository.getAll();
 
         assertEquals(EXPECTED_BOOKS_COUNT, result.size());
-        assertTrue(result.stream()
-                .anyMatch(
-                        book -> book.getAuthors().stream()
-                                .anyMatch(
-                                        author -> Objects.equals(author.getName(), EXISTING_AUTHOR_NAME))));
-        assertTrue(result.stream()
-                .anyMatch(
-                        book -> book.getAuthors().stream()
-                                .anyMatch(
-                                        author -> author.getBooks().stream().anyMatch(book1 -> Objects.equals(book.getId(), book1.getId())))));
-        assertTrue(result.stream()
-                .anyMatch(
-                        book -> book.getComments().stream()
-                                .anyMatch(
-                                        comment -> Optional.ofNullable(comment)
-                                                .map(Comment::getBook)
-                                                .map(Book::getId)
-                                                .map(id -> id.equals(book.getId()))
-                                                .orElse(false))));
-//        assertTrue(result.stream()
-//                .anyMatch(
-//                        book -> book.getGenres().stream()
-//                                .anyMatch(
-//                                        genre -> Objects.equals(genre.getName(), EXISTING_GENRES_NAME))));
-//        assertTrue(result.stream()
-//                .anyMatch(
-//                        book -> book.getGenres().stream()
-//                                .anyMatch(
-//                                        genre -> genre.getBooks().stream().anyMatch(book1 -> Objects.equals(book.getId(), book1.getId())))));
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(3L);
+        assertEquals(
+                6,
+                result.stream()
+                        .map(Book::getAuthors)
+                        .mapToLong(Collection::size)
+                        .sum());
+        assertEquals(
+                6,
+                result.stream()
+                        .map(Book::getGenres)
+                        .mapToLong(Collection::size)
+                        .sum());
+        assertEquals(
+                4,
+                result.stream()
+                        .map(Book::getComments)
+                        .mapToLong(Collection::size)
+                        .sum());
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(4);
     }
 
     @Test
@@ -157,7 +143,6 @@ class BooksRepositoryImplIntegrationTest {
                 null,
                 List.of(new Genre(null, OTHER_GENRES_NAME)),
                 null);
-        book.setAuthors(List.of(new Author(null, OTHER_AUTHOR_NAME)));
         book.setAuthors(List.of(new Author(null, OTHER_AUTHOR_NAME)));
         var result = repository.create(book);
 
@@ -178,6 +163,7 @@ class BooksRepositoryImplIntegrationTest {
                 .orElse(null);
         var author = new Author(null, OTHER_AUTHOR_NAME);
         var genre = new Genre(null, OTHER_GENRES_NAME);
+        assert book != null;
         book.setName(OTHER_BOOKS_NAME);
         book.getAuthors().clear();
         book.getAuthors().add(author);

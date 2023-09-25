@@ -39,7 +39,7 @@ public class Genre implements Serializable {
 
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 100)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "books_genres",
             joinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "books", referencedColumnName = "id"))

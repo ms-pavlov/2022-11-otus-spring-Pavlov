@@ -11,7 +11,6 @@ import ru.otus.repositories.AuthorsRepository;
 import ru.otus.repositories.GenresRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -42,7 +41,7 @@ public class BookRequestMapperImpl implements BookRequestMapper {
         authors.clear();
         authors.addAll(request.getAuthors()
                 .stream()
-                .map(name -> prepareAuthors(name, entity))
+                .map(this::prepareAuthors)
                 .toList());
         var genres = Optional.of(entity)
                 .map(Book::getGenres)
@@ -50,7 +49,7 @@ public class BookRequestMapperImpl implements BookRequestMapper {
         genres.clear();
         genres.addAll(request.getGenres()
                 .stream()
-                .map(name -> prepareGenres(name, entity))
+                .map(this::prepareGenres)
                 .toList());
     }
 
@@ -70,13 +69,13 @@ public class BookRequestMapperImpl implements BookRequestMapper {
         );
     }
 
-    private Author prepareAuthors(String name, Book book) {
+    private Author prepareAuthors(String name) {
         return Optional.ofNullable(authorsRepository.getByName(name))
-                .orElseGet(() -> authorsRepository.create(new Author(null, name, List.of(book))));
+                .orElseGet(() -> authorsRepository.create(new Author(null, name)));
     }
 
-    private Genre prepareGenres(String name, Book book) {
+    private Genre prepareGenres(String name) {
         return Optional.ofNullable(genresRepository.getByName(name))
-                .orElseGet(() -> genresRepository.create(new Genre(null, name, List.of(book))));
+                .orElseGet(() -> genresRepository.create(new Genre(null, name)));
     }
 }

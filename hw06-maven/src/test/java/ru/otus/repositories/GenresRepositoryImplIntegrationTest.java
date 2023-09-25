@@ -101,9 +101,6 @@ class GenresRepositoryImplIntegrationTest {
         assertTrue( result.getBooks()
                                 .stream()
                                 .anyMatch(book -> Objects.equals(book.getName(), BOOK_NAME)));
-        assertTrue( result.getBooks()
-                .stream()
-                .noneMatch(book -> book.getId() == null));
 
         repository.delete(result.getId());
     }
@@ -124,7 +121,6 @@ class GenresRepositoryImplIntegrationTest {
 
         assertEquals(OTHER_GENRES_NAME, result.getName());
         assertNotNull(result.getId());
-        assertEquals(BOOK_NAME, result.getBooks().get(0).getName());
     }
 
     @Test

@@ -9,4 +9,9 @@ public class CommentsResponse {
     private final Long id;
     private final String comment;
     private final BooksResponse book;
+
+    @Override
+    public String toString() {
+        return "[" + id + "]: " + comment + "\n\r";
+    }
 }

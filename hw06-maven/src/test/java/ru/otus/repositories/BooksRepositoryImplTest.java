@@ -67,7 +67,7 @@ class BooksRepositoryImplTest {
     void getByName() {
         when(
                 entityManager.createQuery(
-                        eq("SELECT b FROM Book b join fetch b.authors WHERE b.name = :name"),
+                        eq("SELECT b FROM Book b WHERE b.name = :name"),
                         eq(Book.class)))
                 .thenReturn(query);
         when(query.setParameter("name", EXISTING_BOOKS_NAME))
@@ -79,7 +79,7 @@ class BooksRepositoryImplTest {
         assertTrue(TEST_BOOKS.containsAll(result));
         verify(entityManager, times(1))
                 .createQuery(
-                        eq("SELECT b FROM Book b join fetch b.authors WHERE b.name = :name"),
+                        eq("SELECT b FROM Book b WHERE b.name = :name"),
                         eq(Book.class));
         verify(query, times(1)).setParameter(eq("name"), eq(EXISTING_BOOKS_NAME));
         verify(query, times(1)).getResultList();
@@ -101,7 +101,7 @@ class BooksRepositoryImplTest {
     void getAll() {
         when(
                 entityManager.createQuery(
-                        eq("SELECT b FROM Book b join fetch b.authors"),
+                        eq("SELECT b FROM Book b"),
                         eq(Book.class)))
                 .thenReturn(query);
         when(query.getResultList())
@@ -112,7 +112,7 @@ class BooksRepositoryImplTest {
         assertEquals(TEST_BOOKS, result);
         verify(entityManager, times(1))
                 .createQuery(
-                        eq("SELECT b FROM Book b join fetch b.authors"),
+                        eq("SELECT b FROM Book b"),
                         eq(Book.class));
         verify(query, times(1)).getResultList();
     }

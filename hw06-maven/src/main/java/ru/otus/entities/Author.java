@@ -39,7 +39,7 @@ public class Author implements Serializable {
 
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 100)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "books_authors",
             joinColumns = @JoinColumn(name = "authors", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "books", referencedColumnName = "id"))

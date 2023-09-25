@@ -36,21 +36,22 @@ public class Book implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Fetch(FetchMode.SUBSELECT)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "books_authors",
             joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authors", referencedColumnName = "id"))
     private List<Author> authors;
 
-    @Fetch(FetchMode.SELECT)
+    @Fetch(FetchMode.SUBSELECT)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "books_genres",
             joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"))
     private List<Genre> genres;
 
-    @Fetch(FetchMode.SELECT)
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(fetch = FetchType.LAZY, cascade={CascadeType.ALL})
     @JoinColumn(name = "book")
     private List<Comment> comments;
 

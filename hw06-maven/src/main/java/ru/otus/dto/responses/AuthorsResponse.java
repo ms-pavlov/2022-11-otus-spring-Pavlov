@@ -15,7 +15,7 @@ public class AuthorsResponse {
 
     @Override
     public String toString() {
-        return "\n\rName : '" + name
+        return "\n\rName : " + name
                 + "\n\r Id: " + id + "\n\r"
                 + "\n\r Bibliography: \n\r" +
                 books.stream()

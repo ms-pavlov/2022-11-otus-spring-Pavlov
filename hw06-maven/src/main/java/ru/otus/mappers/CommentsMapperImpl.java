@@ -5,16 +5,19 @@ import org.springframework.stereotype.Component;
 import ru.otus.dto.requests.CommentsRequest;
 import ru.otus.dto.responses.CommentsResponse;
 import ru.otus.entities.Comment;
+import ru.otus.repositories.BooksRepository;
 
 import java.util.Optional;
 
 @Component
 public class CommentsMapperImpl implements CommentsMapper {
 
+    private final BooksRepository booksRepository;
     private final BookRequestMapper bookMapper;
 
     @Autowired
-    public CommentsMapperImpl(BookRequestMapper bookMapper) {
+    public CommentsMapperImpl(BooksRepository booksRepository, BookRequestMapper bookMapper) {
+        this.booksRepository = booksRepository;
         this.bookMapper = bookMapper;
     }
 
@@ -28,6 +31,10 @@ public class CommentsMapperImpl implements CommentsMapper {
     @Override
     public void update(Comment entity, CommentsRequest request) {
         entity.setComment(request.getComment());
+        Optional.of(request)
+                .map(CommentsRequest::getBookId)
+                .flatMap(booksRepository::getById)
+                .ifPresent(entity::setBook);
     }
 
     @Override

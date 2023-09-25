@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CommentsRequest {
-    private final String user;
     private final String comment;
     private final Long bookId;
 }

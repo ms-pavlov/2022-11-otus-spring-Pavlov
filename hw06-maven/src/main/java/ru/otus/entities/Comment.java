@@ -36,7 +36,7 @@ public class Comment implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
     @ManyToOne
     @JoinColumn(name = "book")
     private Book book;

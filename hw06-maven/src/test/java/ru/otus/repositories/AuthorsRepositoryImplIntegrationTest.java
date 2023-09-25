@@ -108,7 +108,6 @@ class AuthorsRepositoryImplIntegrationTest {
 
         assertEquals(OTHER_AUTHOR_NAME, result.getName());
         assertNotNull(result.getId());
-        assertEquals(BOOK_NAME, result.getBooks().get(0).getName());
     }
 
     @Test

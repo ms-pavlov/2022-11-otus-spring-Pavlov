@@ -42,7 +42,8 @@ public class BooksController {
 
     @ShellMethod(value = "Get all books", key = {"book-all"})
     public void findAll() {
-        service.findAll().forEach(out::println);
+        var books = service.findAll();
+        books.forEach(out::println);
     }
 
     @ShellMethod(value = "Update book", key = {"book-u", "book-update"})
