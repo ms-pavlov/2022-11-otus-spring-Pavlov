@@ -92,7 +92,7 @@ class GenresRepositoryImplIntegrationTest {
     @DisplayName("добавлять жанры в БД")
     void create() {
         var genre = new Genre(null, OTHER_GENRES_NAME);
-        genre.setBooks(List.of(new Book(null, BOOK_NAME, null, List.of(genre))));
+        genre.setBooks(List.of(new Book(null, BOOK_NAME, null, List.of(genre), null)));
 
         var result = repository.create(genre);
 
@@ -115,7 +115,7 @@ class GenresRepositoryImplIntegrationTest {
                 .map(value -> {
                     value.setName(OTHER_GENRES_NAME);
                     value.getBooks().clear();
-                    value.getBooks().add(new Book(null, BOOK_NAME, List.of(), List.of(value)));
+                    value.getBooks().add(new Book(null, BOOK_NAME, List.of(), List.of(value), List.of()));
                     return value;
                 })
                 .orElse(null);

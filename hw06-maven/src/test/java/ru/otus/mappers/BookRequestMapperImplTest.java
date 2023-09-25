@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
+import ru.otus.entities.Comment;
 import ru.otus.entities.Genre;
 import ru.otus.repositories.AuthorsRepository;
 import ru.otus.repositories.GenresRepository;
@@ -30,13 +31,16 @@ class BookRequestMapperImplTest {
     private final static String TEST_BOOK_NAME = "name";
     private final static String TEST_AUTHORS_NAME = "Authors";
     private final static String TEST_GENRES_NAME = "Genres";
+    private static final String COMMENTS_TEXT = "COMMENTS_TEXT";
     private final static Author TEST_AUTHORS = new Author(null, TEST_AUTHORS_NAME);
     private final static Genre TEST_GENRES = new Genre(null, TEST_GENRES_NAME);
+    private final static Comment TEST_COMMENT = new Comment(null, COMMENTS_TEXT);
     private final static Book TEST_BOOK = new Book(
             null,
             TEST_BOOK_NAME,
             List.of(TEST_AUTHORS),
-            List.of(TEST_GENRES));
+            List.of(TEST_GENRES),
+            List.of(TEST_COMMENT));
     private final static BooksRequest TEST_REQUEST = new BooksRequest(
             TEST_BOOK_NAME,
             List.of(TEST_AUTHORS_NAME),
@@ -74,7 +78,7 @@ class BookRequestMapperImplTest {
         when(authorsRepository.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
         when(genresRepository.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
-        var result = new Book(null, null, new ArrayList<>(), new ArrayList<>());
+        var result = new Book(null, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
         mapper.update(result, TEST_REQUEST);
 
@@ -91,7 +95,7 @@ class BookRequestMapperImplTest {
         when(authorsRepository.getByName(TEST_AUTHORS_NAME)).thenReturn(TEST_AUTHORS);
         when(genresRepository.getByName(TEST_GENRES_NAME)).thenReturn(TEST_GENRES);
 
-        var result = new Book(null, null, new ArrayList<>(), new ArrayList<>());
+        var result = new Book(null, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
         mapper.update(result, TEST_REQUEST);
 

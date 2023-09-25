@@ -27,6 +27,7 @@ class AuthorsMapperImplTest {
             null,
             TEST_BOOK_NAME,
             List.of(),
+            List.of(),
             List.of());
     private final static Author TEST_AUTHORS = new Author(TEST_AUTHORS_ID, TEST_AUTHORS_NAME, List.of(TEST_BOOK));
     private final static AuthorsRequest TEST_AUTHORS_REQUEST = new AuthorsRequest(TEST_AUTHORS_NAME);

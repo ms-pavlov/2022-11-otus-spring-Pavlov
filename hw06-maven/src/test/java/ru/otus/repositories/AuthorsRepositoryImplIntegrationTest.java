@@ -81,7 +81,7 @@ class AuthorsRepositoryImplIntegrationTest {
     @DisplayName("добавлять авторов в БД")
     void create() {
         var author = new Author(null, OTHER_AUTHOR_NAME);
-        author.setBooks(List.of(new Book(null, BOOK_NAME, List.of(author), null)));
+        author.setBooks(List.of(new Book(null, BOOK_NAME, List.of(author), null, null)));
 
         var result = repository.create(author);
 
@@ -99,7 +99,7 @@ class AuthorsRepositoryImplIntegrationTest {
                 .map(value -> {
                     value.setName(OTHER_AUTHOR_NAME);
                     value.getBooks().clear();
-                    value.getBooks().add(new Book(null, BOOK_NAME, List.of(value), List.of()));
+                    value.getBooks().add(new Book(null, BOOK_NAME, List.of(value), List.of(), List.of()));
                     return value;
                 })
                 .orElse(null);

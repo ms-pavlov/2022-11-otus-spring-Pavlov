@@ -52,7 +52,6 @@ public class BookRequestMapperImpl implements BookRequestMapper {
                 .stream()
                 .map(name -> prepareGenres(name, entity))
                 .toList());
-
     }
 
     @Override

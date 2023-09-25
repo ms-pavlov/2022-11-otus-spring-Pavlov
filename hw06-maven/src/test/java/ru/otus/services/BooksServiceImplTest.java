@@ -9,6 +9,7 @@ import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
+import ru.otus.entities.Comment;
 import ru.otus.entities.Genre;
 import ru.otus.mappers.BookRequestMapper;
 import ru.otus.repositories.BooksRepository;
@@ -30,7 +31,8 @@ class BooksServiceImplTest {
             BOOKS_ID,
             BOOKS_NAME,
             List.of(new Author(1L, "author")),
-            List.of(new Genre(1L, "genre")));
+            List.of(new Genre(1L, "genre")),
+            List.of(new Comment(1L, "comment")));
     private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(
             BOOK.getId(),
             BOOK.getName(),

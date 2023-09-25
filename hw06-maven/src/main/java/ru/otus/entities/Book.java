@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -37,8 +36,6 @@ public class Book implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Fetch(FetchMode.SELECT)
-    @BatchSize(size = 100)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "books_authors",
             joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
@@ -46,16 +43,21 @@ public class Book implements Serializable {
     private List<Author> authors;
 
     @Fetch(FetchMode.SELECT)
-    @BatchSize(size = 100)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "books_genres",
             joinColumns = @JoinColumn(name = "books", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "genres", referencedColumnName = "id"))
     private List<Genre> genres;
 
+    @Fetch(FetchMode.SELECT)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "book")
+    private List<Comment> comments;
+
     public Book() {
         this.authors = new ArrayList<>();
         this.genres = new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 }
 

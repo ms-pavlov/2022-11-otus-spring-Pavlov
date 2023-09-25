@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
+import ru.otus.entities.Comment;
 import ru.otus.entities.Genre;
 
 import java.util.List;
@@ -31,16 +32,20 @@ class BooksRepositoryImplTest {
     private static final String OTHER_AUTHOR_NAME = "Petr";
     private static final String EXISTING_GENRES_NAME = "drama";
     private static final String OTHER_GENRES_NAME = "comedy";
+    private static final String EXISTING_COMMENT = "comment 1-1";
+    private static final String OTHER_COMMENT = EXISTING_COMMENT + "comment 1-2";
     private static final Book TEST_BOOK = new Book(
             EXISTING_BOOKS_ID,
             EXISTING_BOOKS_NAME,
             List.of(new Author(null, EXISTING_AUTHOR_NAME)),
-            List.of(new Genre(null, EXISTING_GENRES_NAME)));
+            List.of(new Genre(null, EXISTING_GENRES_NAME)),
+            List.of(new Comment(null, EXISTING_COMMENT)));
     private static final Book OTHER_TEST_BOOK = new Book(
             OTHER_BOOKS_ID,
             OTHER_BOOKS_NAME,
             List.of(new Author(null, OTHER_AUTHOR_NAME)),
-            List.of(new Genre(null, OTHER_GENRES_NAME)));
+            List.of(new Genre(null, OTHER_GENRES_NAME)),
+            List.of(new Comment(null, OTHER_COMMENT)));
     private static final List<Book> TEST_BOOKS = List.of(TEST_BOOK, OTHER_TEST_BOOK);
 
     @Mock
@@ -62,7 +67,7 @@ class BooksRepositoryImplTest {
     void getByName() {
         when(
                 entityManager.createQuery(
-                        eq("SELECT b FROM Book b WHERE b.name = :name"),
+                        eq("SELECT b FROM Book b join fetch b.authors WHERE b.name = :name"),
                         eq(Book.class)))
                 .thenReturn(query);
         when(query.setParameter("name", EXISTING_BOOKS_NAME))
@@ -74,7 +79,7 @@ class BooksRepositoryImplTest {
         assertTrue(TEST_BOOKS.containsAll(result));
         verify(entityManager, times(1))
                 .createQuery(
-                        eq("SELECT b FROM Book b WHERE b.name = :name"),
+                        eq("SELECT b FROM Book b join fetch b.authors WHERE b.name = :name"),
                         eq(Book.class));
         verify(query, times(1)).setParameter(eq("name"), eq(EXISTING_BOOKS_NAME));
         verify(query, times(1)).getResultList();
@@ -96,7 +101,7 @@ class BooksRepositoryImplTest {
     void getAll() {
         when(
                 entityManager.createQuery(
-                        eq("SELECT b FROM Book b"),
+                        eq("SELECT b FROM Book b join fetch b.authors"),
                         eq(Book.class)))
                 .thenReturn(query);
         when(query.getResultList())
@@ -107,7 +112,7 @@ class BooksRepositoryImplTest {
         assertEquals(TEST_BOOKS, result);
         verify(entityManager, times(1))
                 .createQuery(
-                        eq("SELECT b FROM Book b"),
+                        eq("SELECT b FROM Book b join fetch b.authors"),
                         eq(Book.class));
         verify(query, times(1)).getResultList();
     }

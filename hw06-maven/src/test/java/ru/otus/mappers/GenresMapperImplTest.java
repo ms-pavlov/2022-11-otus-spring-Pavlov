@@ -27,6 +27,7 @@ class GenresMapperImplTest {
             null,
             TEST_BOOK_NAME,
             List.of(),
+            List.of(),
             List.of());
     private final static Genre TEST_GENRE = new Genre(TEST_GENRE_ID, TEST_GENRE_NAME, List.of(TEST_BOOK));
     private final static GenresRequest TEST_GENRES_REQUEST = new GenresRequest(TEST_GENRE_NAME);
