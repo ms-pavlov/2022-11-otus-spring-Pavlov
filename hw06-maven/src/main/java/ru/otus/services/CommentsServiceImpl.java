@@ -3,8 +3,11 @@ package ru.otus.services;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.CommentsRequest;
+import ru.otus.dto.responses.BookWithCommentsResponse;
 import ru.otus.dto.responses.CommentsResponse;
+import ru.otus.mappers.BookRequestMapper;
 import ru.otus.mappers.CommentsMapper;
+import ru.otus.repositories.BooksRepository;
 import ru.otus.repositories.CommentsRepository;
 
 import java.util.List;
@@ -13,12 +16,20 @@ import java.util.Optional;
 @Service
 public class CommentsServiceImpl implements CommentsService{
 
-    private final CommentsRepository repository;
-    private final CommentsMapper mapper;
+    private final CommentsRepository commentsRepository;
+    private final BooksRepository booksRepository;
+    private final CommentsMapper commentsMapper;
+    private final BookRequestMapper bookMapper;
 
-    public CommentsServiceImpl(CommentsRepository repository, CommentsMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
+    public CommentsServiceImpl(
+            CommentsRepository repository,
+            BooksRepository booksRepository,
+            CommentsMapper mapper,
+            BookRequestMapper bookMapper) {
+        this.commentsRepository = repository;
+        this.booksRepository = booksRepository;
+        this.commentsMapper = mapper;
+        this.bookMapper = bookMapper;
     }
 
 
@@ -26,54 +37,58 @@ public class CommentsServiceImpl implements CommentsService{
     @Transactional
     public CommentsResponse create(CommentsRequest request) {
         return Optional.of(request)
-                .map(mapper::create)
-                .map(repository::create)
-                .map(mapper::toDto)
+                .map(commentsMapper::create)
+                .map(commentsRepository::create)
+                .map(commentsMapper::toDto)
                 .orElse(null);
     }
 
     @Override
     @Transactional(readOnly = true)
     public CommentsResponse findById(Long id) {
-        return repository.getById(id)
-                .map(mapper::toDto)
+        return commentsRepository.getById(id)
+                .map(commentsMapper::toDto)
                 .orElse(null);
     }
 
     @Override
     @Transactional
     public CommentsResponse update(Long id, CommentsRequest request) {
-        return repository.getById(id)
+        return commentsRepository.getById(id)
                 .map(author -> {
-                    mapper.update(author, request);
+                    commentsMapper.update(author, request);
                     return author;
                 })
-                .map(repository::update)
-                .map(mapper::toDto)
+                .map(commentsRepository::update)
+                .map(commentsMapper::toDto)
                 .orElse(null);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        repository.delete(id);
+        commentsRepository.delete(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentsResponse> findByBookId(Long bookId) {
-        return repository.getCommentsByBookId(bookId)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
+    public BookWithCommentsResponse findByBookId(Long bookId) {
+        return booksRepository.getById(bookId)
+                        .map(book -> new BookWithCommentsResponse(
+                                bookMapper.toDto(book),
+                                book.getComments().stream()
+                                        .map(commentsMapper::toDto)
+                                        .toList()
+                        ))
+                .orElse(null);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CommentsResponse> findAll() {
-        return repository.getAll()
+        return commentsRepository.getAll()
                 .stream()
-                .map(mapper::toDto)
+                .map(commentsMapper::toDto)
                 .toList();
     }
 }

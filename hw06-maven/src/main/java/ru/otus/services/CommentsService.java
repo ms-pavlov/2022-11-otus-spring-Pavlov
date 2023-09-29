@@ -1,6 +1,7 @@
 package ru.otus.services;
 
 import ru.otus.dto.requests.CommentsRequest;
+import ru.otus.dto.responses.BookWithCommentsResponse;
 import ru.otus.dto.responses.CommentsResponse;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface CommentsService {
 
     void delete(Long id);
 
-    List<CommentsResponse> findByBookId(Long bookId);
+    BookWithCommentsResponse findByBookId(Long bookId);
 
     List<CommentsResponse> findAll();
 }

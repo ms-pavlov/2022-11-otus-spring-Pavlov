@@ -35,18 +35,17 @@ public class CommentsController {
 
     @ShellMethod(value = "Get comment by book", key = {"comment-get-book"})
     public void findByBook(Long bookId) {
-        var comments = service.findByBookId(bookId);
+        var bookWithComments = service.findByBookId(bookId);
 
-        if(comments.isEmpty()) {
+        if(bookWithComments.isEmpty()) {
             out.println("No Comments");
             return;
         }
 
-        out.println(comments.stream()
-                .map(CommentsResponse::getBook)
-                .findFirst());
+        out.println(bookWithComments.getBook());
         out.println("Comments: ");
-        comments.forEach(out::println);
+        bookWithComments.getComments()
+                .forEach(out::println);
     }
 
     @ShellMethod(value = "Update comment", key = {"comment-u", "comment-update"})

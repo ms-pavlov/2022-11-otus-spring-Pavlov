@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.dto.requests.CommentsRequest;
+import ru.otus.dto.responses.BookWithCommentsResponse;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.dto.responses.CommentsResponse;
 import ru.otus.services.CommentsService;
@@ -33,6 +34,22 @@ class CommentsControllerTest {
                     TEST_BOOK_NAME,
                     List.of(),
                     List.of()));
+    private final static BookWithCommentsResponse BOOK_WITH_COMMENTS_RESPONSE = new BookWithCommentsResponse(
+            new BooksResponse(
+                    TEST_BOOK_ID,
+                    TEST_BOOK_NAME,
+                    List.of(),
+                    List.of()),
+            List.of(COMMENT_RESPONSE)
+    );
+    private final static BookWithCommentsResponse BOOK_WITHOUT_COMMENTS_RESPONSE = new BookWithCommentsResponse(
+            new BooksResponse(
+                    TEST_BOOK_ID,
+                    TEST_BOOK_NAME,
+                    List.of(),
+                    List.of()),
+            List.of()
+    );
 
     @MockBean
     private CommentsService service;
@@ -75,7 +92,7 @@ class CommentsControllerTest {
     @Test
     @DisplayName("должен найти комментарий для книги и вывести результат")
     void findByBook() {
-        when(service.findByBookId(eq(TEST_BOOK_ID))).thenReturn(List.of(COMMENT_RESPONSE));
+        when(service.findByBookId(eq(TEST_BOOK_ID))).thenReturn(BOOK_WITH_COMMENTS_RESPONSE);
 
         controller.findByBook(TEST_BOOK_ID);
 
@@ -85,7 +102,7 @@ class CommentsControllerTest {
     @Test
     @DisplayName("Если у книги нет комментариев должен вывести сообщение об этом")
     void findByBookNoComments() {
-        when(service.findByBookId(eq(TEST_BOOK_ID))).thenReturn(List.of());
+        when(service.findByBookId(eq(TEST_BOOK_ID))).thenReturn(BOOK_WITHOUT_COMMENTS_RESPONSE);
 
         controller.findByBook(TEST_BOOK_ID);
 
