@@ -63,7 +63,7 @@ class AuthorsRepositoryImplIntegrationTest {
     @DisplayName("возвращать ожидаемый список авторов")
     void getAll() {
 
-        var result = repository.find();
+        var result = repository.findAll();
 
         assertEquals(EXPECTED_AUTHOR_COUNT, result.size());
         assertTrue( result.stream().anyMatch(author -> Objects.equals(author.getName(), EXISTING_AUTHOR_NAME)));

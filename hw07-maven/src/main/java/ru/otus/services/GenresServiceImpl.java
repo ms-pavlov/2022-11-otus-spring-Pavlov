@@ -25,7 +25,7 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional
+    @Transactional //findByName - без транзакции, save - открывает транзакцию по-умолчанию
     public GenresResponse create(GenresRequest request) {
         if(repository.findByName(request.getName()) != null) {
             throw new GenreExistException();
@@ -38,7 +38,7 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true)  // findById - без транзакции
     public GenresResponse findById(Long id) {
         return repository.findById(id)
                 .map(mapper::toDto)
@@ -46,7 +46,7 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional
+    @Transactional //findByName, findById - без транзакции, save - открывает транзакцию по-умолчанию
     public GenresResponse update(Long id, GenresRequest request) {
         Optional.ofNullable(request)
                 .map(GenresRequest::getName)
@@ -67,14 +67,13 @@ public class GenresServiceImpl implements GenresService{
                 .orElse(null);
     }
 
-    @Override
-    @Transactional
+    @Override // deleteById - открывает транзакцию по-умолчанию
     public void delete(Long id) {
         repository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findByName - без транзакции
     public GenresResponse findByName(String name) {
         return Optional.ofNullable(name)
                 .map(repository::findByName)
@@ -83,9 +82,9 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findAll - без транзакции
     public List<GenresResponse> findAll() {
-        return repository.find()
+        return repository.findAll()
                 .stream()
                 .map(mapper::toDto)
                 .toList();

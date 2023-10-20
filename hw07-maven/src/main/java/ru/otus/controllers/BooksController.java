@@ -46,6 +46,12 @@ public class BooksController {
         books.forEach(out::println);
     }
 
+    @ShellMethod(value = "Get all books", key = {"book-page"})
+    public void findPage(int page, int size) {
+        var books = service.findPage(page, size);
+        books.forEach(out::println);
+    }
+
     @ShellMethod(value = "Update book", key = {"book-u", "book-update"})
     public void update(Long id, String name, List<String> authors, List<String> genres) {
         out.println(

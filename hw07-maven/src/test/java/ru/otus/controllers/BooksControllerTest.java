@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.entities.Author;
@@ -128,5 +129,16 @@ class BooksControllerTest {
         controller.delete(BOOK_ID);
 
         verify(service, times(1)).delete(BOOK_ID);
+    }
+
+    @Test
+    @DisplayName("должен найти постранично книги и вывести результат")
+    void findPage() {
+        when(service.findPage(0, 1)).thenReturn(new PageImpl<>(BOOKS_RESPONSE_LIST));
+
+        controller.findPage(0, 1);
+
+        BOOKS_RESPONSE_LIST.forEach(
+                booksResponse -> verify(out, times(1)).println(booksResponse));
     }
 }

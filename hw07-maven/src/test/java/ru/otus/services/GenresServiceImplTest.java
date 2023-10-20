@@ -136,7 +136,7 @@ class GenresServiceImplTest {
     @Test
     @DisplayName("должен найти все жанры")
     void findAll() {
-        when(repository.find()).thenReturn(List.of(GENRE));
+        when(repository.findAll()).thenReturn(List.of(GENRE));
         when(mapper.toDto(GENRE))
                 .thenReturn(GENRES_RESPONSE);
 

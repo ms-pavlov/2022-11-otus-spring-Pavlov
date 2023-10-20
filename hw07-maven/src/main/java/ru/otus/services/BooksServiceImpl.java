@@ -1,6 +1,8 @@
 package ru.otus.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.BooksRequest;
@@ -22,8 +24,7 @@ public class BooksServiceImpl implements BooksService {
         this.mapper = mapper;
     }
 
-    @Override
-    @Transactional
+    @Override// save - открывает транзакцию по-умолчанию
     public BooksResponse create(BooksRequest request) {
         return Optional.ofNullable(request)
                 .map(mapper::create)
@@ -33,7 +34,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findById без транзакции
     public BooksResponse findById(Long id) {
         return booksRepository.findById(id)
                 .map(mapper::toDto)
@@ -41,7 +42,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @Transactional
+    @Transactional //findById без транзакции, save - открывает транзакцию по-умолчанию
     public BooksResponse update(Long id, BooksRequest request) {
         return booksRepository.findById(id)
                 .map(books -> {
@@ -53,14 +54,13 @@ public class BooksServiceImpl implements BooksService {
                 .orElse(null);
     }
 
-    @Override
-    @Transactional
+    @Override // deleteById - открывает транзакцию по-умолчанию
     public void delete(Long id) {
         booksRepository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findByName - без транзакции
     public List<BooksResponse> findByName(String name) {
         return booksRepository.findByName(name)
                 .stream()
@@ -68,13 +68,20 @@ public class BooksServiceImpl implements BooksService {
                 .toList();
     }
 
-
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findAll - без транзакции
     public List<BooksResponse> findAll() {
-        return booksRepository.find()
+        return booksRepository.findAll()
                 .stream()
                 .map(mapper::toDto)
                 .toList();
+    }
+
+
+    @Override
+    @Transactional(readOnly = true) //findAll - без транзакции
+    public Page<BooksResponse> findPage(int page, int size) {
+        return booksRepository.findAll(PageRequest.of(page, size))
+                .map(mapper::toDto);
     }
 }

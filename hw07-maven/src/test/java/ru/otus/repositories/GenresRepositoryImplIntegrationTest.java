@@ -74,7 +74,7 @@ class GenresRepositoryImplIntegrationTest {
     @Test
     @DisplayName("возвращать ожидаемый список жанров")
     void getAll() {
-        var result = repository.find();
+        var result = repository.findAll();
 
         assertEquals(EXPECTED_GENRES_COUNT, result.size());
         assertTrue( result.stream().anyMatch(genre -> Objects.equals(genre.getName(), EXISTING_GENRES_NAME)));

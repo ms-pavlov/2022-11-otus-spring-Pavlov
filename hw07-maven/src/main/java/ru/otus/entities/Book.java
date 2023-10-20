@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -51,6 +52,7 @@ public class Book implements Serializable {
     private List<Genre> genres;
 
     @Fetch(FetchMode.SUBSELECT)
+    @BatchSize(size = 10)
     @OneToMany(fetch = FetchType.LAZY, cascade={CascadeType.ALL})
     @JoinColumn(name = "book")
     private List<Comment> comments;

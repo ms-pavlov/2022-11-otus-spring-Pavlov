@@ -33,8 +33,7 @@ public class CommentsServiceImpl implements CommentsService{
     }
 
 
-    @Override
-    @Transactional
+    @Override //save - открывает транзакцию по-умолчанию
     public CommentsResponse create(CommentsRequest request) {
         return Optional.of(request)
                 .map(commentsMapper::create)
@@ -44,7 +43,7 @@ public class CommentsServiceImpl implements CommentsService{
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findById без транзакции
     public CommentsResponse findById(Long id) {
         return commentsRepository.findById(id)
                 .map(commentsMapper::toDto)
@@ -52,7 +51,7 @@ public class CommentsServiceImpl implements CommentsService{
     }
 
     @Override
-    @Transactional
+    @Transactional //findById без транзакции, save - открывает транзакцию по-умолчанию
     public CommentsResponse update(Long id, CommentsRequest request) {
         return commentsRepository.findById(id)
                 .map(author -> {
@@ -64,14 +63,13 @@ public class CommentsServiceImpl implements CommentsService{
                 .orElse(null);
     }
 
-    @Override
-    @Transactional
+    @Override // deleteById - открывает транзакцию по-умолчанию
     public void delete(Long id) {
         commentsRepository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findById - без транзакции
     public BookWithCommentsResponse findByBookId(Long bookId) {
         return booksRepository.findById(bookId)
                         .map(book -> new BookWithCommentsResponse(
@@ -84,7 +82,7 @@ public class CommentsServiceImpl implements CommentsService{
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //find - без транзакции
     public List<CommentsResponse> findAll() {
         return commentsRepository.find()
                 .stream()

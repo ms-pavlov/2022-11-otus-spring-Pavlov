@@ -135,7 +135,7 @@ class AuthorsServiceImplTest {
     @Test
     @DisplayName("должен найти всех авторов")
     void findAll() {
-        when(repository.find()).thenReturn(List.of(AUTHOR));
+        when(repository.findAll()).thenReturn(List.of(AUTHOR));
         when(mapper.toDto(AUTHOR))
                 .thenReturn(AUTHORS_RESPONSE);
 

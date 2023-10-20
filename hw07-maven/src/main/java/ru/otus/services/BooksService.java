@@ -2,6 +2,7 @@ package ru.otus.services;
 
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface BooksService {
     List<BooksResponse> findByName(String name);
 
     List<BooksResponse> findAll();
+
+    Page<BooksResponse> findPage(int page, int size);
 }

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.entities.Author;
@@ -121,11 +123,23 @@ class BooksServiceImplTest {
     @Test
     @DisplayName("должен найти все книги")
     void findAll() {
-        when(booksRepository.find()).thenReturn(List.of(BOOK));
+        when(booksRepository.findAll()).thenReturn(List.of(BOOK));
         when(mapper.toDto(BOOK))
                 .thenReturn(BOOKS_RESPONSE);
 
         var result = service.findAll();
+
+        result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
+    }
+
+    @Test
+    @DisplayName("должен найти постранично книги")
+    void findPage() {
+        when(booksRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(BOOK)));
+        when(mapper.toDto(BOOK))
+                .thenReturn(BOOKS_RESPONSE);
+
+        var result = service.findPage(0, 1);
 
         result.forEach(item -> assertEquals(BOOKS_RESPONSE, item));
     }

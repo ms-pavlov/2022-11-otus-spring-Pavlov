@@ -108,7 +108,7 @@ class BooksRepositoryImplIntegrationTest {
     @Test
     @DisplayName("возвращать ожидаемый список книг")
     void getAll() {
-        var result = repository.find();
+        var result = repository.findAll();
 
         assertEquals(EXPECTED_BOOKS_COUNT, result.size());
         assertEquals(
@@ -129,7 +129,7 @@ class BooksRepositoryImplIntegrationTest {
                         .map(Book::getComments)
                         .mapToLong(Collection::size)
                         .sum());
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(3);
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(4);
     }
 
     @Test

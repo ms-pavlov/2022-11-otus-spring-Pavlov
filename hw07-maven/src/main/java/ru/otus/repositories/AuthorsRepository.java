@@ -1,17 +1,12 @@
 package ru.otus.repositories;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.entities.Author;
 
-import java.util.List;
 
-
-public interface AuthorsRepository extends CrudRepository<Author, Long> {
+public interface AuthorsRepository extends JpaRepository<Author, Long> {
 
     Author findByName(String name);
 
-    @Query("SELECT a FROM Author a")
-    List<Author> find();
 }
 

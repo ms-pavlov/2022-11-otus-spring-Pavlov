@@ -25,7 +25,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional
+    @Transactional //findByName без транзакции, save - открывает транзакцию по-умолчанию
     public AuthorsResponse create(AuthorsRequest request) {
         if(repository.findByName(request.getName()) != null) {
             throw new AuthorExistException();
@@ -38,7 +38,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findById без транзакции
     public AuthorsResponse findById(Long id) {
         return repository.findById(id)
                 .map(mapper::toDto)
@@ -46,7 +46,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional
+    @Transactional //findByName, findById - без транзакции, save - открывает транзакцию по-умолчанию
     public AuthorsResponse update(Long id, AuthorsRequest request) {
         Optional.ofNullable(request)
                 .map(AuthorsRequest::getName)
@@ -66,14 +66,13 @@ public class AuthorsServiceImpl implements AuthorsService {
                 .orElse(null);
     }
 
-    @Override
-    @Transactional
+    @Override // deleteById - открывает транзакцию по-умолчанию
     public void delete(Long id) {
         repository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findByName - без транзакции
     public AuthorsResponse findByName(String name) {
         return Optional.ofNullable(name)
                 .map(repository::findByName)
@@ -82,9 +81,9 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //findAll - без транзакции
     public List<AuthorsResponse> findAll() {
-        return repository.find()
+        return repository.findAll()
                 .stream()
                 .map(mapper::toDto)
                 .toList();
