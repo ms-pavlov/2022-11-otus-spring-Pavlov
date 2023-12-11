@@ -13,7 +13,6 @@ import ru.otus.entities.Book;
 import ru.otus.entities.Comment;
 import ru.otus.mappers.BookRequestMapper;
 import ru.otus.mappers.CommentsMapper;
-import ru.otus.repositories.BooksRepository;
 import ru.otus.repositories.CommentsRepository;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@DisplayName("Service для работы с жанрами должен")
+@DisplayName("Service для работы с комментариями должен")
 @SpringBootTest(classes = {
         CommentsServiceImpl.class
 })
@@ -46,7 +45,7 @@ class CommentsServiceImplTest {
             TEST_BOOK_NAME,
             List.of(),
             List.of(),
-            List.of(new Comment(TEST_COMMENT_ID, TEST_COMMENT, null)));
+            List.of());
     private final static Comment TEST_COMMENT_OBJECT = new Comment(TEST_COMMENT_ID, TEST_COMMENT, TEST_BOOK);
     private final static BookWithCommentsResponse BOOK_WITH_COMMENTS_RESPONSE = new BookWithCommentsResponse(
             new BooksResponse(
@@ -59,8 +58,6 @@ class CommentsServiceImplTest {
 
     @MockBean
     private CommentsRepository commentsRepository;
-    @MockBean
-    private BooksRepository booksRepository;
     @MockBean
     private CommentsMapper commentsMapper;
     @MockBean
@@ -126,13 +123,11 @@ class CommentsServiceImplTest {
     @Test
     @DisplayName("должен найти все комментарии для книги")
     void findByBookId() {
-        when(booksRepository.findById(TEST_BOOK_ID)).thenReturn(Optional.of(TEST_BOOK));
-        TEST_BOOK.getComments()
-                .forEach(
-                        comment -> when(commentsMapper.toDto(comment))
-                                .thenReturn(COMMENT_RESPONSE));
+        when(commentsRepository.findByBookId(TEST_BOOK_ID)).thenReturn(List.of(TEST_COMMENT_OBJECT));
         when(bookRequestMapper.toDto(TEST_BOOK))
                 .thenReturn(BOOK_WITH_COMMENTS_RESPONSE.getBook());
+        when(commentsMapper.toDto(TEST_COMMENT_OBJECT))
+                .thenReturn(COMMENT_RESPONSE);
 
         var result = service.findByBookId(TEST_BOOK_ID);
 

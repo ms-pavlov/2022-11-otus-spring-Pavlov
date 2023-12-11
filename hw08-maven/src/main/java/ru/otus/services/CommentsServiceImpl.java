@@ -4,31 +4,29 @@ import org.springframework.stereotype.Service;
 import ru.otus.dto.requests.CommentsRequest;
 import ru.otus.dto.responses.BookWithCommentsResponse;
 import ru.otus.dto.responses.CommentsResponse;
+import ru.otus.entities.Comment;
 import ru.otus.mappers.BookRequestMapper;
 import ru.otus.mappers.CommentsMapper;
-import ru.otus.repositories.BooksRepository;
 import ru.otus.repositories.CommentsRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
-public class CommentsServiceImpl implements CommentsService{
+public class CommentsServiceImpl implements CommentsService {
 
     private final CommentsRepository commentsRepository;
-    private final BooksRepository booksRepository;
     private final CommentsMapper commentsMapper;
     private final BookRequestMapper bookMapper;
 
     public CommentsServiceImpl(
             CommentsRepository repository,
-            BooksRepository booksRepository,
             CommentsMapper mapper,
             BookRequestMapper bookMapper) {
         this.commentsRepository = repository;
-        this.booksRepository = booksRepository;
         this.commentsMapper = mapper;
         this.bookMapper = bookMapper;
     }
@@ -69,15 +67,21 @@ public class CommentsServiceImpl implements CommentsService{
 
     @Override
     public BookWithCommentsResponse findByBookId(String bookId) {
-        return booksRepository.findById(bookId)
-                        .map(book -> new BookWithCommentsResponse(
-                                bookMapper.toDto(book),
-                                commentsRepository.findByBookId(bookId)
+        var comments = commentsRepository.findByBookId(bookId)
+                .stream()
+                .collect(Collectors.groupingBy(Comment::getBook));
+        return comments.keySet()
+                .stream()
+                .findFirst()
+                .map(
+                        booksResponse -> new BookWithCommentsResponse(
+                                bookMapper.toDto(booksResponse),
+                                comments.get(booksResponse)
                                         .stream()
                                         .map(commentsMapper::toDto)
                                         .toList()
                         ))
-                .orElse(null);
+                .orElseGet(BookWithCommentsResponse::new);
     }
 
     @Override
