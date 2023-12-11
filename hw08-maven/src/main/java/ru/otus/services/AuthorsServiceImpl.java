@@ -2,7 +2,6 @@ package ru.otus.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.AuthorsRequest;
 import ru.otus.dto.responses.AuthorsResponse;
 import ru.otus.entities.Author;
@@ -27,7 +26,6 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional
     public AuthorsResponse create(AuthorsRequest request) {
         if (repository.findByName(request.getName()) != null) {
             throw new AuthorExistException();
@@ -40,7 +38,6 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public AuthorsResponse findById(String id) {
         return repository.findById(id)
                 .map(mapper::toDto)
@@ -48,7 +45,6 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional
     public AuthorsResponse update(String id, AuthorsRequest request) {
         Optional.ofNullable(request)
                 .map(AuthorsRequest::getName)
@@ -70,13 +66,11 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional
     public void delete(String id) {
         repository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public AuthorsResponse findByName(String name) {
         return Optional.ofNullable(name)
                 .map(repository::findByName)
@@ -85,7 +79,6 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<AuthorsResponse> findAll() {
         return Optional.ofNullable(repository)
                 .map(AuthorsRepository::findAll)

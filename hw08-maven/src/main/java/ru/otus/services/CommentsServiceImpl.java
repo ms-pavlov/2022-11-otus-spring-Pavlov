@@ -1,7 +1,6 @@
 package ru.otus.services;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.CommentsRequest;
 import ru.otus.dto.responses.BookWithCommentsResponse;
 import ru.otus.dto.responses.CommentsResponse;
@@ -36,7 +35,6 @@ public class CommentsServiceImpl implements CommentsService{
 
 
     @Override
-    @Transactional
     public CommentsResponse create(CommentsRequest request) {
         return Optional.of(request)
                 .map(commentsMapper::create)
@@ -46,7 +44,6 @@ public class CommentsServiceImpl implements CommentsService{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CommentsResponse findById(String id) {
         return commentsRepository.findById(id)
                 .map(commentsMapper::toDto)
@@ -54,7 +51,6 @@ public class CommentsServiceImpl implements CommentsService{
     }
 
     @Override
-    @Transactional
     public CommentsResponse update(String id, CommentsRequest request) {
         return commentsRepository.findById(id)
                 .map(author -> {
@@ -67,13 +63,11 @@ public class CommentsServiceImpl implements CommentsService{
     }
 
     @Override
-    @Transactional
     public void delete(String id) {
         commentsRepository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public BookWithCommentsResponse findByBookId(String bookId) {
         return booksRepository.findById(bookId)
                         .map(book -> new BookWithCommentsResponse(
@@ -87,7 +81,6 @@ public class CommentsServiceImpl implements CommentsService{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<CommentsResponse> findAll() {
         return Optional.ofNullable(commentsRepository)
                 .map(CommentsRepository::findAll)

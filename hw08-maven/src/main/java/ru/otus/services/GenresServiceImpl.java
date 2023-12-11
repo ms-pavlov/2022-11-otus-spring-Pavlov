@@ -2,7 +2,6 @@ package ru.otus.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.GenresRequest;
 import ru.otus.dto.responses.GenresResponse;
 import ru.otus.entities.Genre;
@@ -27,7 +26,6 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional
     public GenresResponse create(GenresRequest request) {
         if(repository.findByName(request.getName()) != null) {
             throw new GenreExistException();
@@ -40,7 +38,6 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public GenresResponse findById(String id) {
         return repository.findById(id)
                 .map(mapper::toDto)
@@ -48,7 +45,6 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional
     public GenresResponse update(String id, GenresRequest request) {
         Optional.ofNullable(request)
                 .map(GenresRequest::getName)
@@ -70,13 +66,11 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional
     public void delete(String id) {
         repository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public GenresResponse findByName(String name) {
         return Optional.ofNullable(name)
                 .map(repository::findByName)
@@ -85,7 +79,6 @@ public class GenresServiceImpl implements GenresService{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<GenresResponse> findAll() {
         return Optional.ofNullable(repository)
                 .map(GenresRepository::findAll)

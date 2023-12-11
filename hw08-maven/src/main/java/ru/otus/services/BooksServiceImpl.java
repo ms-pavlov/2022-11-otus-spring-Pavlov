@@ -2,7 +2,6 @@ package ru.otus.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.mappers.BookRequestMapper;
@@ -25,7 +24,6 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @Transactional
     public BooksResponse create(BooksRequest request) {
         return Optional.ofNullable(request)
                 .map(mapper::create)
@@ -35,7 +33,6 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public BooksResponse findById(String id) {
         return booksRepository.findById(id)
                 .map(mapper::toDto)
@@ -43,7 +40,6 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @Transactional
     public BooksResponse update(String id, BooksRequest request) {
         return booksRepository.findById(id)
                 .map(books -> {
@@ -56,13 +52,11 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @Transactional
     public void delete(String id) {
         booksRepository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<BooksResponse> findByName(String name) {
         return booksRepository.findByName(name)
                 .stream()
@@ -72,7 +66,6 @@ public class BooksServiceImpl implements BooksService {
 
 
     @Override
-    @Transactional(readOnly = true)
     public List<BooksResponse> findAll() {
         return Optional.ofNullable(booksRepository)
                 .map(BooksRepository::findAll)
