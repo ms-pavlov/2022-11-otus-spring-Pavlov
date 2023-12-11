@@ -6,6 +6,7 @@ import ru.otus.dto.requests.GenresRequest;
 import ru.otus.dto.responses.GenresResponse;
 import ru.otus.entities.Genre;
 import ru.otus.mappers.GenresMapper;
+import ru.otus.repositories.BooksRepository;
 import ru.otus.repositories.GenresRepository;
 
 import java.util.List;
@@ -14,20 +15,22 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
-public class GenresServiceImpl implements GenresService{
+public class GenresServiceImpl implements GenresService {
 
     private final GenresRepository repository;
+    private final BooksRepository booksRepository;
     private final GenresMapper mapper;
 
     @Autowired
-    public GenresServiceImpl(GenresRepository repository, GenresMapper mapper) {
+    public GenresServiceImpl(GenresRepository repository, BooksRepository booksRepository, GenresMapper mapper) {
         this.repository = repository;
+        this.booksRepository = booksRepository;
         this.mapper = mapper;
     }
 
     @Override
     public GenresResponse create(GenresRequest request) {
-        if(repository.findByName(request.getName()) != null) {
+        if (repository.findByName(request.getName()) != null) {
             throw new GenreExistException();
         }
         return Optional.of(request)
@@ -51,9 +54,10 @@ public class GenresServiceImpl implements GenresService{
                 .map(repository::findByName)
                 .map(Genre::getId)
                 .ifPresent(value -> {
-                    if(!value.equals(id)) {
+                    if (!value.equals(id)) {
                         throw new GenreExistException();
-                    }});
+                    }
+                });
 
         return repository.findById(id)
                 .map(genre -> {
@@ -67,6 +71,11 @@ public class GenresServiceImpl implements GenresService{
 
     @Override
     public void delete(String id) {
+        if (repository.findById(id)
+                .map(booksRepository::existsByGenresContains)
+                .orElse(false)) {
+            throw new RuntimeException("Для данного жанра существует книга");
+        }
         repository.deleteById(id);
     }
 

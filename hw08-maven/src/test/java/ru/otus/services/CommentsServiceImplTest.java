@@ -44,7 +44,6 @@ class CommentsServiceImplTest {
             TEST_BOOK_ID,
             TEST_BOOK_NAME,
             List.of(),
-            List.of(),
             List.of());
     private final static Comment TEST_COMMENT_OBJECT = new Comment(TEST_COMMENT_ID, TEST_COMMENT, TEST_BOOK);
     private final static BookWithCommentsResponse BOOK_WITH_COMMENTS_RESPONSE = new BookWithCommentsResponse(

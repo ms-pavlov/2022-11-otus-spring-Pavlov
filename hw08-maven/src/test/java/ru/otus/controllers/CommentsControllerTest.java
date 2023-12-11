@@ -60,6 +60,7 @@ class CommentsControllerTest {
 
     @Autowired
     private CommentsController controller;
+
     @Test
     @DisplayName("должен комментарий и вывести результат")
     void create() {
@@ -127,7 +128,7 @@ class CommentsControllerTest {
                             List.of()));
         }).when(service).update(eq(TEST_COMMENT_ID), any());
 
-        controller.update(TEST_COMMENT_ID, TEST_COMMENT_REQUEST.getComment(), TEST_COMMENT_REQUEST.getBookId() );
+        controller.update(TEST_COMMENT_ID, TEST_COMMENT_REQUEST.getComment(), TEST_COMMENT_REQUEST.getBookId());
 
         verify(service, times(1)).update(eq(TEST_COMMENT_ID), any());
         verify(out, times(1)).println(eq(COMMENT_RESPONSE.toString()));

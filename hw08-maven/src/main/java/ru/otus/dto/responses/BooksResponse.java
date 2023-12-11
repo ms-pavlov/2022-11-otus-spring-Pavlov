@@ -16,8 +16,8 @@ public class BooksResponse {
     @Override
     public String toString() {
         return " Title: " + name
-               + "\n\r Authors: " + authors
-               + "\n\r Genres: " + genres
-               + "\n\r Id: " + id + "\n\r";
+                + "\n\r Authors: " + authors
+                + "\n\r Genres: " + genres
+                + "\n\r Id: " + id + "\n\r";
     }
 }

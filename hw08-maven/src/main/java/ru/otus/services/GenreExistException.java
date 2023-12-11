@@ -1,4 +1,4 @@
 package ru.otus.services;
 
-public class GenreExistException extends RuntimeException{
+public class GenreExistException extends RuntimeException {
 }

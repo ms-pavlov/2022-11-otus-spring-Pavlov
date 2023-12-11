@@ -12,7 +12,7 @@ import ru.otus.entities.Genre;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 
@@ -29,9 +29,8 @@ class GenresMapperImplTest {
             null,
             TEST_BOOK_NAME,
             List.of(),
-            List.of(),
             List.of());
-    private final static Genre TEST_GENRE = new Genre(TEST_GENRE_ID, TEST_GENRE_NAME, List.of(TEST_BOOK));
+    private final static Genre TEST_GENRE = new Genre(TEST_GENRE_ID, TEST_GENRE_NAME);
     private final static GenresRequest TEST_GENRES_REQUEST = new GenresRequest(TEST_GENRE_NAME);
 
     @MockBean
@@ -47,8 +46,6 @@ class GenresMapperImplTest {
         var result = mapper.create(TEST_GENRES_REQUEST);
 
         assertEquals(TEST_GENRE_NAME, result.getName());
-        assertNotNull(result.getBooks());
-        assertTrue(result.getBooks().isEmpty());
     }
 
     @Test
@@ -59,8 +56,6 @@ class GenresMapperImplTest {
         mapper.update(result, TEST_GENRES_REQUEST);
 
         assertEquals(TEST_GENRE_NAME, result.getName());
-        assertNotNull(result.getBooks());
-        assertTrue(result.getBooks().isEmpty());
     }
 
     @Test

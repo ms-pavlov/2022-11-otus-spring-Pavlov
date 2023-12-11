@@ -37,7 +37,7 @@ public class CommentsController {
     public void findByBook(String bookId) {
         var bookWithComments = service.findByBookId(bookId);
 
-        if(bookWithComments.isEmpty()) {
+        if (bookWithComments.isEmpty()) {
             out.println("No Comments");
             return;
         }

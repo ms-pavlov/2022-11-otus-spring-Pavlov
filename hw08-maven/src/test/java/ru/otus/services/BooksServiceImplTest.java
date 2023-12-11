@@ -9,10 +9,10 @@ import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
-import ru.otus.entities.Comment;
 import ru.otus.entities.Genre;
 import ru.otus.mappers.BookRequestMapper;
 import ru.otus.repositories.BooksRepository;
+import ru.otus.repositories.CommentsRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +31,7 @@ class BooksServiceImplTest {
             BOOKS_ID,
             BOOKS_NAME,
             List.of(new Author("1L", "author")),
-            List.of(new Genre("1L", "genre")),
-            List.of(new Comment("1L", "comment")));
+            List.of(new Genre("1L", "genre")));
     private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(
             BOOK.getId(),
             BOOK.getName(),
@@ -48,6 +47,8 @@ class BooksServiceImplTest {
 
     @MockBean
     private BooksRepository booksRepository;
+    @MockBean
+    private CommentsRepository commentsRepository;
     @MockBean
     private BookRequestMapper mapper;
     @Autowired
@@ -103,6 +104,7 @@ class BooksServiceImplTest {
         service.delete(BOOKS_ID);
 
         verify(booksRepository, times(1)).deleteById(BOOKS_ID);
+        verify(commentsRepository, times(1)).deleteByBookId(BOOKS_ID);
     }
 
     @Test

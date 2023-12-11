@@ -12,7 +12,7 @@ import ru.otus.entities.Book;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 
@@ -29,9 +29,8 @@ class AuthorsMapperImplTest {
             null,
             TEST_BOOK_NAME,
             List.of(),
-            List.of(),
             List.of());
-    private final static Author TEST_AUTHORS = new Author(TEST_AUTHORS_ID, TEST_AUTHORS_NAME, List.of(TEST_BOOK));
+    private final static Author TEST_AUTHORS = new Author(TEST_AUTHORS_ID, TEST_AUTHORS_NAME);
     private final static AuthorsRequest TEST_AUTHORS_REQUEST = new AuthorsRequest(TEST_AUTHORS_NAME);
 
     @MockBean
@@ -47,8 +46,6 @@ class AuthorsMapperImplTest {
         var result = mapper.create(TEST_AUTHORS_REQUEST);
 
         assertEquals(TEST_AUTHORS_NAME, result.getName());
-        assertNotNull(result.getBooks());
-        assertTrue(result.getBooks().isEmpty());
     }
 
     @Test
@@ -59,8 +56,6 @@ class AuthorsMapperImplTest {
         mapper.update(result, TEST_AUTHORS_REQUEST);
 
         assertEquals(TEST_AUTHORS_NAME, result.getName());
-        assertNotNull(result.getBooks());
-        assertTrue(result.getBooks().isEmpty());
     }
 
     @Test

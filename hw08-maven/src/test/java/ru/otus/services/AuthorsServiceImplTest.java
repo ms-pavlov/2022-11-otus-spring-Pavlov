@@ -10,6 +10,7 @@ import ru.otus.dto.responses.AuthorsResponse;
 import ru.otus.entities.Author;
 import ru.otus.mappers.AuthorsMapper;
 import ru.otus.repositories.AuthorsRepository;
+import ru.otus.repositories.BooksRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,8 @@ class AuthorsServiceImplTest {
 
     @MockBean
     private AuthorsRepository repository;
+    @MockBean
+    private BooksRepository booksRepository;
     @MockBean
     private AuthorsMapper mapper;
     @Autowired
@@ -112,11 +115,29 @@ class AuthorsServiceImplTest {
     }
 
     @Test
-    @DisplayName("должен удалить автора по id")
-    void delete() {
+    @DisplayName("должен удалить автора по id, если у автора нет книг")
+    void deleteNoBook() {
+        when(repository.findById(AUTHORS_ID)).thenReturn(Optional.of(AUTHOR));
+        when(booksRepository.existsByAuthorsContains(AUTHOR)).thenReturn(false);
+
         service.delete(AUTHORS_ID);
 
+        verify(repository, times(1)).findById(AUTHORS_ID);
+        verify(booksRepository, times(1)).existsByAuthorsContains(AUTHOR);
         verify(repository, times(1)).deleteById(AUTHORS_ID);
+    }
+
+    @Test
+    @DisplayName("должен вернуть исключение, если при удалении у автора есть книги")
+    void deleteHasBook() {
+        when(repository.findById(AUTHORS_ID)).thenReturn(Optional.of(AUTHOR));
+        when(booksRepository.existsByAuthorsContains(AUTHOR)).thenReturn(true);
+
+        assertThrows(RuntimeException.class, () -> service.delete(AUTHORS_ID));
+
+        verify(repository, times(1)).findById(AUTHORS_ID);
+        verify(booksRepository, times(1)).existsByAuthorsContains(AUTHOR);
+        verify(repository, times(0)).deleteById(AUTHORS_ID);
     }
 
     @Test

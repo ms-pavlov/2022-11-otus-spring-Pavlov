@@ -7,17 +7,11 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment implements Serializable {
-
-    @Serial
-    private final static long serialVersionUID = 1L;
+public class Comment {
 
     @Id
     private String id;
@@ -26,7 +20,4 @@ public class Comment implements Serializable {
     @DocumentReference(lazy = true)
     private Book book;
 
-    public Comment(String id, String comment) {
-        this(id, comment, null);
-    }
 }

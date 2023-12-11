@@ -12,10 +12,10 @@ class BooksResponseTest {
     @Test
     void testToString() {
         var result = new BooksResponse(
-                        null,
-                        null,
-                        List.of(),
-                        List.of())
+                null,
+                null,
+                List.of(),
+                List.of())
                 .toString();
 
         assertNotNull(result);

@@ -9,7 +9,6 @@ import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
-import ru.otus.entities.Comment;
 import ru.otus.entities.Genre;
 import ru.otus.services.BooksService;
 
@@ -26,13 +25,11 @@ class BooksControllerTest {
     private static final String BOOKS_NAME = "books_name";
     private static final String AUTHORS_NAME = "AUTHORS_NAME";
     private static final String GENRES_NAME = "GENRES_NAME";
-    private static final String COMMENTS_TEXT = "COMMENTS_TEXT";
     private final static Book BOOK = new Book(
             "1L",
             BOOKS_NAME,
             List.of(new Author("1L", AUTHORS_NAME)),
-            List.of(new Genre("1L", GENRES_NAME)),
-            List.of(new Comment("1L", COMMENTS_TEXT)));
+            List.of(new Genre("1L", GENRES_NAME)));
     private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(
             BOOK.getId(),
             BOOK.getName(),

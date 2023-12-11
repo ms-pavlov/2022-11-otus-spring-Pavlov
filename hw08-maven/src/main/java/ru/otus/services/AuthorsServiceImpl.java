@@ -7,6 +7,7 @@ import ru.otus.dto.responses.AuthorsResponse;
 import ru.otus.entities.Author;
 import ru.otus.mappers.AuthorsMapper;
 import ru.otus.repositories.AuthorsRepository;
+import ru.otus.repositories.BooksRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,11 +18,16 @@ import java.util.stream.StreamSupport;
 public class AuthorsServiceImpl implements AuthorsService {
 
     private final AuthorsRepository repository;
+    private final BooksRepository booksRepository;
     private final AuthorsMapper mapper;
 
     @Autowired
-    public AuthorsServiceImpl(AuthorsRepository repository, AuthorsMapper mapper) {
+    public AuthorsServiceImpl(
+            AuthorsRepository repository,
+            BooksRepository booksRepository,
+            AuthorsMapper mapper) {
         this.repository = repository;
+        this.booksRepository = booksRepository;
         this.mapper = mapper;
     }
 
@@ -67,6 +73,11 @@ public class AuthorsServiceImpl implements AuthorsService {
 
     @Override
     public void delete(String id) {
+        if (repository.findById(id)
+                .map(booksRepository::existsByAuthorsContains)
+                .orElse(false)) {
+            throw new RuntimeException("Для данного автора существует книга");
+        }
         repository.deleteById(id);
     }
 
