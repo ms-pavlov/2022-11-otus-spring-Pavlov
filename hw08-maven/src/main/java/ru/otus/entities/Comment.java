@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,7 +23,7 @@ public class Comment implements Serializable {
     private String id;
 
     private String comment;
-
+    @DocumentReference(lazy = true)
     private Book book;
 
     public Comment(String id, String comment) {

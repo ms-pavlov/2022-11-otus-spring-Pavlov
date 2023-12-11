@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -24,7 +24,7 @@ public class Genre implements Serializable {
 
     private String name;
 
-    @DBRef
+    @DocumentReference(lazy = true)
     private List<Book> books;
 
     public Genre(String id, String name) {

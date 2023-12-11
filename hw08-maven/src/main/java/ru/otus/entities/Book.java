@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -25,11 +26,11 @@ public class Book implements Serializable {
     private String id;
 
     private String name;
-
+    @DocumentReference(lazy = true)
     private List<Author> authors;
-
+    @DocumentReference(lazy = true)
     private List<Genre> genres;
-
+    @DocumentReference(lazy = true)
     private List<Comment> comments;
 
     public Book() {
