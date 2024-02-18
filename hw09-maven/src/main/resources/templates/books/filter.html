@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title>Home Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="card" layout:fragment="content">
+    <div class="card-header">
+        <h1 class="display-3">Книги</h1>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col text-end">
+                <a class="btn btn-primary" th:href="@{/books/form}"><i class="bi bi-plus-square"></i></a>
+            </div>
+        </div>
+        <div th:replace="~{books/fragments/list :: books}" class="footer">
+            footer content
+        </div>
+    </div>
+</div>
+<script>
+    const deleteBook = async (id) => {
+        await fetch(`/book/${id}`, {
+            method: "DELETE",
+        }).then(() => location.reload());
+    }
+</script>
+</div>
+</body>
+</html>

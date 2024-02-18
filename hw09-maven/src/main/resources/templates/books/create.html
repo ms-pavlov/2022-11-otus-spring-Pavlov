@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title>Новая книга</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="container">
+    <div class="col" layout:fragment="content">
+        <h1 class="display-3">Новая книга</h1>
+        <div class="row">
+            <form class="" th:action="@{/book/}" method="post">
+                <div class="form-group mb-3">
+                    <label for="name" th:text="Название" class="fw-bold"></label>
+                    <input name="name" id="name" type="text" class="form-control"/>
+                </div>
+                <div class="form-group mb-3">
+                    <span class="fw-bold" th:text="Автор"></span>
+                    <input name="authors" id="author" type="text" class="form-control"/>
+                </div>
+                <div class="form-group mb-3">
+                    <span class="fw-bold" th:text="Жанр"></span>
+                    <input name="genres" id="genre" type="text" class="form-control"/>
+                </div>
+                <button id="submit" class="btn btn-primary" type="submit">
+                    <i class="bi bi-save"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
