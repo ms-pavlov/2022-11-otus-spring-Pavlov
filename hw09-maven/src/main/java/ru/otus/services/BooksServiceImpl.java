@@ -9,6 +9,7 @@ import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.mappers.BookRequestMapper;
 import ru.otus.repositories.BooksRepository;
+import ru.otus.repositories.CommentsRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +17,13 @@ import java.util.Optional;
 @Service
 public class BooksServiceImpl implements BooksService {
     private final BooksRepository booksRepository;
+    private final CommentsRepository commentsRepository;
     private final BookRequestMapper mapper;
 
     @Autowired
-    public BooksServiceImpl(BooksRepository booksRepository, BookRequestMapper mapper) {
+    public BooksServiceImpl(BooksRepository booksRepository, CommentsRepository commentsRepository, BookRequestMapper mapper) {
         this.booksRepository = booksRepository;
+        this.commentsRepository = commentsRepository;
         this.mapper = mapper;
     }
 
@@ -54,8 +57,10 @@ public class BooksServiceImpl implements BooksService {
                 .orElse(null);
     }
 
-    @Override // deleteById - открывает транзакцию по-умолчанию
+    @Override
+    @Transactional
     public void delete(Long id) {
+        commentsRepository.deleteByBookId(id);
         booksRepository.deleteById(id);
     }
 

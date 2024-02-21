@@ -8,14 +8,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.otus.dto.requests.BooksRequest;
+import ru.otus.dto.responses.AuthorsShortResponse;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.dto.responses.CommentsResponse;
+import ru.otus.dto.responses.GenresShortResponse;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
 import ru.otus.entities.Comment;
 import ru.otus.entities.Genre;
 import ru.otus.mappers.BookRequestMapper;
 import ru.otus.repositories.BooksRepository;
+import ru.otus.repositories.CommentsRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,11 +44,11 @@ class BooksServiceImplTest {
             BOOK.getName(),
             BOOK.getAuthors()
                     .stream()
-                    .map(Author::getName)
+                    .map(author -> new AuthorsShortResponse(author.getId(), author.getName()))
                     .toList(),
             BOOK.getGenres()
                     .stream()
-                    .map(Genre::getName)
+                    .map(genre -> new GenresShortResponse(genre.getId(), genre.getName()))
                     .toList(),
             BOOK.getComments()
                     .stream()
@@ -55,6 +58,8 @@ class BooksServiceImplTest {
 
     @MockBean
     private BooksRepository booksRepository;
+    @MockBean
+    private CommentsRepository commentsRepository;
     @MockBean
     private BookRequestMapper mapper;
     @Autowired
@@ -110,6 +115,7 @@ class BooksServiceImplTest {
         service.delete(BOOKS_ID);
 
         verify(booksRepository, times(1)).deleteById(BOOKS_ID);
+        verify(commentsRepository, times(1)).deleteByBookId(BOOKS_ID);
     }
 
     @Test

@@ -4,7 +4,9 @@ package ru.otus.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import ru.otus.dto.requests.AuthorsRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import ru.otus.dto.responses.AuthorsResponse;
 import ru.otus.services.AuthorsService;
 
 @Controller
@@ -13,27 +15,12 @@ public class AuthorController {
 
     private final AuthorsService service;
 
-    public void create(AuthorsRequest request, Model model) {
-        service.create(request);
+    @GetMapping("/author/{id}")
+    public String findById(@PathVariable("id") Long id, Model model) {
+        AuthorsResponse author = service.findById(id);
+        model.addAttribute("author", author);
+        model.addAttribute("books", author.getBooks());
+        return "authors/index";
     }
 
-    public void findById(Long id, Model model) {
-        service.findById(id);
-    }
-
-    public void findByName(String name, Model model) {
-        service.findByName(name);
-    }
-
-    public void update(Long id, AuthorsRequest request, Model model) {
-        service.update(id, request);
-    }
-
-    public void delete(Long id, Model model) {
-        service.delete(id);
-    }
-
-    public void findAll(Model model) {
-        service.findAll();
-    }
 }

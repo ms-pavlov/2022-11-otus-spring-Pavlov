@@ -3,8 +3,7 @@ package ru.otus.mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.otus.dto.requests.BooksRequest;
-import ru.otus.dto.responses.BooksResponse;
-import ru.otus.dto.responses.CommentsResponse;
+import ru.otus.dto.responses.*;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
 import ru.otus.entities.Genre;
@@ -61,11 +60,11 @@ public class BookRequestMapperImpl implements BookRequestMapper {
                 entity.getName(),
                 entity.getAuthors()
                         .stream()
-                        .map(Author::getName)
+                        .map(author -> new AuthorsShortResponse(author.getId(), author.getName()))
                         .toList(),
                 entity.getGenres()
                         .stream()
-                        .map(Genre::getName)
+                        .map(genre -> new GenresShortResponse(genre.getId(), genre.getName()))
                         .toList(),
                 null
         );
@@ -78,11 +77,11 @@ public class BookRequestMapperImpl implements BookRequestMapper {
                 entity.getName(),
                 entity.getAuthors()
                         .stream()
-                        .map(Author::getName)
+                        .map(author -> new AuthorsShortResponse(author.getId(), author.getName()))
                         .toList(),
                 entity.getGenres()
                         .stream()
-                        .map(Genre::getName)
+                        .map(genre -> new GenresShortResponse(genre.getId(), genre.getName()))
                         .toList(),
                 entity.getComments()
                         .stream()

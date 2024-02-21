@@ -18,7 +18,7 @@ public class BooksController {
     private final BooksService service;
 
     @PostMapping("/book/")
-    public String create(BooksRequest request, Model model) {
+    public String create(BooksRequest request) {
         service.create(request);
         return "redirect:/";
     }
@@ -30,7 +30,7 @@ public class BooksController {
     }
 
     @GetMapping("/book/form")
-    public String getForm(Model model) {
+    public String getForm() {
         return "books/create";
     }
 
@@ -38,12 +38,6 @@ public class BooksController {
     public String getEditForm(@PathVariable("id") Long id, Model model) {
         model.addAttribute("book", service.findById(id));
         return "books/edit";
-    }
-
-    @GetMapping("/book/filter")
-    public String findByName(String name, Model model) {
-        model.addAttribute("books", service.findByName(name));
-        return "books/filter";
     }
 
     @GetMapping("/")
@@ -64,14 +58,13 @@ public class BooksController {
     @PutMapping("/book/{id}")
     public String update(
             @PathVariable("id")Long id,
-            BooksRequest request,
-            Model model) {
+            BooksRequest request) {
         service.update(id, request);
         return String.format("forward:books/%d/book", id);
     }
 
     @DeleteMapping("/book/{id}")
-    public String delete(@PathVariable("id") Long id, Model model) {
+    public String delete(@PathVariable("id") Long id) {
         service.delete(id);
         return "redirect:/";
     }

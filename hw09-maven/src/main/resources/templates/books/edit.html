@@ -3,7 +3,7 @@
       layout:decorate=="~{layout/layout}">
 
 <head>
-    <title>Новая книга</title>
+    <title>Редактирование</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
@@ -15,9 +15,10 @@
                 <label for="name" th:text="Название" class="fw-bold"></label>
                 <input name="name" id="name" type="text" class="form-control" th:value="${book.name}"/>
             </div>
-            <div class="form-control mb-3 row">
+            <div class="form-control mb-3 row" id="authors">
                 <span class="fw-bold" th:text="Автор"></span>
-                <div th:id="${'author-' + book.authors.indexOf(item)}" class="form-group mb-3 row" th:each="item : ${book.authors}">
+                <div th:id="${'author-' + book.authors.indexOf(item)}" class="form-group mb-3 row"
+                     th:each="item : ${book.authors}">
                     <div class="col">
                         <input name="authors" type="text" class="form-control" th:value="${item}"/>
                     </div>
@@ -28,10 +29,14 @@
                         </button>
                     </div>
                 </div>
+                <button id="authors-add" class="btn btn-outline-primary" th:attr="onclick=|addAuthorInput()|">
+                    <i class="bi bi-plus-square"></i>
+                </button>
             </div>
-            <div class="form-control mb-3 row">
+            <div class="form-control mb-3 row" id="genres">
                 <span class="fw-bold" th:text="Жанр"></span>
-                <div th:id="${'genre-' + book.genres.indexOf(item)}" class="form-group mb-3 row" th:each="item : ${book.genres}">
+                <div th:id="${'genre-' + book.genres.indexOf(item)}" class="form-group mb-3 row"
+                     th:each="item : ${book.genres}">
                     <div class="col">
                         <input name="genres" type="text" class="form-control" th:value="${item}"/>
                     </div>
@@ -42,6 +47,9 @@
                         </button>
                     </div>
                 </div>
+                <button id="genres-add" class="btn btn-outline-primary" th:attr="onclick=|addGenreInput()|">
+                    <i class="bi bi-plus-square"></i>
+                </button>
             </div>
             <button class="btn btn-primary" th:attr="onclick=|editBook(${book.id})|">
                 <i class="bi bi-save"></i>
@@ -58,16 +66,111 @@
                 body: data
             }).then(() => location.reload());
         };
+    </script>
+    <script>
+        var authorsCount = [[${book.authors.size()}]];
+        var genresCount = [[${book.genres.size()}]];
 
         const deleteAuthorInput = async (id) => {
-            var element = document.querySelector('#author-'+id);
+            var element = document.querySelector('#author-' + id);
             element.remove();
         };
 
         const deleteGenreInput = async (id) => {
-            var element = document.querySelector('#genre-'+id);
+            var element = document.querySelector('#genre-' + id);
             element.remove();
         };
+
+        const addGenreInput = async () => {
+            var genres = document.querySelector('#genres');
+            var genres_add = document.querySelector('#genres-add');
+
+            generateGenreInput()
+                .then(value => genres.insertBefore(value, genres_add));
+        };
+
+        const addAuthorInput = async () => {
+            var authors = document.querySelector('#authors');
+            var authors_add = document.querySelector('#authors-add');
+
+            generateAuthorInput()
+                .then(value => authors.insertBefore(value, authors_add));
+        };
+
+        const generateGenreInput = async () => {
+            var number = genresCount++;
+
+            var div_genre = document.createElement('div');
+            div_genre.id = 'genre-' + number;
+            div_genre.className = 'form-group mb-3 row';
+
+            var div_input = document.createElement('div');
+            div_input.className = 'col';
+
+            var input = document.createElement('input');
+            input.name = 'genres';
+            input.type = 'text';
+            input.className = 'form-control'
+
+            var div_delete = document.createElement('div');
+            div_delete.className = 'col-auto text-end';
+
+            var button_delete = document.createElement('button');
+            button_delete.type = 'button';
+            button_delete.className = 'btn btn-outline-danger';
+            button_delete.onclick = function (e) {
+                deleteGenreInput(number)
+            };
+
+            var icon = document.createElement('i');
+            icon.className = 'bi bi-trash alert-danger';
+
+            div_input.append(input);
+            div_genre.append(div_input);
+            button_delete.append(icon);
+            div_delete.append(button_delete);
+            div_genre.append(div_delete);
+
+            return div_genre;
+        }
+
+        const generateAuthorInput = async () => {
+            var number = genresCount++;
+
+            var div_genre = document.createElement('div');
+            div_genre.id = 'author-' + number;
+            div_genre.className = 'form-group mb-3 row';
+
+            var div_input = document.createElement('div');
+            div_input.className = 'col';
+
+            var input = document.createElement('input');
+            input.name = 'authors';
+            input.type = 'text';
+            input.className = 'form-control'
+
+            var div_delete = document.createElement('div');
+            div_delete.className = 'col-auto text-end';
+
+            var button_delete = document.createElement('button');
+            button_delete.type = 'button';
+            button_delete.className = 'btn btn-outline-danger';
+            button_delete.onclick = function (e) {
+                deleteAuthorInput(number)
+            };
+
+            var icon = document.createElement('i');
+            icon.className = 'bi bi-trash alert-danger';
+
+            div_input.append(input);
+            div_genre.append(div_input);
+            button_delete.append(icon);
+            div_delete.append(button_delete);
+            div_genre.append(div_delete);
+
+            return div_genre;
+        }
+
     </script>
 </div>
 </body>

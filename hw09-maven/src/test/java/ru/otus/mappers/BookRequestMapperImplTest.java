@@ -114,9 +114,9 @@ class BookRequestMapperImplTest {
         assertEquals(TEST_BOOK.getId(), result.getId());
         assertEquals(TEST_BOOK.getName(), result.getName());
         assertEquals(TEST_BOOK.getAuthors().size(), result.getAuthors().size());
-        assertTrue(result.getAuthors().stream().allMatch(authors -> authors.equals(TEST_AUTHORS_NAME)));
+        assertTrue(result.getAuthors().stream().allMatch(authors -> TEST_AUTHORS_NAME.equals(authors.getName())));
         assertEquals(TEST_BOOK.getGenres().size(), result.getGenres().size());
-        assertTrue(result.getGenres().stream().allMatch(genres -> genres.equals(TEST_GENRES_NAME)));
+        assertTrue(result.getGenres().stream().allMatch(genres -> TEST_GENRES_NAME.equals(genres.getName())));
     }
 
     @Test
@@ -127,9 +127,9 @@ class BookRequestMapperImplTest {
         assertEquals(TEST_BOOK.getId(), result.getId());
         assertEquals(TEST_BOOK.getName(), result.getName());
         assertEquals(TEST_BOOK.getAuthors().size(), result.getAuthors().size());
-        assertTrue(result.getAuthors().stream().allMatch(authors -> authors.equals(TEST_AUTHORS_NAME)));
+        assertTrue(result.getAuthors().stream().allMatch(authors -> TEST_AUTHORS_NAME.equals(authors.getName())));
         assertEquals(TEST_BOOK.getGenres().size(), result.getGenres().size());
-        assertTrue(result.getGenres().stream().allMatch(genres -> genres.equals(TEST_GENRES_NAME)));
+        assertTrue(result.getGenres().stream().allMatch(genres -> TEST_GENRES_NAME.equals(genres.getName())));
         assertEquals(TEST_BOOK.getComments().size(), result.getComments().size());
         assertTrue(result.getComments().stream().allMatch(comment -> COMMENTS_TEXT.equals(comment.getComment())));
     }

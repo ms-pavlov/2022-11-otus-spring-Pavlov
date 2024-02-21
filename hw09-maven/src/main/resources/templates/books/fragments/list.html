@@ -11,14 +11,14 @@
             <td>
                 <ul>
                     <li th:each="author : ${item.getAuthors()}">
-                        <span th:text="${author}"></span>
+                        <a th:text="${author.name}" th:href="@{/author/__${author.id}__}"></a>
                     </li>
                 </ul>
             </td>
             <td>
                 <ul>
                     <li th:each="genre : ${item.getGenres()}">
-                        <span th:text="${genre}"></span>
+                        <a th:text="${genre.name}" th:href="@{/genre/__${genre.id}__}"></a>
                     </li>
                 </ul>
             </td>

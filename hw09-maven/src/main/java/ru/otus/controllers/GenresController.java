@@ -3,7 +3,9 @@ package ru.otus.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import ru.otus.dto.requests.GenresRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import ru.otus.dto.responses.GenresResponse;
 import ru.otus.services.GenresService;
 
 @Controller
@@ -12,28 +14,11 @@ public class GenresController {
 
     private final GenresService service;
 
-    public void create(GenresRequest request, Model model) {
-        service.create(request);
-    }
-
-    public void findById(Long id, Model model) {
-        service.findById(id);
-    }
-
-
-    public void findByName(String name, Model model) {
-        service.findByName(name);
-    }
-
-    public void update(Long id, GenresRequest request, Model model) {
-        service.update(id, request);
-    }
-
-    public void delete(Long id, Model model) {
-        service.delete(id);
-    }
-
-    public void findAll(Model model) {
-        service.findAll();
+    @GetMapping("/genre/{id}")
+    public String findById(@PathVariable("id") Long id, Model model) {
+        GenresResponse genre = service.findById(id);
+        model.addAttribute("genre", genre);
+        model.addAttribute("books", genre.getBooks());
+        return "genres/index";
     }
 }

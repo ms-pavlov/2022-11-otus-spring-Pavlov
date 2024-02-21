@@ -13,10 +13,12 @@
         <div class="card-body">
             <h1 class="display-3" th:text="${book.name}"></h1>
             <div class="row mb-3" th:each="author: ${book.getAuthors()}">
-                <span class="fw-bold" th:text="Автор"></span><span th:text="${author}"></span>
+                <span class="fw-bold" th:text="Автор"></span>
+                <a th:text="${author.name}" th:href="@{/author/__${author.id}__}"></a>
             </div>
             <div class="row mb-3" th:each="genre: ${book.getGenres()}">
-                <span class="fw-bold" th:text="Жанр"></span><span th:text="${genre}"></span>
+                <span class="fw-bold" th:text="Жанр"></span>
+                <a th:text="${genre.name}" th:href="@{/genre/__${genre.id}__}"></a>
             </div>
             <span class="fw-bold">Комментарии:</span>
             <div class="card mb-3" th:each="comment: ${book.getComments()}">

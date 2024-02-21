@@ -1,12 +1,12 @@
 package ru.otus.entities;
 
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -53,8 +53,9 @@ public class Book implements Serializable {
 
     @Fetch(FetchMode.SUBSELECT)
     @BatchSize(size = 10)
-    @OneToMany(fetch = FetchType.LAZY, cascade={CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, cascade={CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "book")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Comment> comments;
 
     public Book() {
