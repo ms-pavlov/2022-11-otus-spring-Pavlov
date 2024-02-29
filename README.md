@@ -22,5 +22,7 @@ hw07-maven - Библиотеку на Spring Data JPA
 
 hw08-maven - Использовать MongoDB и spring-data для хранения информации о книгах
 
+hw09-maven - CRUD приложение с Web UI и хранением данных в БД
+
 hw15-maven - Реализовать обработку доменной сущности через каналы Spring Integration
 
