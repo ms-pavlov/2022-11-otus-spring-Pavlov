@@ -24,5 +24,7 @@ hw08-maven - Использовать MongoDB и spring-data для хранен
 
 hw09-maven - CRUD приложение с Web UI и хранением данных в БД
 
+hw10-maven - Переписать приложение с использованием AJAX и REST-контроллеров
+
 hw15-maven - Реализовать обработку доменной сущности через каналы Spring Integration
 
