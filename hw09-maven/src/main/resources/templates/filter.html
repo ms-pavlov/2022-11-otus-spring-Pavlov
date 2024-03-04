@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title>Поиск</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="display-3">Книги</h1>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col text-end">
+                    <a class="btn btn-primary" th:href="@{/books/form}"><i class="bi bi-plus-square"></i></a>
+                </div>
+            </div>
+            <div th:replace="~{books/fragments/list :: books}" class="footer">
+                books content
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h1 class="display-3">Авторы</h1>
+        </div>
+        <div class="card-body">
+            <ul>
+                <li th:each="author : ${authors}">
+                    <a th:text="${author.name}" th:href="@{/author/__${author.id}__}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h1 class="display-3">Жанры</h1>
+        </div>
+        <div class="card-body">
+            <ul>
+                <li th:each="genre : ${genres}">
+                    <a th:text="${genre.name}" th:href="@{/genre/__${genre.id}__}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    const deleteBook = async (id) => {
+        await fetch(`/book/${id}`, {
+            method: "DELETE",
+        }).then(() => location.reload());
+    }
+</script>
+</div>
+</body>
+</html>
