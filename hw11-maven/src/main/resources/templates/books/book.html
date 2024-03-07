@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+
+<div class="col" layout:fragment="content">
+    <div class="card">
+        <div class="card-body">
+            <h1 class="display-3" id="name"></h1>
+            <div id="authors">
+            </div>
+            <div id="genres">
+            </div>
+            <span class="fw-bold">Комментарии:</span>
+            <div id="comments">
+            </div>
+            <form method="dialog" id="createForm">
+                <div class="form-group">
+                    <div class="form-group">
+                        <input name="bookId" id="bookId" type="hidden" class="form-control" th:value="${id}"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="comment" class="fw-bold">Добавить комментарий</label>
+                        <textarea name="comment" id="comment" type="text" class="form-control"></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-primary" th:attr="onclick=|addComment()|">
+                    <i class="bi bi-save"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const book_id = '[[${id}]]';
+
+        window.onload = () => {
+            getBook(book_id);
+        }
+
+        const deleteComment = async (id) => {
+            fetch(`/api/v1/comment/${id}`, {
+                method: "DELETE",
+            }).then(() => location.reload());
+        };
+
+        const addComment = async () => {
+            var form = document.querySelector('#createForm');
+            var data = new FormData(form);
+            console.log(data);
+            fetch(`/api/v1/comment`, {
+                method: "POST",
+                body: data
+            }).then(() => location.reload());
+        };
+
+        const getBook = async (id) => {
+            fetch(`/api/v1/book/${id}`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((book) => {
+                document.title = book.name;
+                let name = document.querySelector('#name');
+                name.textContent = book.name;
+
+                let authors = document.querySelector('#authors');
+                book.authors.map(
+                    author => wrapDiv(
+                        [
+                            boldSpan('Автор'),
+                            makeLink(author.name, '/author/' + author.id)
+                        ],
+                        'row mb-3'))
+                    .forEach(item => authors.append(item));
+
+                let genres = document.querySelector('#genres');
+                book.genres.map(
+                    genre => wrapDiv(
+                        [
+                            boldSpan('Жанр'),
+                            makeLink(genre.name, '/author/' + genre.id)
+                        ],
+                        'row mb-3'))
+                    .forEach(item => genres.append(item));
+
+                let comments = document.querySelector('#comments');
+                book.comments.map(
+                    comment => {
+                        let deleteButton = document.createElement('button');
+                        deleteButton.onclick = () => {
+                            deleteComment(comment.id);
+                        };
+                        deleteButton.className = 'btn btn-outline-danger';
+                        deleteButton.append(makeIcon('bi bi-trash'));
+
+                        return wrapDiv(
+                            [
+                                wrapDiv(
+                                    [
+                                        wrapDiv([boldSpan(comment.comment)], 'col'),
+                                        wrapDiv([deleteButton], 'col-auto text-end')
+                                    ],
+                                    'card-body row')
+                            ],
+                            'card mb-3'
+                        )
+                    })
+                    .forEach(item => comments.append(item));
+            });
+        };
+
+        const wrapDiv = (items, className) => {
+            let div = document.createElement('div');
+            items.forEach(item => div.append(item));
+            div.className = className;
+            return div;
+        };
+
+        const boldSpan = (text) => {
+            let span = document.createElement('span');
+            span.className = 'fw-bold';
+            span.textContent = text;
+            return span;
+        };
+
+        const makeLink = (text, href) => {
+            let link = document.createElement('a');
+            link.href = href;
+            link.textContent = text;
+            return link;
+        };
+
+        const makeIcon = (className) => {
+            let deleteIcon = document.createElement('i');
+            deleteIcon.className = className;
+            return deleteIcon;
+        };
+    </script>
+</div>
+</body>
+</html>

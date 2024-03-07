@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+
+<div class="col" layout:fragment="content">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="display-3" id="title"></h1>
+        </div>
+        <div class="card-body">
+            <div th:replace="~{books/fragments/list :: books}" class="footer">
+                books content
+            </div>
+        </div>
+    </div>
+    <script>
+        const genre_id = [[${id}]];
+
+        window.onload = () => {
+            getGenre(genre_id);
+        }
+
+        const getGenre = async (id) => {
+            fetch(`/api/v1/genre/${id}`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((genre) => {
+                var title = document.querySelector('#title');
+                title.textContent = genre.name;
+                document.title = genre.name;
+                cleanBooksTable();
+                loadBooks(genre.books);
+            });
+        }
+    </script>
+</div>
+</body>
+</html>
