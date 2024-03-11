@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.services.BooksService;
 
 @Controller
@@ -18,15 +19,15 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/author/{id}")
-    public String getAuthor(@PathVariable("id") String id, Model model) {
-        model.addAttribute("id", id);
+    @GetMapping("/author")
+    public String getAuthor(@RequestParam("name") String name, Model model) {
+        model.addAttribute("name", name);
         return "authors/index";
     }
 
-    @GetMapping("/genre/{id}")
-    public String getGenre(@PathVariable("id") String id, Model model) {
-        model.addAttribute("id", id);
+    @GetMapping("/genre")
+    public String getGenre(@RequestParam("name") String name, Model model) {
+        model.addAttribute("name", name);
         return "genres/index";
     }
 
@@ -36,12 +37,12 @@ public class MainController {
         return "books/book";
     }
 
-    @GetMapping("/book/form")
+    @GetMapping("/book")
     public String createBook() {
         return "books/create";
     }
 
-    @GetMapping("/book/{id}/form")
+    @GetMapping("/book/{id}")
     public String editBook(@PathVariable("id") String id, Model model) {
         model.addAttribute("book", booksService.findById(id));
         return "books/edit";

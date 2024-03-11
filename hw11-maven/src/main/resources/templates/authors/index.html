@@ -20,23 +20,26 @@
         </div>
     </div>
     <script>
-        const author_id = [[${id}]];
+        const author_name = '[[${name}]]';
 
         window.onload = () => {
-            getAuthor(author_id);
+            getAuthor(author_name);
         }
 
         const getAuthor = async (id) => {
-            fetch(`/api/v1/author/${id}`, {
-                method: "GET",
-            }).then((response) => {
+            fetch(`/api/v1/author?` + new URLSearchParams({
+                name: author_name,
+            }),
+                {
+                    method: "GET"
+                }).then((response) => {
                 return response.json();
-            }).then((author) => {
+            }).then((books) => {
                 var title = document.querySelector('#title');
-                title.textContent = author.name;
-                document.title = author.name;
+                title.textContent = author_name;
+                document.title = author_name;
                 cleanBooksTable();
-                loadBooks(author.books);
+                loadBooks(books);
             });
         }
     </script>

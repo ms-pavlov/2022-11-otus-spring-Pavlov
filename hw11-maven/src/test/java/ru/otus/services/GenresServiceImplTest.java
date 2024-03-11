@@ -1,23 +1,21 @@
 package ru.otus.services;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.otus.dto.requests.GenresRequest;
-import ru.otus.dto.responses.GenresResponse;
-import ru.otus.entities.Genre;
-import ru.otus.mappers.GenresMapper;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import ru.otus.dto.responses.BooksResponse;
+import ru.otus.entities.Book;
+import ru.otus.mappers.BookRequestMapper;
 import ru.otus.repositories.BooksRepository;
-import ru.otus.repositories.GenresRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Service для работы с жанрами должен")
 @SpringBootTest(classes = {
@@ -25,143 +23,36 @@ import static org.mockito.Mockito.*;
 })
 class GenresServiceImplTest {
 
-    private static final String GENRES_ID = "1L";
-    private static final String OTHER_GENRES_ID = "100L" + GENRES_ID;
     private static final String GENRES_NAME = "name";
-    private static final String OTHER_GENRES_NAME = "other_" + GENRES_NAME;
-    private final static Genre GENRE = new Genre(
-            GENRES_ID,
-            GENRES_NAME);
-    private final static Genre OTHER_GENRE = new Genre(
-            OTHER_GENRES_ID,
-            OTHER_GENRES_NAME);
-    private final static GenresResponse GENRES_RESPONSE = new GenresResponse(
-            GENRES_ID,
-            GENRES_NAME);
-    private final static GenresRequest GENRE_REQUEST = new GenresRequest(GENRE.getName());
+    private static final Book BOOK = new Book("id1", "name1", List.of(), List.of());
+    private static final List<Book> GENRE_S_BOOKS = List.of(BOOK);
+    private static final BooksResponse BOOKS_RESPONSE = new BooksResponse("id1", "name1", List.of(), List.of());
+    private final static Flux<Book> BOOKS_RESPONSE_FLUX = Flux.fromIterable(GENRE_S_BOOKS);
+    private static final List<BooksResponse> GENRE_S_BOOKS_RESPONSE = List.of(BOOKS_RESPONSE);
+
 
 
     @MockBean
-    private GenresRepository repository;
+    private BooksRepository repository;
     @MockBean
-    private BooksRepository booksRepository;
-    @MockBean
-    private GenresMapper mapper;
+    private BookRequestMapper mapper;
+
     @Autowired
     private GenresService service;
 
-    @Test
-    @DisplayName("должен проверить что такой жанр ещё не создан, сохранить и вернуть результат")
-    void create() {
-        when(repository.findByName(GENRES_NAME)).thenReturn(null);
-        when(mapper.create(GENRE_REQUEST)).thenReturn(GENRE);
-        when(repository.save(GENRE))
-                .thenReturn(GENRE);
-        when(mapper.toDto(GENRE))
-                .thenReturn(GENRES_RESPONSE);
-
-        var result = service.create(GENRE_REQUEST);
-
-        assertEquals(GENRES_RESPONSE, result);
-        verify(repository, times(1)).findByName(GENRES_NAME);
-        verify(repository, times(1)).save(GENRE);
-        verify(mapper, times(1)).create(GENRE_REQUEST);
-        verify(mapper, times(1)).toDto(GENRE);
-    }
 
     @Test
-    @DisplayName("должен проверить, что такой жанр создан, и вернуть исключение")
-    void createExistGenre() {
-        when(repository.findByName(GENRES_NAME)).thenReturn(GENRE);
+    @DisplayName("должен найти книги жанра по имени")
+    void findByAuthor() {
+        when(repository.findAllByGenresContains(GENRES_NAME)).thenReturn(BOOKS_RESPONSE_FLUX);
+        when(mapper.toDto(BOOK))
+                .thenReturn(BOOKS_RESPONSE);
 
-        assertThrows(GenreExistException.class, () -> service.create(GENRE_REQUEST));
-    }
+        var result = service.findByGenre(Mono.just(GENRES_NAME))
+                .collectList()
+                .block();
 
-    @Test
-    @DisplayName("должен найти жанр по id и вернуть результат")
-    void findById() {
-        when(repository.findById(GENRES_ID)).thenReturn(Optional.of(GENRE));
-        when(mapper.toDto(GENRE))
-                .thenReturn(GENRES_RESPONSE);
-
-        var result = service.findById(GENRES_ID);
-
-        assertEquals(GENRES_RESPONSE, result);
-    }
-
-    @Test
-    @DisplayName("должен найти жанр по id, установить новые значения из запроса, обновить и вернуть результат")
-    void update() {
-        when(repository.findById(GENRES_ID))
-                .thenReturn(Optional.of(GENRE));
-        doNothing().when(mapper).update(GENRE, GENRE_REQUEST);
-        when(repository.save(GENRE))
-                .thenReturn(GENRE);
-        when(mapper.toDto(GENRE))
-                .thenReturn(GENRES_RESPONSE);
-
-        var result = service.update(GENRES_ID, GENRE_REQUEST);
-
-        assertEquals(GENRES_RESPONSE, result);
-        verify(mapper, times(1)).update(GENRE, GENRE_REQUEST);
-        verify(repository, times(1)).save(GENRE);
-    }
-
-    @Test
-    @DisplayName("должен проверить, что такой жанр создан, и вернуть исключение")
-    void updateExistGenre() {
-        when(repository.findByName(GENRES_NAME)).thenReturn(OTHER_GENRE);
-
-        assertThrows(GenreExistException.class, () -> service.update(GENRES_ID, GENRE_REQUEST));
-    }
-
-    @Test
-    @DisplayName("должен удалить жанр по id, если у жанра нет книг")
-    void deleteNoBook() {
-        when(repository.findById(GENRES_ID)).thenReturn(Optional.of(GENRE));
-        when(booksRepository.existsByGenresContains(GENRE)).thenReturn(false);
-
-        service.delete(GENRES_ID);
-
-        verify(repository, times(1)).findById(GENRES_ID);
-        verify(booksRepository, times(1)).existsByGenresContains(GENRE);
-        verify(repository, times(1)).deleteById(GENRES_ID);
-    }
-
-    @Test
-    @DisplayName("должен вернуть исключение, если при удалении у жанра есть книги")
-    void deleteHasBook() {
-        when(repository.findById(GENRES_ID)).thenReturn(Optional.of(GENRE));
-        when(booksRepository.existsByGenresContains(GENRE)).thenReturn(true);
-
-        assertThrows(RuntimeException.class, () -> service.delete(GENRES_ID));
-
-        verify(repository, times(1)).findById(GENRES_ID);
-        verify(booksRepository, times(1)).existsByGenresContains(GENRE);
-        verify(repository, times(0)).deleteById(GENRES_ID);
-    }
-
-    @Test
-    @DisplayName("должен найти жанр по названию")
-    void findByName() {
-        when(repository.findByName(GENRES_NAME)).thenReturn(GENRE);
-        when(mapper.toDto(GENRE))
-                .thenReturn(GENRES_RESPONSE);
-
-        var result = service.findByName(GENRES_NAME);
-
-        assertEquals(GENRES_RESPONSE, result);
-    }
-
-    @Test
-    @DisplayName("должен найти все жанры")
-    void findAll() {
-        when(repository.findAll()).thenReturn(List.of(GENRE));
-        when(mapper.toDto(GENRE))
-                .thenReturn(GENRES_RESPONSE);
-
-        var result = service.findAll();
-
-        result.forEach(item -> assertEquals(GENRES_RESPONSE, item));
+        Assertions.assertThat(result).hasSize(GENRE_S_BOOKS_RESPONSE.size())
+                .contains(GENRE_S_BOOKS_RESPONSE.toArray(BooksResponse[]::new));
     }
 }

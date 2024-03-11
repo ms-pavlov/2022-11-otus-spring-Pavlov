@@ -1,29 +1,24 @@
 package ru.otus.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.otus.dto.responses.AuthorsResponse;
-import ru.otus.mappers.AuthorsMapper;
-import ru.otus.repositories.AuthorsRepository;
+import ru.otus.dto.responses.BooksResponse;
+import ru.otus.mappers.BookRequestMapper;
+import ru.otus.repositories.BooksRepository;
 
 @Service
+@AllArgsConstructor
 public class AuthorsServiceImpl implements AuthorsService {
 
-    private final AuthorsRepository repository;
-    private final AuthorsMapper mapper;
+    private final BooksRepository repository;
+    private final BookRequestMapper mapper;
 
-    @Autowired
-    public AuthorsServiceImpl(
-            AuthorsRepository repository,
-            AuthorsMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     @Override
-    public Mono<AuthorsResponse> findById(Mono<String> id) {
-        return repository.findById(id)
-                .map(mapper::toDto);
+    public Flux<BooksResponse> findByAuthor(Mono<String> name) {
+        return name.flatMapMany(repository::findAllByAuthorsContains)
+                        .map(mapper::toDto);
     }
 }

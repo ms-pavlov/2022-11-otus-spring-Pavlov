@@ -7,8 +7,6 @@ spring:
       port: 27017
       host: localhost
       database: library
-  thymeleaf:
-    prefix: classpath:/templates/
 #de:
 #  flapdoodle:
 #    mongodb:

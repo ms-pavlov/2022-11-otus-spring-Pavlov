@@ -73,7 +73,7 @@
                     author => wrapDiv(
                         [
                             boldSpan('Автор'),
-                            makeLink(author.name, '/author/' + author.id)
+                            makeLink(author, '/author?name=' + author)
                         ],
                         'row mb-3'))
                     .forEach(item => authors.append(item));
@@ -83,36 +83,46 @@
                     genre => wrapDiv(
                         [
                             boldSpan('Жанр'),
-                            makeLink(genre.name, '/author/' + genre.id)
+                            makeLink(genre, '/genre?name=' + genre)
                         ],
                         'row mb-3'))
                     .forEach(item => genres.append(item));
-
+                return book
+            }).then((book) =>{
                 let comments = document.querySelector('#comments');
-                book.comments.map(
-                    comment => {
-                        let deleteButton = document.createElement('button');
-                        deleteButton.onclick = () => {
-                            deleteComment(comment.id);
-                        };
-                        deleteButton.className = 'btn btn-outline-danger';
-                        deleteButton.append(makeIcon('bi bi-trash'));
-
-                        return wrapDiv(
-                            [
-                                wrapDiv(
-                                    [
-                                        wrapDiv([boldSpan(comment.comment)], 'col'),
-                                        wrapDiv([deleteButton], 'col-auto text-end')
-                                    ],
-                                    'card-body row')
-                            ],
-                            'card mb-3'
-                        )
-                    })
-                    .forEach(item => comments.append(item));
+                fetch(`/api/v1/comment?` + new URLSearchParams({
+                    book: book.id,
+                }), {
+                    method: "GET",
+                }).then((response) => {
+                    return response.json();
+                }).then((items) => {
+                    items.map(comment => makeComment(comment))
+                            .forEach(item => comments.append(item));
+                });
             });
         };
+
+        const makeComment = (comment) => {
+                    let deleteButton = document.createElement('button');
+                    deleteButton.onclick = () => {
+                        deleteComment(comment.id);
+                    };
+                    deleteButton.className = 'btn btn-outline-danger';
+                    deleteButton.append(makeIcon('bi bi-trash'));
+
+                    return wrapDiv(
+                        [
+                            wrapDiv(
+                                [
+                                    wrapDiv([boldSpan(comment.comment)], 'col'),
+                                    wrapDiv([deleteButton], 'col-auto text-end')
+                                ],
+                                'card-body row')
+                        ],
+                        'card mb-3'
+                    )
+        }
 
         const wrapDiv = (items, className) => {
             let div = document.createElement('div');

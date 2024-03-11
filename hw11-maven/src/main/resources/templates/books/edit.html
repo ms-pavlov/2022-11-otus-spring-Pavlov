@@ -20,7 +20,7 @@
                 <div th:id="${'author-' + book.authors.indexOf(item)}" class="form-group mb-3 row"
                      th:each="item : ${book.authors}">
                     <div class="col">
-                        <input name="authors" type="text" class="form-control" th:value="${item.name}"/>
+                        <input name="authors" type="text" class="form-control" th:value="${item}"/>
                     </div>
                     <div class="col-auto text-end">
                         <button type="button" class="btn btn-outline-danger" aria-label="delete"
@@ -38,7 +38,7 @@
                 <div th:id="${'genre-' + book.genres.indexOf(item)}" class="form-group mb-3 row"
                      th:each="item : ${book.genres}">
                     <div class="col">
-                        <input name="genres" type="text" class="form-control" th:value="${item.name}"/>
+                        <input name="genres" type="text" class="form-control" th:value="${item}"/>
                     </div>
                     <div class="col-auto text-end">
                         <button type="button" class="btn btn-outline-danger" aria-label="delete"
@@ -51,7 +51,7 @@
                     <i class="bi bi-plus-square"></i>
                 </button>
             </div>
-            <button class="btn btn-primary" th:attr="onclick=|editBook(${book.id})|">
+            <button class="btn btn-primary" th:attr="onclick=|editBook('${book.id}')|">
                 <i class="bi bi-save"></i>
             </button>
         </form>

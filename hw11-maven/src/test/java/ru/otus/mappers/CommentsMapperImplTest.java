@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import reactor.core.publisher.Mono;
 import ru.otus.dto.requests.CommentsRequest;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.entities.Book;
@@ -12,7 +13,6 @@ import ru.otus.entities.Comment;
 import ru.otus.repositories.BooksRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,24 +49,9 @@ class CommentsMapperImplTest {
     @Test
     @DisplayName("создавать Comment на основе CommentsRequest")
     void create() {
-        when(booksRepository.findById(TEST_BOOK.getId())).thenReturn(Optional.of(TEST_BOOK));
+        when(booksRepository.findById(TEST_BOOK.getId())).thenReturn(Mono.just(TEST_BOOK));
 
         var result = mapper.create(TEST_COMMENT_REQUEST);
-
-        assertEquals(TEST_COMMENT, result.getComment());
-        assertNotNull(result.getBook());
-        assertEquals(TEST_BOOK_NAME, result.getBook().getName());
-        assertEquals(TEST_BOOK_ID, result.getBook().getId());
-    }
-
-    @Test
-    @DisplayName("обновлять Comment на основе CommentsRequest")
-    void update() {
-        when(booksRepository.findById(TEST_BOOK.getId())).thenReturn(Optional.of(TEST_BOOK));
-
-        var result = new Comment();
-
-        mapper.update(result, TEST_COMMENT_REQUEST);
 
         assertEquals(TEST_COMMENT, result.getComment());
         assertNotNull(result.getBook());

@@ -20,23 +20,26 @@
         </div>
     </div>
     <script>
-        const genre_id = [[${id}]];
+        const genre_name = '[[${name}]]';
 
         window.onload = () => {
-            getGenre(genre_id);
+            getGenre(genre_name);
         }
 
         const getGenre = async (id) => {
-            fetch(`/api/v1/genre/${id}`, {
-                method: "GET",
-            }).then((response) => {
+            fetch(`/api/v1/genre?` + new URLSearchParams({
+                name: genre_name,
+            }),
+                {
+                    method: "GET",
+                }).then((response) => {
                 return response.json();
-            }).then((genre) => {
+            }).then((books) => {
                 var title = document.querySelector('#title');
-                title.textContent = genre.name;
-                document.title = genre.name;
+                title.textContent = genre_name;
+                document.title = genre_name;
                 cleanBooksTable();
-                loadBooks(genre.books);
+                loadBooks(books);
             });
         }
     </script>

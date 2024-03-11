@@ -5,20 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.otus.dto.requests.CommentsRequest;
-import ru.otus.dto.responses.BookWithCommentsResponse;
 import ru.otus.dto.responses.BooksResponse;
 import ru.otus.dto.responses.CommentsResponse;
 import ru.otus.entities.Book;
 import ru.otus.entities.Comment;
-import ru.otus.mappers.BookRequestMapper;
 import ru.otus.mappers.CommentsMapper;
 import ru.otus.repositories.CommentsRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Service для работы с комментариями должен")
@@ -32,6 +32,7 @@ class CommentsServiceImplTest {
     private final static String TEST_COMMENT = "TEST_COMMENT";
     private final static String TEST_BOOK_NAME = "books_name";
     private final static CommentsRequest TEST_COMMENT_REQUEST = new CommentsRequest(TEST_COMMENT, TEST_BOOK_ID);
+    private final static Comment COMMENT = new Comment(TEST_COMMENT, TEST_BOOK_ID, null);
     private final static CommentsResponse COMMENT_RESPONSE = new CommentsResponse(
             TEST_COMMENT_ID,
             TEST_COMMENT,
@@ -46,21 +47,14 @@ class CommentsServiceImplTest {
             List.of(),
             List.of());
     private final static Comment TEST_COMMENT_OBJECT = new Comment(TEST_COMMENT_ID, TEST_COMMENT, TEST_BOOK);
-    private final static BookWithCommentsResponse BOOK_WITH_COMMENTS_RESPONSE = new BookWithCommentsResponse(
-            new BooksResponse(
-                    TEST_BOOK_ID,
-                    TEST_BOOK_NAME,
-                    List.of(),
-                    List.of()),
-            List.of(COMMENT_RESPONSE)
-    );
+    private final static Mono<Comment> TEST_COMMENT_OBJECT_MONO = Mono.just(COMMENT);
+    private final static Mono<CommentsRequest> TEST_COMMENT_REQUEST_MONO = Mono.just(TEST_COMMENT_REQUEST);
+    private final static Flux<Comment> TEST_COMMENT_OBJECT_FLUX = Flux.just(COMMENT);
 
     @MockBean
     private CommentsRepository commentsRepository;
     @MockBean
     private CommentsMapper commentsMapper;
-    @MockBean
-    private BookRequestMapper bookRequestMapper;
     @Autowired
     private CommentsService service;
 
@@ -69,80 +63,42 @@ class CommentsServiceImplTest {
     void create() {
         when(commentsMapper.create(TEST_COMMENT_REQUEST)).thenReturn(TEST_COMMENT_OBJECT);
         when(commentsRepository.save(TEST_COMMENT_OBJECT))
-                .thenReturn(TEST_COMMENT_OBJECT);
-        when(commentsMapper.toDto(TEST_COMMENT_OBJECT))
+                .thenReturn(TEST_COMMENT_OBJECT_MONO);
+        when(commentsMapper.toDto(COMMENT))
                 .thenReturn(COMMENT_RESPONSE);
 
-        var result = service.create(TEST_COMMENT_REQUEST);
+        var result = service.create(TEST_COMMENT_REQUEST_MONO).block();
 
         assertEquals(COMMENT_RESPONSE, result);
         verify(commentsRepository, times(1)).save(TEST_COMMENT_OBJECT);
         verify(commentsMapper, times(1)).create(TEST_COMMENT_REQUEST);
-        verify(commentsMapper, times(1)).toDto(TEST_COMMENT_OBJECT);
-    }
-
-    @Test
-    @DisplayName("должен найти комментарий по id и вернуть результат")
-    void findById() {
-        when(commentsRepository.findById(TEST_COMMENT_ID)).thenReturn(Optional.of(TEST_COMMENT_OBJECT));
-        when(commentsMapper.toDto(TEST_COMMENT_OBJECT))
-                .thenReturn(COMMENT_RESPONSE);
-
-        var result = service.findById(TEST_COMMENT_ID);
-
-        assertEquals(COMMENT_RESPONSE, result);
-    }
-
-    @Test
-    @DisplayName("должен найти комментарий по id, установить новые значения из запроса, обновить и вернуть результат")
-    void update() {
-        when(commentsRepository.findById(TEST_COMMENT_ID))
-                .thenReturn(Optional.of(TEST_COMMENT_OBJECT));
-        doNothing().when(commentsMapper).update(TEST_COMMENT_OBJECT, TEST_COMMENT_REQUEST);
-        when(commentsRepository.save(TEST_COMMENT_OBJECT))
-                .thenReturn(TEST_COMMENT_OBJECT);
-        when(commentsMapper.toDto(TEST_COMMENT_OBJECT))
-                .thenReturn(COMMENT_RESPONSE);
-
-        var result = service.update(TEST_COMMENT_ID, TEST_COMMENT_REQUEST);
-
-        assertEquals(COMMENT_RESPONSE, result);
-        verify(commentsMapper, times(1)).update(TEST_COMMENT_OBJECT, TEST_COMMENT_REQUEST);
-        verify(commentsRepository, times(1)).save(TEST_COMMENT_OBJECT);
+        verify(commentsMapper, times(1)).toDto(COMMENT);
     }
 
     @Test
     @DisplayName("должен удалить комментарий по id")
     void delete() {
-        service.delete(TEST_COMMENT_ID);
+        var request = Mono.just(TEST_COMMENT_ID);
+        when(commentsRepository.deleteById(request)).thenReturn(Mono.empty());
 
-        verify(commentsRepository, times(1)).deleteById(TEST_COMMENT_ID);
+        service.delete(request).block();
+
+        verify(commentsRepository, times(1)).deleteById(request);
     }
 
     @Test
     @DisplayName("должен найти все комментарии для книги")
     void findByBookId() {
-        when(commentsRepository.findByBookId(TEST_BOOK_ID)).thenReturn(List.of(TEST_COMMENT_OBJECT));
-        when(bookRequestMapper.toDto(TEST_BOOK))
-                .thenReturn(BOOK_WITH_COMMENTS_RESPONSE.getBook());
+        when(commentsRepository.findByBookId(TEST_BOOK_ID)).thenReturn(TEST_COMMENT_OBJECT_FLUX);
+        when(commentsMapper.toDto(COMMENT))
+                .thenReturn(COMMENT_RESPONSE);
         when(commentsMapper.toDto(TEST_COMMENT_OBJECT))
                 .thenReturn(COMMENT_RESPONSE);
 
-        var result = service.findByBookId(TEST_BOOK_ID);
+        var result = service.getCommentsByBook(Mono.just(TEST_BOOK_ID)).collectList().block();
 
-        assertEquals(BOOK_WITH_COMMENTS_RESPONSE.getBook(), result.getBook());
-        result.getComments().forEach(item -> assertEquals(COMMENT_RESPONSE, item));
-    }
-
-    @Test
-    @DisplayName("должен найти все комментарии")
-    void findAll() {
-        when(commentsRepository.findAll()).thenReturn(List.of(TEST_COMMENT_OBJECT));
-        when(commentsMapper.toDto(TEST_COMMENT_OBJECT))
-                .thenReturn(COMMENT_RESPONSE);
-
-        var result = service.findPage();
-
+        assertNotNull(result);
         result.forEach(item -> assertEquals(COMMENT_RESPONSE, item));
     }
+
 }

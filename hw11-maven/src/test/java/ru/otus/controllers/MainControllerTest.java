@@ -1,109 +1,149 @@
 package ru.otus.controllers;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.dto.responses.AuthorsShortResponse;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import ru.otus.dto.responses.BooksResponse;
-import ru.otus.dto.responses.CommentsResponse;
-import ru.otus.dto.responses.GenresShortResponse;
-import ru.otus.entities.Author;
 import ru.otus.entities.Book;
-import ru.otus.entities.Comment;
-import ru.otus.entities.Genre;
 import ru.otus.services.BooksService;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@WebMvcTest(MainController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MainControllerTest {
 
-    private static final Long BOOKS_ID = 1L;
-    private static final Long AUTHOR_ID = 1L;
-    private static final Long GENRE_ID = 1L;
+    private static final String BOOKS_ID = "BOOKS_ID";
+    private static final String AUTHOR_NAME = "AUTHOR_NAME";
+    private static final String GENRE_NAME = "GENRE_NAME";
     private static final String BOOKS_NAME = "books_name";
     private final static Book BOOK = new Book(
             BOOKS_ID,
             BOOKS_NAME,
-            List.of(new Author(1L, "author")),
-            List.of(new Genre(1L, "genre")),
-            List.of(new Comment(1L, "comment")));
+            List.of(),
+            List.of());
     private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(
             BOOK.getId(),
             BOOK.getName(),
-            BOOK.getAuthors()
-                    .stream()
-                    .map(author -> new AuthorsShortResponse(author.getId(), author.getName()))
-                    .toList(),
-            BOOK.getGenres()
-                    .stream()
-                    .map(genre -> new GenresShortResponse(genre.getId(), genre.getName()))
-                    .toList(),
-            BOOK.getComments()
-                    .stream()
-                    .map(comment -> new CommentsResponse(comment.getId(), comment.getComment()))
-                    .toList());
+            BOOK.getAuthors(),
+            BOOK.getGenres());
 
     @MockBean
     private BooksService service;
 
-    @Autowired
-    private MockMvc mockMvc;
+    @LocalServerPort
+    private int port;
+
+    private WebClient webClient;
+
+    @BeforeEach
+    public void setUp() {
+        webClient = WebClient.create(String.format("http://localhost:%d", port));
+    }
 
     @Test
     @DisplayName("Стартовая страница")
-    void index() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk());
+    void index() {
+        webClient
+                .get()
+                .uri("/")
+                .accept(MediaType.TEXT_HTML)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        error -> Mono.error(new RuntimeException("Server is not responding")))
+                .toBodilessEntity()
+                .block();
     }
 
     @Test
     @DisplayName("Страница для отображения автора")
-    void getAuthor() throws Exception {
-        mockMvc.perform(get("/author/"+ AUTHOR_ID ))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("id", AUTHOR_ID));
+    void getAuthor() {
+        webClient
+                .get()
+                .uri("/author?name="+ AUTHOR_NAME)
+                .accept(MediaType.TEXT_HTML)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        error -> Mono.error(new RuntimeException("Server is not responding")))
+                .toBodilessEntity()
+                .block();
     }
 
     @Test
     @DisplayName("Страница для отображения жанра")
-    void getGenre() throws Exception {
-        mockMvc.perform(get("/genre/"+ GENRE_ID))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("id", GENRE_ID));
+    void getGenre() {
+        webClient
+                .get()
+                .uri("/genre?name="+ GENRE_NAME)
+                .accept(MediaType.TEXT_HTML)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        error -> Mono.error(new RuntimeException("Server is not responding")))
+                .toBodilessEntity()
+                .block();
     }
 
     @Test
     @DisplayName("Страница для отображения книги")
-    void getBook() throws Exception {
-        mockMvc.perform(get("/book/"+ BOOKS_ID +"/comment"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("id", BOOKS_ID));
+    void getBook() {
+        webClient
+                .get()
+                .uri("/book/"+ BOOKS_ID +"/comment")
+                .accept(MediaType.TEXT_HTML)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        error -> Mono.error(new RuntimeException("Server is not responding")))
+                .toBodilessEntity()
+                .block();
     }
 
     @Test
     @DisplayName("Форма для создания книги")
-    void createBook() throws Exception {
-        mockMvc.perform(get("/book/form"))
-                .andExpect(status().isOk());
+    void createBook() {
+        webClient
+                .get()
+                .uri("/book")
+                .accept(MediaType.TEXT_HTML)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        error -> Mono.error(new RuntimeException("Server is not responding")))
+                .toBodilessEntity()
+                .block();
     }
 
     @Test
     @DisplayName("Форма для редактирования книги")
-    void editBook() throws Exception {
-        Mockito.when(service.findById(ArgumentMatchers.eq(BOOKS_ID))).thenReturn(BOOKS_RESPONSE);
+    void editBook() {
+        Mockito.when(service.findById(ArgumentMatchers.eq(BOOKS_ID))).thenReturn(Mono.just(BOOKS_RESPONSE));
 
-        mockMvc.perform(get("/book/"+ BOOKS_ID + "/form"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("book", BOOKS_RESPONSE));
+        webClient
+                .get()
+                .uri("/book/"+ BOOKS_ID)
+                .accept(MediaType.TEXT_HTML)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        error -> Mono.error(new RuntimeException("Server is not responding")))
+                .toBodilessEntity()
+                .block();
     }
 }

@@ -1,6 +1,7 @@
 package ru.otus.services;
 
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.dto.requests.CommentsRequest;
 import ru.otus.dto.responses.CommentsResponse;
@@ -20,6 +21,11 @@ public class CommentsServiceImpl implements CommentsService {
         this.commentsMapper = mapper;
     }
 
+    @Override
+    public Flux<CommentsResponse> getCommentsByBook(Mono<String> id) {
+        return id.flatMapMany(commentsRepository::findByBookId)
+                .map(commentsMapper::toDto);
+    }
 
     @Override
     public Mono<CommentsResponse> create(Mono<CommentsRequest> request) {

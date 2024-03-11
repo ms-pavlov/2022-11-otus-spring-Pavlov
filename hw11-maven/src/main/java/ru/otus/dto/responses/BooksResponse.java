@@ -2,16 +2,18 @@ package ru.otus.dto.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BooksResponse {
-    private final String id;
-    private final String name;
-    private final List<String> authors;
-    private final List<String> genres;
+    private String id;
+    private String name;
+    private List<String> authors;
+    private List<String> genres;
 
     @Override
     public String toString() {

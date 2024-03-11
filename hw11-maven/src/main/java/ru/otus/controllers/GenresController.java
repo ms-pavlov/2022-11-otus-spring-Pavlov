@@ -2,10 +2,11 @@ package ru.otus.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.otus.dto.responses.GenresResponse;
+import ru.otus.dto.responses.BooksResponse;
 import ru.otus.services.GenresService;
 
 @RestController
@@ -14,8 +15,8 @@ public class GenresController {
 
     private final GenresService service;
 
-    @GetMapping("/api/v1/genre/{id}")
-    public Mono<GenresResponse> findById(@PathVariable("id") Mono<String> id) {
-        return service.findById(id);
+    @GetMapping("/api/v1/genre")
+    public Flux<BooksResponse> findById(@RequestParam("name") String name) {
+        return service.findByGenre(Mono.just(name));
     }
 }

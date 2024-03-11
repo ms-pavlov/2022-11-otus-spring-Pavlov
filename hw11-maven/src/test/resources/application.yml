@@ -16,3 +16,5 @@ mongock:
 #    write-concern:
 #      journal: false
 #    read-concern: local
+eventLoopThreadPoolSize: 2
+dataSourceExecutorThreadPoolSize: 4

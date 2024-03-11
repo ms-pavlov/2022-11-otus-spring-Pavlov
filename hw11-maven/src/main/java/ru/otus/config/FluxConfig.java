@@ -1,20 +1,21 @@
 package ru.otus.config;
 
 import io.netty.channel.nio.NioEventLoopGroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
 import org.springframework.boot.web.reactive.server.ReactiveWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Configuration
 public class FluxConfig {
-    private static final Logger log = LoggerFactory.getLogger(FluxConfig.class);
     private final static int EVENT_LOOP_THREAD_POOL_DEFAULT_SIZE = 2;
     private final static int DATA_SOURCE_THREAD_POOL_DEFAULT_SIZE = 4;
     private final int eventLoopThreadPoolSize;
@@ -44,6 +45,18 @@ public class FluxConfig {
     public ExecutorService getDataSourceExecutor() {
         return Executors.newFixedThreadPool(dataSourceExecutorThreadPoolSize,
                 new SimplerThreadFactory("executor-"));
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> cssRouter() {
+        return RouterFunctions
+                .resources("/css/**", new ClassPathResource("css/"));
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> jsRouter() {
+        return RouterFunctions
+                .resources("/js/**", new ClassPathResource("js/"));
     }
 
 }

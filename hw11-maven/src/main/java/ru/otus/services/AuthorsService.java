@@ -1,9 +1,10 @@
 package ru.otus.services;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.otus.dto.responses.AuthorsResponse;
+import ru.otus.dto.responses.BooksResponse;
 
 public interface AuthorsService {
 
-    Mono<AuthorsResponse> findById(Mono<String> id);
+    Flux<BooksResponse> findByAuthor(Mono<String> name);
 }

@@ -33,12 +33,12 @@
 
                 let authorsList = wrapUl(
                     book.authors
-                        .map(item => makeLink(item.name, '/author/' + item.id))
+                        .map(item => makeLink(item, '/author?name=' + item))
                         .map(item => wrapLi(item)));
 
                 let genresList = wrapUl(
                     book.genres
-                        .map(item => makeLink(item.name, '/genre/' + item.id))
+                        .map(item => makeLink(item, '/genre?name=' + item))
                         .map(item => wrapLi(item)));
 
                 let comment = document.createElement('a');
@@ -47,7 +47,7 @@
                 comment.append(makeIcon('bi bi-chat-left-text'));
 
                 let edit = document.createElement('a');
-                edit.href = '/book/' + book.id + '/form';
+                edit.href = '/book/' + book.id + '';
                 edit.className = 'btn btn-warning';
                 edit.append(makeIcon('bi bi-pen'));
 

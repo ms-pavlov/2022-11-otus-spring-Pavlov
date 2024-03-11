@@ -1,139 +1,145 @@
 package ru.otus.controllers;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.otus.dto.requests.BooksRequest;
-import ru.otus.dto.responses.AuthorsShortResponse;
 import ru.otus.dto.responses.BooksResponse;
-import ru.otus.dto.responses.CommentsResponse;
-import ru.otus.dto.responses.GenresShortResponse;
-import ru.otus.entities.Author;
 import ru.otus.entities.Book;
-import ru.otus.entities.Comment;
-import ru.otus.entities.Genre;
 import ru.otus.services.BooksService;
 
+import java.time.Duration;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@WebMvcTest(BooksController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BooksControllerTest {
 
-    private static final Long BOOKS_ID = 1L;
+    private static final String BOOKS_ID = "BOOKS_ID";
     private static final Integer PAGE = 1;
     private static final Integer SIZE = 1;
     private static final String BOOKS_NAME = "books_name";
     private final static Book BOOK = new Book(
             BOOKS_ID,
             BOOKS_NAME,
-            List.of(new Author(1L, "author")),
-            List.of(new Genre(1L, "genre")),
-            List.of(new Comment(1L, "comment")));
+            List.of("author"),
+            List.of("genre"));
     private final static BooksResponse BOOKS_RESPONSE = new BooksResponse(
             BOOK.getId(),
             BOOK.getName(),
-            BOOK.getAuthors()
-                    .stream()
-                    .map(author -> new AuthorsShortResponse(author.getId(), author.getName()))
-                    .toList(),
-            BOOK.getGenres()
-                    .stream()
-                    .map(genre -> new GenresShortResponse(genre.getId(), genre.getName()))
-                    .toList(),
-            BOOK.getComments()
-                    .stream()
-                    .map(comment -> new CommentsResponse(comment.getId(), comment.getComment()))
-                    .toList());
+            BOOK.getAuthors(),
+            BOOK.getGenres());
+    private final static Mono<BooksResponse> BOOKS_RESPONSE_MONO = Mono.just(BOOKS_RESPONSE);
     private final static BooksRequest BOOKS_REQUEST = new BooksRequest(BOOK.getName(), List.of("author"), List.of("genre"));
+    private final static Mono<BooksRequest> BOOKS_REQUEST_MONO = Mono.just(BOOKS_REQUEST);
     private final static Page<BooksResponse> BOOKS_RESPONSE_PAGE = Page.empty();
 
     @MockBean
     private BooksService service;
 
-    @Autowired
-    private MockMvc mockMvc;
+    @LocalServerPort
+    private int port;
 
-    @Test
-    @DisplayName("Создание")
-    void create() throws Exception {
-        Mockito.when(service.create(ArgumentMatchers.eq(BOOKS_REQUEST))).thenReturn(BOOKS_RESPONSE);
+    private WebClient webClient;
 
-        mockMvc.perform(
-                        post("/api/v1/book/")
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .param("name", BOOKS_REQUEST.getName())
-                                .param("authors", BOOKS_REQUEST.getAuthors().get(0))
-                                .param("genres", BOOKS_REQUEST.getGenres().get(0)))
-                .andExpect(status().isOk());
-
-        Mockito.verify(service, Mockito.times(1)).create(ArgumentMatchers.eq(BOOKS_REQUEST));
+    @BeforeEach
+    public void setUp() {
+        webClient = WebClient.create(String.format("http://localhost:%d", port));
     }
 
     @Test
-    @DisplayName("Получение книги по id с комментариями")
-    void findById() throws Exception {
-        Mockito.when(service.findById(ArgumentMatchers.eq(BOOKS_ID))).thenReturn(BOOKS_RESPONSE);
+    @DisplayName("Создание")
+    void create() {
+        Mockito.when(service.create(ArgumentMatchers.any())).thenReturn(BOOKS_RESPONSE_MONO);
 
-        mockMvc.perform(get("/api/v1/book/"+ BOOKS_ID ))
-                .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":1,\"name\":\"books_name\"," +
-                        "\"authors\":[{\"id\":1,\"name\":\"author\"}]," +
-                        "\"genres\":[{\"id\":1,\"name\":\"genre\"}]," +
-                        "\"comments\":[{\"id\":1,\"comment\":\"comment\"}]}"));
+        BooksResponse result = webClient
+                .post()
+                .uri("/api/v1/book/")
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BOOKS_REQUEST_MONO, BooksRequest.class)
+                .retrieve()
+                .bodyToMono(BooksResponse.class)
+                .timeout(Duration.ofSeconds(3))
+                .block();
+
+        Assertions.assertEquals(BOOKS_RESPONSE, result);
+
+        Mockito.verify(service, Mockito.times(1)).create(ArgumentMatchers.any());
+    }
+
+    @Test
+    @DisplayName("Получение книги по id")
+    void findById() {
+        Mockito.when(service.findById(ArgumentMatchers.eq(BOOKS_ID))).thenReturn(BOOKS_RESPONSE_MONO);
+
+        BooksResponse result = webClient
+                .get()
+                .uri("/api/v1/book/" + BOOKS_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(BooksResponse.class)
+                .block();
+
+        Assertions.assertEquals(BOOKS_RESPONSE, result);
     }
 
     @Test
     @DisplayName("Постраничный вывод")
-    void findPage() throws Exception {
-        Mockito.when(service.findPage(Mono.just(PageRequest.of(PAGE, SIZE)))).thenReturn(BOOKS_RESPONSE_PAGE);
+    void findPage() {
+        Mockito.when(service.findPage(Mono.just(PageRequest.of(PAGE, SIZE)))).thenReturn(Mono.just(BOOKS_RESPONSE_PAGE));
 
-        mockMvc.perform(
-                        get("/api/v1/book/"+ PAGE +"/"+ SIZE))
-                .andExpect(status().isOk())
-                .andExpect(content().json("{\"content\":[]," +
-                        "\"pageable\":\"INSTANCE\"," +
-                        "\"last\":true," +
-                        "\"totalElements\":0," +
-                        "\"totalPages\":1," +
-                        "\"size\":0," +
-                        "\"number\":0," +
-                        "\"sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true}," +
-                        "\"numberOfElements\":0,\"first\":true,\"empty\":true}"));
+        webClient
+                .get()
+                .uri("/api/v1/book/?page=" + PAGE + "&size=" + SIZE)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        error -> Mono.error(new RuntimeException("Server is not responding")))
+                .toBodilessEntity()
+                .block();
     }
 
     @Test
     @DisplayName("Редактирование")
-    void update() throws Exception {
-        mockMvc.perform(
-                put("/api/v1/book/" + BOOKS_ID)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .param("name", BOOKS_REQUEST.getName())
-                        .param("authors", BOOKS_REQUEST.getAuthors().get(0))
-                        .param("genres", BOOKS_REQUEST.getGenres().get(0)))
-                .andExpect(status().isOk());
+    void update() {
+        Mockito.when(service.update(ArgumentMatchers.eq(BOOKS_ID), ArgumentMatchers.any())).thenReturn(BOOKS_RESPONSE_MONO);
 
-        Mockito.verify(service, Mockito.times(1)).update(ArgumentMatchers.eq(BOOKS_ID), ArgumentMatchers.eq(BOOKS_REQUEST));
+        webClient
+                .put()
+                .uri("/api/v1/book/" + BOOKS_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BOOKS_REQUEST_MONO, BooksRequest.class)
+                .retrieve()
+                .bodyToMono(BooksResponse.class)
+                .block();
+
+        Mockito.verify(service, Mockito.times(1)).update(ArgumentMatchers.eq(BOOKS_ID), ArgumentMatchers.any());
     }
 
     @Test
     @DisplayName("Удаление")
-    void delete() throws Exception {
-        mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/api/v1/book/" + BOOKS_ID))
-                .andExpect(status().isOk());
+    void delete() {
+        webClient
+                .delete()
+                .uri("/api/v1/book/" + BOOKS_ID)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .timeout(Duration.ofSeconds(3))
+                .block();
 
         Mockito.verify(service, Mockito.times(1)).delete(BOOKS_ID);
     }
