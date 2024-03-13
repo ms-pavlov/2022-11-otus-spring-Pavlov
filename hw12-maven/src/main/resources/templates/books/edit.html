@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title>Редактирование</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="col" layout:fragment="content">
+    <h1 class="display-3">Новая книга</h1>
+    <div class="row">
+        <form id="editForm" method="dialog">
+            <div class="form-group mb-3">
+                <label for="name" th:text="Название" class="fw-bold"></label>
+                <input name="name" id="name" type="text" class="form-control" th:value="${book.name}"/>
+            </div>
+            <div class="form-control mb-3 row" id="authors">
+                <span class="fw-bold" th:text="Автор"></span>
+                <div th:id="${'author-' + book.authors.indexOf(item)}" class="form-group mb-3 row"
+                     th:each="item : ${book.authors}">
+                    <div class="col">
+                        <input name="authors" type="text" class="form-control" th:value="${item.name}"/>
+                    </div>
+                    <div class="col-auto text-end">
+                        <button type="button" class="btn btn-outline-danger" aria-label="delete"
+                                th:attr="onclick=|deleteAuthorInput(${book.authors.indexOf(item)})|">
+                            <i class="bi bi-trash alert-danger"></i>
+                        </button>
+                    </div>
+                </div>
+                <button id="authors-add" class="btn btn-outline-primary" th:attr="onclick=|addAuthorInput()|">
+                    <i class="bi bi-plus-square"></i>
+                </button>
+            </div>
+            <div class="form-control mb-3 row" id="genres">
+                <span class="fw-bold" th:text="Жанр"></span>
+                <div th:id="${'genre-' + book.genres.indexOf(item)}" class="form-group mb-3 row"
+                     th:each="item : ${book.genres}">
+                    <div class="col">
+                        <input name="genres" type="text" class="form-control" th:value="${item.name}"/>
+                    </div>
+                    <div class="col-auto text-end">
+                        <button type="button" class="btn btn-outline-danger" aria-label="delete"
+                                th:attr="onclick=|deleteGenreInput(${book.genres.indexOf(item)})|">
+                            <i class="bi bi-trash alert-danger"></i>
+                        </button>
+                    </div>
+                </div>
+                <button id="genres-add" class="btn btn-outline-primary" th:attr="onclick=|addGenreInput()|">
+                    <i class="bi bi-plus-square"></i>
+                </button>
+            </div>
+            <button class="btn btn-primary" th:attr="onclick=|editBook(${book.id})|">
+                <i class="bi bi-save"></i>
+            </button>
+        </form>
+    </div>
+    <script>
+        const editBook = async (id) => {
+            var form = document.querySelector('#editForm');
+            var data = new FormData(form);
+            console.log(data);
+            fetch(`/book/${id}`, {
+                method: "PUT",
+                body: data
+            }).then(() => console.log("Ok"));
+        };
+    </script>
+    <script>
+        var authorsCount = [[${book.authors.size()}]];
+        var genresCount = [[${book.genres.size()}]];
+
+        const deleteAuthorInput = async (id) => {
+            var element = document.querySelector('#author-' + id);
+            element.remove();
+        };
+
+        const deleteGenreInput = async (id) => {
+            var element = document.querySelector('#genre-' + id);
+            element.remove();
+        };
+
+        const addGenreInput = async () => {
+            var genres = document.querySelector('#genres');
+            var genres_add = document.querySelector('#genres-add');
+
+            generateGenreInput()
+                .then(value => genres.insertBefore(value, genres_add));
+        };
+
+        const addAuthorInput = async () => {
+            var authors = document.querySelector('#authors');
+            var authors_add = document.querySelector('#authors-add');
+
+            generateAuthorInput()
+                .then(value => authors.insertBefore(value, authors_add));
+        };
+
+        const generateGenreInput = async () => {
+            var number = genresCount++;
+
+            var div_genre = document.createElement('div');
+            div_genre.id = 'genre-' + number;
+            div_genre.className = 'form-group mb-3 row';
+
+            var div_input = document.createElement('div');
+            div_input.className = 'col';
+
+            var input = document.createElement('input');
+            input.name = 'genres';
+            input.type = 'text';
+            input.className = 'form-control'
+
+            var div_delete = document.createElement('div');
+            div_delete.className = 'col-auto text-end';
+
+            var button_delete = document.createElement('button');
+            button_delete.type = 'button';
+            button_delete.className = 'btn btn-outline-danger';
+            button_delete.onclick = function (e) {
+                deleteGenreInput(number)
+            };
+
+            var icon = document.createElement('i');
+            icon.className = 'bi bi-trash alert-danger';
+
+            div_input.append(input);
+            div_genre.append(div_input);
+            button_delete.append(icon);
+            div_delete.append(button_delete);
+            div_genre.append(div_delete);
+
+            return div_genre;
+        }
+
+        const generateAuthorInput = async () => {
+            var number = genresCount++;
+
+            var div_genre = document.createElement('div');
+            div_genre.id = 'author-' + number;
+            div_genre.className = 'form-group mb-3 row';
+
+            var div_input = document.createElement('div');
+            div_input.className = 'col';
+
+            var input = document.createElement('input');
+            input.name = 'authors';
+            input.type = 'text';
+            input.className = 'form-control'
+
+            var div_delete = document.createElement('div');
+            div_delete.className = 'col-auto text-end';
+
+            var button_delete = document.createElement('button');
+            button_delete.type = 'button';
+            button_delete.className = 'btn btn-outline-danger';
+            button_delete.onclick = function (e) {
+                deleteAuthorInput(number)
+            };
+
+            var icon = document.createElement('i');
+            icon.className = 'bi bi-trash alert-danger';
+
+            div_input.append(input);
+            div_genre.append(div_input);
+            button_delete.append(icon);
+            div_delete.append(button_delete);
+            div_genre.append(div_delete);
+
+            return div_genre;
+        }
+
+    </script>
+</div>
+</body>
+</html>
