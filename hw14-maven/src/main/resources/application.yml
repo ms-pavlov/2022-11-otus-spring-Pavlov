@@ -1,0 +1,28 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/master.xml
+    contexts: prod
+  datasource:
+    url: jdbc:h2:~/library;DB_CLOSE_DELAY=-1
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  data:
+    mongodb:
+      authentication-database: admin
+      username: root
+      password: root
+      port: 27017
+      host: localhost
+      database: library
+  batch:
+    jdbc:
+      initialize-schema: always
+migration:
+  chunk-size:
+    book: 50
+    comment: 50
+    author: 50
+    genre: 50
