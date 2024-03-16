@@ -30,3 +30,4 @@ hw11-maven - Использовать WebFlux
 
 hw15-maven - Реализовать обработку доменной сущности через каналы Spring Integration
 
+hw17-maven - Обернуть приложение в docker-контейнер
