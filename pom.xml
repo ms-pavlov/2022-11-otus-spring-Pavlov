@@ -23,6 +23,7 @@
         <module>hw09-maven</module>
         <module>hw10-maven</module>
         <module>hw11-maven</module>
+        <module>hw12-maven</module>
         <module>hw14-maven</module>
     </modules>
 </project>
