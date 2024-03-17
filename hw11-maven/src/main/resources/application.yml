@@ -1,0 +1,24 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: root
+      password: root
+      port: 27017
+      host: localhost
+      database: library
+#de:
+#  flapdoodle:
+#    mongodb:
+#      embedded:
+#        version: 4.0.2
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.changelog
+#  mongo-db:
+#    write-concern:
+#      journal: false
+#    read-concern: local
+eventLoopThreadPoolSize: 2
+dataSourceExecutorThreadPoolSize: 4
