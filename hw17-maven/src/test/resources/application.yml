@@ -1,0 +1,6 @@
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.spring.mongock.changelog
+eventLoopThreadPoolSize: 2
+dataSourceExecutorThreadPoolSize: 4

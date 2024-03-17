@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title>Home Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="card" layout:fragment="content">
+    <div class="card-header">
+        <h1 class="display-3">Книги</h1>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <nav class="col" aria-label="Page navigation example">
+                <ul class="pagination" id="pagination">
+                </ul>
+            </nav>
+            <div class="col text-end">
+                <a class="btn btn-primary" th:href="@{/book}"><i class="bi bi-plus-square"></i></a>
+            </div>
+        </div>
+        <div th:replace="~{books/fragments/list :: books}" class="footer">
+            books content
+        </div>
+    </div>
+    <script>
+        const size = 20;
+
+        window.onload = () => {
+            getPage(0, size);
+        }
+
+        const getPage = async (page, size) => {
+            fetch(`/api/v1/book/?page=${page}&size=${size}`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                clean();
+                cleanBooksTable();
+                loadPagination(data);
+                loadBooks(data.content);
+            });
+        }
+
+        const clean = async () => {
+            var pagination = document.querySelector('#pagination');
+            pagination.innerHTML = "";
+        }
+
+        const loadPagination = async (data) => {
+            if (data.totalPages > 1) {
+                for (let index = 0; index < data.totalPages; index++) {
+                    var pagination = document.querySelector('#pagination');
+
+                    var li = document.createElement('li');
+                    li.className = (data.number === index) ? 'page-item active' : 'page-item';
+                    var button = document.createElement('button');
+                    button.textContent = '' + (index + 1);
+                    button.className = (data.number === index) ? 'btn page-item active' : 'btn page-item';
+                    button.onclick = async () => {
+                        getPage(index, size);
+                    };
+                    li.append(button);
+                    pagination.append(li);
+                }
+            }
+        }
+    </script>
+</div>
+</div>
+</body>
+</html>

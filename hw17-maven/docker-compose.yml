@@ -1,0 +1,26 @@
+# vi docker-compose.yml
+version: '3.3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    environment:
+      SPRING_APPLICATION_JSON: '{
+                  "spring.data.mongodb.uri" : "mongodb://$DB_USERNAME:$DB_PASSWORD@dkrcomp-mongo:$DB_PORT/$DB_NAME?authSource=admin"
+                }'
+  mongo:
+    ports:
+      - $DB_PORT:$DB_PORT
+    container_name: dkrcomp-mongo
+    restart: always
+    logging:
+      options:
+        max-size: 1g
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$DB_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$DB_PASSWORD
+    image: mongo
