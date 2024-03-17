@@ -1,0 +1,34 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/master.xml
+  datasource:
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  data:
+    mongodb:
+      port: 0 # when flapdoodle using
+      database: library
+  shell:
+    interactive:
+      enabled: false
+    command:
+      version:
+        enabled: false
+  batch:
+    jdbc:
+      initialize-schema: never
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+migration:
+  chunk-size:
+    book: 50
+    comment: 50
+    author: 50
+    genre: 50

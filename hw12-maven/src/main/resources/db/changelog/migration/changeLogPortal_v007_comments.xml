@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="library_v007_comments" author="ms-pavlov" context="prod">
+        <createSequence dataType="INT"
+                        sequenceName="comments_seq"/>
+        <createTable tableName="comments">
+            <column name="id" type="INT" defaultValueSequenceNext="comments_seq">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="comment" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="book" type="INT">
+                <constraints primaryKey="true"
+                             nullable="false"
+                             foreignKeyName="fk_books_comments"
+                             referencedTableName="books"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
