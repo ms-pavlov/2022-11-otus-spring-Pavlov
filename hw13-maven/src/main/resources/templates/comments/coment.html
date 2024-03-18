@@ -12,28 +12,77 @@
     <div class="card">
         <div class="card-body">
             <span class="fw-bold">Комментарии:</span>
-            <div class="card mb-3" th:each="comment: ${comments}">
-                <div class="card-body row">
-                    <div class="col">
-                        <p class="fw-bold" th:text="${comment.owner}"></p>
-                        <span th:text="${comment.comment}"></span>
-                    </div>
-                    <div class="col-auto text-end">
-                        <button type="button" class="btn btn-outline-danger" aria-label="delete"
-                                th:attr="onclick=|deleteComment(${comment.id})|">
-                            <i class="bi bi-trash alert-danger"></i>
-                        </button>
-                    </div>
-                </div>
+            <div class="card mb-3" id="comments">
             </div>
         </div>
     </div>
     <script>
         const deleteComment = async (id) => {
-            await fetch(`/comment/${id}`, {
+            await fetch(`/api/v1/comment/${id}`, {
                 method: "DELETE",
-            }).then(() => location.reload());
+            }).then(res => res.ok ? res : Promise.reject(res))
+                .then(() => location.reload())
+                .catch((data) => console.log(data));
+            ;
         }
+
+        window.onload = () => {
+            fetch(`/api/v1/comment`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((comments => {
+                let commentsDiv = document.querySelector('#comments');
+                comments.map(
+                    comment => {
+                        let deleteButton = document.createElement('button');
+                        deleteButton.onclick = () => {
+                            deleteComment(comment.id);
+                        };
+                        deleteButton.className = 'btn btn-outline-danger';
+                        deleteButton.append(makeIcon('bi bi-trash'));
+
+                        return wrapDiv(
+                            [
+                                wrapDiv(
+                                    [
+                                        wrapDiv([paragraph(comment.owner), span(comment.comment)], 'col'),
+                                        wrapDiv([deleteButton], 'col-auto text-end')
+                                    ],
+                                    'card-body row')
+                            ],
+                            'card mb-3'
+                        )
+                    })
+                    .forEach(item => commentsDiv.append(item));
+            }))
+        }
+
+        const wrapDiv = (items, className) => {
+            let div = document.createElement('div');
+            items.forEach(item => div.append(item));
+            div.className = className;
+            return div;
+        };
+
+        const paragraph = (text) => {
+            let paragraph = document.createElement('p');
+            paragraph.className = 'fw-bold';
+            paragraph.textContent = text;
+            return paragraph;
+        };
+
+        const span = (text) => {
+            let span = document.createElement('span');
+            span.textContent = text;
+            return span;
+        };
+
+        const makeIcon = (className) => {
+            let deleteIcon = document.createElement('i');
+            deleteIcon.className = className;
+            return deleteIcon;
+        };
     </script>
 </div>
 </body>

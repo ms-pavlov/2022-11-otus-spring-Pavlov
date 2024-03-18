@@ -1,48 +1,119 @@
 <footer th:fragment="books">
     <table class="table table-striped">
-        <tr>
+        <thead>
+        <tr id="header">
             <th scope="col">Название</th>
             <th scope="col">Авторы</th>
             <th scope="col">Жанры</th>
             <th scope="col-auto"></th>
         </tr>
-        <tr th:each="item : ${books}">
-            <td><a th:href="@{/book/__${item.id}__/comment}" th:text="${item.name}"></a></td>
-            <td>
-                <ul>
-                    <li th:each="author : ${item.getAuthors()}">
-                        <a th:text="${author.name}" th:href="@{/author/__${author.id}__}"></a>
-                    </li>
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    <li th:each="genre : ${item.getGenres()}">
-                        <a th:text="${genre.name}" th:href="@{/genre/__${genre.id}__}"></a>
-                    </li>
-                </ul>
-            </td>
-            <td>
-                <div class="btn-group">
-                    <a class="btn btn-success" th:href="@{/book/__${item.id}__/comment}">
-                        <i class="bi bi-chat-left-text"></i>
-                    </a>
-                    <a class="btn btn-warning" th:href="@{/book/__${item.id}__/form}">
-                        <i class="bi bi-pen"></i>
-                    </a>
-                    <button class="btn btn-danger" aria-label="delete"
-                            th:attr="onclick=|deleteBook(${item.id})|">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
+        </thead>
+        <tbody id="bookTable">
+        </tbody>
     </table>
     <script>
         const deleteBook = async (id) => {
-            await fetch(`/book/${id}`, {
+            fetch(`/api/v1/book/${id}`, {
                 method: "DELETE",
             }).then(() => location.reload());
         }
+
+
+        const cleanBooksTable = async () => {
+            var bookTable = document.querySelector('#bookTable');
+            bookTable.innerHTML = "";
+        }
+
+        const loadBooks = async (data) => {
+            data.forEach((book) => {
+                var bookTable = document.querySelector('#bookTable');
+
+                let name = document.createElement('td');
+                name.textContent = book.name;
+
+                let authorsList = wrapUl(
+                    book.authors
+                        .map(item => makeLink(item.name, '/author/' + item.id))
+                        .map(item => wrapLi(item)));
+
+                let genresList = wrapUl(
+                    book.genres
+                        .map(item => makeLink(item.name, '/genre/' + item.id))
+                        .map(item => wrapLi(item)));
+
+                let comment = document.createElement('a');
+                comment.href = '/book/' + book.id + '/comment';
+                comment.className = 'btn btn-success';
+                comment.append(makeIcon('bi bi-chat-left-text'));
+
+                let edit = document.createElement('a');
+                edit.href = '/book/' + book.id + '/form';
+                edit.className = 'btn btn-warning';
+                edit.append(makeIcon('bi bi-pen'));
+
+                let deleteButton = document.createElement('button');
+                deleteButton.onclick = () => {
+                    deleteBook(book.id);
+                };
+                deleteButton.className = 'btn btn-danger';
+                deleteButton.append(makeIcon('bi bi-trash'));
+
+                bookTable.append(
+                    wrapTr([
+                        name,
+                        wrapTd(authorsList),
+                        wrapTd(genresList),
+                        wrapTd(
+                            wrapButtonGroup([comment, edit, deleteButton])
+                        )])
+                );
+            })
+        }
+
+        const wrapTr = (items) => {
+            let tr = document.createElement('tr');
+            items.forEach(item => tr.append(item));
+            return tr;
+        }
+
+        const wrapTd = (item) => {
+            let td = document.createElement('td');
+            td.append(item);
+            return td;
+        }
+
+        const wrapButtonGroup = (items) => {
+            let group = document.createElement('div');
+            group.className = 'btn-group';
+            items.forEach(item => group.append(item));
+            return group;
+
+        }
+
+        const wrapLi = (item) => {
+            let li = document.createElement('li');
+            li.append(item);
+            return li;
+        }
+
+        const wrapUl = (items) => {
+            let ul = document.createElement('ul');
+            items.forEach(item => ul.append(item));
+            return ul;
+        }
+
+        const makeIcon = (className) => {
+            let deleteIcon = document.createElement('i');
+            deleteIcon.className = className;
+            return deleteIcon;
+        }
+
+        const makeLink = (text, href) => {
+            let link = document.createElement('a');
+            link.href = href;
+            link.textContent = text;
+            return link;
+        }
+
     </script>
 </footer>

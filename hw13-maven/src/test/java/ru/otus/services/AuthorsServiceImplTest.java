@@ -2,9 +2,15 @@ package ru.otus.services;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.dto.requests.AuthorsRequest;
 import ru.otus.dto.responses.AuthorsResponse;
 import ru.otus.entities.Author;
@@ -19,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Service для работы с авторами должен")
-@SpringBootTest(classes = {
-        AuthorsServiceImpl.class
-})
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration
 class AuthorsServiceImplTest {
 
     private static final Long AUTHORS_ID = 1L;
@@ -44,10 +50,16 @@ class AuthorsServiceImplTest {
     private AuthorsRepository repository;
     @MockBean
     private AuthorsMapper mapper;
+    @MockBean
+    private UsersService usersService;
+
     @Autowired
     private AuthorsService service;
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен проверить что такой автор ещё не создан, сохранить и вернуть результат")
     void create() {
         when(repository.findByName(AUTHORS_NAME)).thenReturn(null);
@@ -67,11 +79,21 @@ class AuthorsServiceImplTest {
     }
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен проверить, что такой автор создан, и вернуть исключение")
     void createExistAuthor() {
         when(repository.findByName(AUTHORS_NAME)).thenReturn(AUTHOR);
 
         assertThrows(AuthorExistException.class, () -> service.create(AUTHOR_REQUEST));
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("создание не возможно для анонимного пользователя")
+    void createFail() {
+        assertThrows(AccessDeniedException.class, () -> service.create(AUTHOR_REQUEST));
     }
 
     @Test
@@ -87,6 +109,9 @@ class AuthorsServiceImplTest {
     }
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен найти автора по id, установить новые значения из запроса, обновить и вернуть результат")
     void update() {
         when(repository.findById(AUTHORS_ID))
@@ -105,6 +130,9 @@ class AuthorsServiceImplTest {
     }
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен проверить, что такой автор создан, и вернуть исключение")
     void updateExistAuthor() {
         when(repository.findByName(AUTHORS_NAME)).thenReturn(OTHERT_AUTHOR);
@@ -113,11 +141,28 @@ class AuthorsServiceImplTest {
     }
 
     @Test
+    @WithAnonymousUser
+    @DisplayName("изменение не возможно для анонимного пользователя")
+    void updateFail() {
+        assertThrows(AccessDeniedException.class, () -> service.update(AUTHORS_ID, AUTHOR_REQUEST));
+    }
+
+    @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен удалить автора по id")
     void delete() {
         service.delete(AUTHORS_ID);
 
         verify(repository, times(1)).deleteById(AUTHORS_ID);
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("удаление не возможно для анонимного пользователя")
+    void deleteFail() {
+        assertThrows(AccessDeniedException.class, () -> service.delete(AUTHORS_ID));
     }
 
     @Test

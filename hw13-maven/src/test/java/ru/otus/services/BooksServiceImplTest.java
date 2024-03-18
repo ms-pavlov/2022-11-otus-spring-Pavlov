@@ -2,11 +2,17 @@ package ru.otus.services;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.AuthorsShortResponse;
 import ru.otus.dto.responses.BooksResponse;
@@ -24,12 +30,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Service для работы с книгами должен")
-@SpringBootTest(classes = {
-        BooksServiceImpl.class
-})
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration
 class BooksServiceImplTest {
     private static final Long BOOKS_ID = 1L;
     private static final String BOOKS_NAME = "books_name";
@@ -62,10 +69,16 @@ class BooksServiceImplTest {
     private CommentsRepository commentsRepository;
     @MockBean
     private BookRequestMapper mapper;
+    @MockBean
+    private UsersService usersService;
+
     @Autowired
     private BooksService service;
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен смапить запрос в новую книгу, сохранить и вернуть результат")
     void create() {
         when(mapper.create(BOOKS_REQUEST)).thenReturn(BOOK);
@@ -77,6 +90,13 @@ class BooksServiceImplTest {
         var result = service.create(BOOKS_REQUEST);
 
         assertEquals(BOOKS_RESPONSE, result);
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("создание не возможно для анонимного пользователя")
+    void createFail() {
+        assertThrows(AccessDeniedException.class, () -> service.create(BOOKS_REQUEST));
     }
 
     @Test
@@ -92,6 +112,9 @@ class BooksServiceImplTest {
     }
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен найти книгу по id, установить новые значения из запроса, обновить и вернуть результат")
     void update() {
         when(booksRepository.findById(BOOKS_ID))
@@ -110,12 +133,29 @@ class BooksServiceImplTest {
     }
 
     @Test
+    @WithAnonymousUser
+    @DisplayName("изменение не возможно для анонимного пользователя")
+    void updateFail() {
+        assertThrows(AccessDeniedException.class, () -> service.update(BOOKS_ID, BOOKS_REQUEST));
+    }
+
+    @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен удалить книгу по id")
     void delete() {
         service.delete(BOOKS_ID);
 
         verify(booksRepository, times(1)).deleteById(BOOKS_ID);
         verify(commentsRepository, times(1)).deleteByBookId(BOOKS_ID);
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("удаление не возможно для анонимного пользователя")
+    void deleteFail() {
+        assertThrows(AccessDeniedException.class, () -> service.delete(BOOKS_ID));
     }
 
     @Test

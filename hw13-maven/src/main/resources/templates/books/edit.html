@@ -57,19 +57,18 @@
         </form>
     </div>
     <script>
+        var authorsCount = [[${book.authors.size()}]];
+        var genresCount = [[${book.genres.size()}]];
+
         const editBook = async (id) => {
             var form = document.querySelector('#editForm');
             var data = new FormData(form);
             console.log(data);
-            fetch(`/book/${id}`, {
+            await fetch(`/api/v1/book/${id}`, {
                 method: "PUT",
                 body: data
-            }).then(() => console.log("Ok"));
+            }).then(() => location.reload());
         };
-    </script>
-    <script>
-        var authorsCount = [[${book.authors.size()}]];
-        var genresCount = [[${book.genres.size()}]];
 
         const deleteAuthorInput = async (id) => {
             var element = document.querySelector('#author-' + id);
@@ -132,10 +131,10 @@
             div_genre.append(div_delete);
 
             return div_genre;
-        }
+        };
 
         const generateAuthorInput = async () => {
-            var number = genresCount++;
+            var number = authorsCount++;
 
             var div_genre = document.createElement('div');
             div_genre.id = 'author-' + number;
@@ -169,7 +168,7 @@
             div_genre.append(div_delete);
 
             return div_genre;
-        }
+        };
 
     </script>
 </div>

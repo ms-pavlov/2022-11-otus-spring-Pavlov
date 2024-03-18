@@ -3,7 +3,7 @@
       layout:decorate=="~{layout/layout}">
 
 <head>
-    <title th:text="${book.name}"></title>
+    <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
@@ -11,52 +11,151 @@
 <div class="col" layout:fragment="content">
     <div class="card">
         <div class="card-body">
-            <h1 class="display-3" th:text="${book.name}"></h1>
-            <div class="row mb-3" th:each="author: ${book.getAuthors()}">
-                <span class="fw-bold" th:text="Автор"></span>
-                <a th:text="${author.name}" th:href="@{/author/__${author.id}__}"></a>
+            <h1 class="display-3" id="name"></h1>
+            <div id="authors">
             </div>
-            <div class="row mb-3" th:each="genre: ${book.getGenres()}">
-                <span class="fw-bold" th:text="Жанр"></span>
-                <a th:text="${genre.name}" th:href="@{/genre/__${genre.id}__}"></a>
+            <div id="genres">
             </div>
             <span class="fw-bold">Комментарии:</span>
-            <div class="card mb-3" th:each="comment: ${book.getComments()}">
-                <div class="card-body row">
-                    <div class="col">
-                        <p class="fw-bold" th:text="${comment.owner}"></p>
-                        <span th:text="${comment.comment}"></span>
-                    </div>
-                    <div class="col-auto text-end">
-                        <button type="button" class="btn btn-outline-danger" aria-label="delete"
-                                th:attr="onclick=|deleteComment(${comment.id})|">
-                            <i class="bi bi-trash alert-danger"></i>
-                        </button>
-                    </div>
-                </div>
+            <div id="comments">
             </div>
-            <form class="" th:action="@{/comment}" method="post">
+            <form method="dialog" id="createForm">
                 <div class="form-group">
                     <div class="form-group">
-                        <input name="bookId" id="bookId" type="hidden" class="form-control" th:value="${book.id}"/>
+                        <input name="bookId" id="bookId" type="hidden" class="form-control" th:value="${id}"/>
                     </div>
                     <div class="form-group mb-3">
                         <label for="comment" class="fw-bold">Добавить комментарий</label>
                         <textarea name="comment" id="comment" type="text" class="form-control"></textarea>
                     </div>
                 </div>
-                <button id="submit" class="btn btn-primary" type="submit">
+                <button class="btn btn-primary" th:attr="onclick=|addComment()|">
                     <i class="bi bi-save"></i>
                 </button>
             </form>
         </div>
     </div>
     <script>
-        const deleteComment = async (id) => {
-            await fetch(`/comment/${id}`, {
-                method: "DELETE",
-            }).then(() => location.reload());
+        const book_id = [[${id}]];
+
+        window.onload = () => {
+            getBook(book_id);
         }
+
+        const deleteComment = async (id) => {
+            fetch(`/api/v1/comment/${id}`, {
+                method: "DELETE",
+            }).then(res => res.ok ? res : Promise.reject(res))
+                .then(() => location.reload())
+                .catch((data) => console.log(data));
+            ;
+        };
+
+        const addComment = async () => {
+            var form = document.querySelector('#createForm');
+            var data = new FormData(form);
+            console.log(data);
+            fetch(`/api/v1/comment`, {
+                method: "POST",
+                body: data
+            }).then(() => location.reload());
+        };
+
+        const getBook = async (id) => {
+            fetch(`/api/v1/book/${id}`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((book) => {
+                document.title = book.name;
+                let name = document.querySelector('#name');
+                name.textContent = book.name;
+
+                let authors = document.querySelector('#authors');
+                book.authors.map(
+                    author => wrapDiv(
+                        [
+                            boldSpan('Автор'),
+                            makeLink(author.name, '/author/' + author.id)
+                        ],
+                        'row mb-3'))
+                    .forEach(item => authors.append(item));
+
+                let genres = document.querySelector('#genres');
+                book.genres.map(
+                    genre => wrapDiv(
+                        [
+                            boldSpan('Жанр'),
+                            makeLink(genre.name, '/author/' + genre.id)
+                        ],
+                        'row mb-3'))
+                    .forEach(item => genres.append(item));
+
+                let comments = document.querySelector('#comments');
+                book.comments.map(
+                    comment => {
+                        let deleteButton = document.createElement('button');
+                        deleteButton.onclick = () => {
+                            deleteComment(comment.id);
+                        };
+                        deleteButton.className = 'btn btn-outline-danger';
+                        deleteButton.append(makeIcon('bi bi-trash'));
+
+                        return wrapDiv(
+                            [
+                                wrapDiv(
+                                    [
+                                        wrapDiv([paragraph(comment.owner), span(comment.comment)], 'col'),
+                                        wrapDiv([deleteButton], 'col-auto text-end')
+                                    ],
+                                    'card-body row')
+                            ],
+                            'card mb-3'
+                        )
+                    })
+                    .forEach(item => comments.append(item));
+            });
+        };
+
+        const wrapDiv = (items, className) => {
+            let div = document.createElement('div');
+            items.forEach(item => div.append(item));
+            div.className = className;
+            return div;
+        };
+
+        const boldSpan = (text) => {
+            let span = document.createElement('span');
+            span.className = 'fw-bold';
+            span.textContent = text;
+            return span;
+        };
+
+        const paragraph = (text) => {
+            let paragraph = document.createElement('p');
+            paragraph.className = 'fw-bold';
+            paragraph.textContent = text;
+            return paragraph;
+        };
+
+        const span = (text) => {
+            let span = document.createElement('span');
+            span.textContent = text;
+            return span;
+        };
+
+        const makeLink = (text, href) => {
+            let link = document.createElement('a');
+            link.href = href;
+            link.textContent = text;
+            return link;
+        };
+
+        const makeIcon = (className) => {
+            let deleteIcon = document.createElement('i');
+            deleteIcon.className = className;
+            return deleteIcon;
+        };
     </script>
 </div>
 </body>

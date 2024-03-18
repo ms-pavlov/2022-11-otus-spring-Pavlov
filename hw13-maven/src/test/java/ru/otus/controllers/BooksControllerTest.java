@@ -7,12 +7,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.otus.config.SecurityConfig;
 import ru.otus.dto.requests.BooksRequest;
 import ru.otus.dto.responses.AuthorsShortResponse;
 import ru.otus.dto.responses.BooksResponse;
@@ -27,9 +27,11 @@ import ru.otus.services.BooksService;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BooksController.class)
+@Import({SecurityConfig.class})
 class BooksControllerTest {
 
     private static final Long BOOKS_ID = 1L;
@@ -66,23 +68,18 @@ class BooksControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
     @Test
     @DisplayName("Создание")
     void create() throws Exception {
         Mockito.when(service.create(ArgumentMatchers.eq(BOOKS_REQUEST))).thenReturn(BOOKS_RESPONSE);
 
         mockMvc.perform(
-                        post("/book/")
-                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        post("/api/v1/book/")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .param("name", BOOKS_REQUEST.getName())
                                 .param("authors", BOOKS_REQUEST.getAuthors().get(0))
-                                .param("genres", BOOKS_REQUEST.getGenres().get(0))
-                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(redirectedUrl("/"));
+                                .param("genres", BOOKS_REQUEST.getGenres().get(0)))
+                .andExpect(status().isOk());
 
         Mockito.verify(service, Mockito.times(1)).create(ArgumentMatchers.eq(BOOKS_REQUEST));
     }
@@ -92,26 +89,12 @@ class BooksControllerTest {
     void findById() throws Exception {
         Mockito.when(service.findById(ArgumentMatchers.eq(BOOKS_ID))).thenReturn(BOOKS_RESPONSE);
 
-        mockMvc.perform(get("/book/" + BOOKS_ID + "/comment"))
+        mockMvc.perform(get("/api/v1/book/" + BOOKS_ID))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("book", BOOKS_RESPONSE));
-    }
-
-    @Test
-    @DisplayName("Форма для создания книги")
-    void getForm() throws Exception {
-        mockMvc.perform(get("/book/form"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("Форма для редактирования книги")
-    void getEditForm() throws Exception {
-        Mockito.when(service.findById(ArgumentMatchers.eq(BOOKS_ID))).thenReturn(BOOKS_RESPONSE);
-
-        mockMvc.perform(get("/book/" + BOOKS_ID + "/form"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("book", BOOKS_RESPONSE));
+                .andExpect(content().json("{\"id\":1,\"name\":\"books_name\"," +
+                        "\"authors\":[{\"id\":1,\"name\":\"author\"}]," +
+                        "\"genres\":[{\"id\":1,\"name\":\"genre\"}]," +
+                        "\"comments\":[{\"id\":1,\"comment\":\"comment\"}]}"));
     }
 
     @Test
@@ -120,87 +103,40 @@ class BooksControllerTest {
         Mockito.when(service.findPage(PAGE, SIZE)).thenReturn(BOOKS_RESPONSE_PAGE);
 
         mockMvc.perform(
-                        get("/")
-                                .param("page", PAGE.toString())
-                                .param("size", SIZE.toString()))
+                        get("/api/v1/book/" + PAGE + "/" + SIZE))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("bookPage", BOOKS_RESPONSE_PAGE))
-                .andExpect(model().attribute("books", BOOKS_RESPONSE_PAGE.getContent()));
+                .andExpect(content().json("{\"content\":[]," +
+                        "\"pageable\":\"INSTANCE\"," +
+                        "\"last\":true," +
+                        "\"totalElements\":0," +
+                        "\"totalPages\":1," +
+                        "\"size\":0," +
+                        "\"number\":0," +
+                        "\"sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true}," +
+                        "\"numberOfElements\":0,\"first\":true,\"empty\":true}"));
     }
 
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
     @Test
     @DisplayName("Редактирование")
     void update() throws Exception {
         mockMvc.perform(
-                        put("/book/" + BOOKS_ID)
-                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        put("/api/v1/book/" + BOOKS_ID)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .param("name", BOOKS_REQUEST.getName())
                                 .param("authors", BOOKS_REQUEST.getAuthors().get(0))
-                                .param("genres", BOOKS_REQUEST.getGenres().get(0))
-                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(redirectedUrl(String.format("books/%d/book", BOOKS_ID)));
+                                .param("genres", BOOKS_REQUEST.getGenres().get(0)))
+                .andExpect(status().isOk());
 
         Mockito.verify(service, Mockito.times(1)).update(ArgumentMatchers.eq(BOOKS_ID), ArgumentMatchers.eq(BOOKS_REQUEST));
     }
 
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
     @Test
     @DisplayName("Удаление")
     void delete() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/book/" + BOOKS_ID)
-                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(redirectedUrl("/"));
+                        MockMvcRequestBuilders.delete("/api/v1/book/" + BOOKS_ID))
+                .andExpect(status().isOk());
 
         Mockito.verify(service, Mockito.times(1)).delete(BOOKS_ID);
-    }
-
-    @Test
-    @DisplayName("/book/** закрыто авторизацией")
-    void withoutAuth() throws Exception {
-        mockMvc.perform(
-                        post("/book/")
-                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                                .param("name", BOOKS_REQUEST.getName())
-                                .param("authors", BOOKS_REQUEST.getAuthors().get(0))
-                                .param("genres", BOOKS_REQUEST.getGenres().get(0))
-                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isUnauthorized());
-
-        mockMvc.perform(get("/book/" + BOOKS_ID + "/comment"))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(get("/book/form"))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(get("/book/" + BOOKS_ID + "/form"))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(
-                        get("/")
-                                .param("page", PAGE.toString())
-                                .param("size", SIZE.toString()))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(
-                        put("/book/" + BOOKS_ID)
-                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                                .param("name", BOOKS_REQUEST.getName())
-                                .param("authors", BOOKS_REQUEST.getAuthors().get(0))
-                                .param("genres", BOOKS_REQUEST.getGenres().get(0))
-                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isUnauthorized());
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/book/" + BOOKS_ID)
-                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isUnauthorized());
     }
 }

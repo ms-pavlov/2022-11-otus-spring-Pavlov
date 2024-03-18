@@ -10,7 +10,7 @@
 <div class="col" layout:fragment="content">
     <h1 class="display-3">Новая книга</h1>
     <div class="row">
-        <form class="" th:action="@{/book/}" method="post">
+        <form id="createForm" method="dialog">
             <div class="form-group mb-3">
                 <label for="name" th:text="Название" class="fw-bold"></label>
                 <input name="name" id="name" type="text" class="form-control"/>
@@ -49,7 +49,7 @@
                     <i class="bi bi-plus-square"></i>
                 </a>
             </div>
-            <button id="submit" class="btn btn-primary" type="submit">
+            <button class="btn btn-primary" th:attr="onclick=|addBook()|">
                 <i class="bi bi-save"></i>
             </button>
         </form>
@@ -57,6 +57,16 @@
     <script>
         var authorsCount = 1;
         var genresCount = 1;
+
+        const addBook = async () => {
+            var form = document.querySelector('#createForm');
+            var data = new FormData(form);
+            console.log(data);
+            fetch(`/api/v1/book/`, {
+                method: "POST",
+                body: data
+            }).then(() => location.replace("/"));
+        };
 
         const deleteAuthorInput = async (id) => {
             var element = document.querySelector('#author-' + id);
@@ -122,7 +132,7 @@
         }
 
         const generateAuthorInput = async () => {
-            var number = genresCount++;
+            var number = authorsCount++;
 
             var div_genre = document.createElement('div');
             div_genre.id = 'author-' + number;

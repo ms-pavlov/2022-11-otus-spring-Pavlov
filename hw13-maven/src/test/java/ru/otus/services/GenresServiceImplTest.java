@@ -2,9 +2,15 @@ package ru.otus.services;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.dto.requests.GenresRequest;
 import ru.otus.dto.responses.GenresResponse;
 import ru.otus.entities.Genre;
@@ -19,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Service для работы с жанрами должен")
-@SpringBootTest(classes = {
-        GenresServiceImpl.class
-})
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration
 class GenresServiceImplTest {
 
     private static final Long GENRES_ID = 1L;
@@ -45,12 +51,18 @@ class GenresServiceImplTest {
     private GenresRepository repository;
     @MockBean
     private GenresMapper mapper;
+    @MockBean
+    private UsersService usersService;
+
     @Autowired
     private GenresService service;
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен проверить что такой жанр ещё не создан, сохранить и вернуть результат")
-    void create() {
+    void createByAdmin() {
         when(repository.findByName(GENRES_NAME)).thenReturn(null);
         when(mapper.create(GENRE_REQUEST)).thenReturn(GENRE);
         when(repository.save(GENRE))
@@ -68,6 +80,16 @@ class GenresServiceImplTest {
     }
 
     @Test
+    @WithAnonymousUser
+    @DisplayName("создание не возможно для анонимного пользователя")
+    void createFail() {
+        assertThrows(AccessDeniedException.class, () -> service.create(GENRE_REQUEST));
+    }
+
+    @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен проверить, что такой жанр создан, и вернуть исключение")
     void createExistGenre() {
         when(repository.findByName(GENRES_NAME)).thenReturn(GENRE);
@@ -88,6 +110,9 @@ class GenresServiceImplTest {
     }
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен найти жанр по id, установить новые значения из запроса, обновить и вернуть результат")
     void update() {
         when(repository.findById(GENRES_ID))
@@ -106,6 +131,16 @@ class GenresServiceImplTest {
     }
 
     @Test
+    @WithAnonymousUser
+    @DisplayName("изменение не возможно для анонимного пользователя")
+    void updateFail() {
+        assertThrows(AccessDeniedException.class, () -> service.update(GENRES_ID, GENRE_REQUEST));
+    }
+
+    @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен проверить, что такой жанр создан, и вернуть исключение")
     void updateExistGenre() {
         when(repository.findByName(GENRES_NAME)).thenReturn(OTHER_GENRE);
@@ -114,12 +149,23 @@ class GenresServiceImplTest {
     }
 
     @Test
+    @WithMockUser(
+            roles = "ADMIN"
+    )
     @DisplayName("должен удалить жанр по id")
     void delete() {
         service.delete(GENRES_ID);
 
         verify(repository, times(1)).deleteById(GENRES_ID);
     }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("удаление не возможно для анонимного пользователя")
+    void deleteFail() {
+        assertThrows(AccessDeniedException.class, () -> service.delete(GENRES_ID));
+    }
+
 
     @Test
     @DisplayName("должен найти жанр по названию")

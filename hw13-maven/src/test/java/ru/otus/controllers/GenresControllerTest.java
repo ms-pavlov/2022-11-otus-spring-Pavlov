@@ -6,17 +6,20 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.otus.config.SecurityConfig;
 import ru.otus.dto.responses.GenresResponse;
 import ru.otus.services.GenresService;
 
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GenresController.class)
+@Import(SecurityConfig.class)
 class GenresControllerTest {
     private static final Long GENRES_ID = 1L;
     private static final String GENRES_NAME = "name";
@@ -31,22 +34,15 @@ class GenresControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @Test
     @DisplayName("Поиск жанра по id")
     void findById() throws Exception {
         Mockito.when(service.findById(GENRES_ID)).thenReturn(GENRES_RESPONSE);
 
-        mockMvc.perform(get("/genre/" + GENRES_ID))
+        mockMvc.perform(get("/api/v1/genre/" + GENRES_ID))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("genre", GENRES_RESPONSE))
-                .andExpect(model().attribute("books", GENRES_RESPONSE.getBooks()));
+                .andExpect(content().json("{\"id\":1,\"name\":\"name\",\"books\":[]}"));
     }
 
-    @Test
-    @DisplayName("/genre/** открыто")
-    void withoutAuth() throws Exception {
-        mockMvc.perform(get("/genre/" + GENRES_ID))
-                .andExpect(status().isOk());
-    }
+
 }

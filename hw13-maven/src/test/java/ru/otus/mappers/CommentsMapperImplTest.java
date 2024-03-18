@@ -40,6 +40,8 @@ class CommentsMapperImplTest {
 
     @MockBean
     private BooksRepository booksRepository;
+    @MockBean
+    private UsersRepository usersRepository;
 
     @Autowired
     private CommentsMapper mapper;

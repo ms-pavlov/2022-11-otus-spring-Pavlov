@@ -3,7 +3,7 @@
       layout:decorate=="~{layout/layout}">
 
 <head>
-    <title th:text="${author.name}"></title>
+    <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
@@ -11,7 +11,7 @@
 <div class="col" layout:fragment="content">
     <div class="card">
         <div class="card-header">
-            <h1 class="display-3" th:text="${author.name}"></h1>
+            <h1 class="display-3" id="title"></h1>
         </div>
         <div class="card-body">
             <div th:replace="~{books/fragments/list :: books}" class="footer">
@@ -19,6 +19,27 @@
             </div>
         </div>
     </div>
+    <script>
+        const author_id = [[${id}]];
+
+        window.onload = () => {
+            getAuthor(author_id);
+        }
+
+        const getAuthor = async (id) => {
+            fetch(`/api/v1/author/${id}`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((author) => {
+                var title = document.querySelector('#title');
+                title.textContent = author.name;
+                document.title = author.name;
+                cleanBooksTable();
+                loadBooks(author.books);
+            });
+        }
+    </script>
 </div>
 </body>
 </html>
