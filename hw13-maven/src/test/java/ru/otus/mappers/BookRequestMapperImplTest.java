@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.dto.requests.BooksRequest;
-import ru.otus.dto.responses.CommentsResponse;
 import ru.otus.entities.Author;
 import ru.otus.entities.Book;
 import ru.otus.entities.Comment;
@@ -26,7 +25,6 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = {
         AuthorsRepository.class,
         GenresRepository.class,
-        CommentsMapper.class,
         BookRequestMapperImpl.class
 })
 class BookRequestMapperImplTest {
@@ -53,8 +51,6 @@ class BookRequestMapperImplTest {
     private AuthorsRepository authorsRepository;
     @MockBean
     private GenresRepository genresRepository;
-    @MockBean
-    private CommentsMapper commentsMapper;
 
     @Autowired
     private BookRequestMapper mapper;
@@ -126,8 +122,6 @@ class BookRequestMapperImplTest {
     @Test
     @DisplayName("создавать BooksResponse на основе Books")
     void toFullDto() {
-        when(commentsMapper.toDto(TEST_COMMENT)).thenReturn(new CommentsResponse(null, COMMENTS_TEXT, null, null));
-
         var result = mapper.toFullDto(TEST_BOOK);
 
         assertEquals(TEST_BOOK.getId(), result.getId());
