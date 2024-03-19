@@ -1,0 +1,36 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/master.xml
+    contexts: prod
+  datasource:
+    url: jdbc:h2:~/library;DB_CLOSE_DELAY=-1
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - metrics
+          - health
+          - liquibase
+          - loggers
+          - logfile
+          - prometheus
+          - beans
+      base-path: /monitor
+  endpoint:
+    health:
+      show-details: always
+    logfile:
+      enabled: true
+    prometheus:
+      enabled: true
+logging:
+  file:
+    name: application.log
+  pattern:
+    dateformat: dd MMM yyyy hh:mm:ss.SSS
