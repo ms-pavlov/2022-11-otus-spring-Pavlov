@@ -29,7 +29,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public UsersResponse create(UsersRequest request) {
         User user = Optional.of(request)
@@ -39,7 +39,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UsersResponse> findAll() {
         return usersRepository.findAll()
                 .stream()

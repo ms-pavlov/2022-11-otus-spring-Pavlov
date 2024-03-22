@@ -26,7 +26,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public AuthorsResponse create(AuthorsRequest request) {
         if (repository.findByName(request.getName()) != null) {
@@ -48,7 +48,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public AuthorsResponse update(Long id, AuthorsRequest request) {
         Optional.ofNullable(request)
@@ -71,7 +71,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(Long id) {
         repository.deleteById(id);
     }

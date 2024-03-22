@@ -26,7 +26,7 @@ public class GenresServiceImpl implements GenresService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional //findByName - без транзакции, save - открывает транзакцию по-умолчанию
     public GenresResponse create(GenresRequest request) {
         if (repository.findByName(request.getName()) != null) {
@@ -48,7 +48,7 @@ public class GenresServiceImpl implements GenresService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional //findByName, findById - без транзакции, save - открывает транзакцию по-умолчанию
     public GenresResponse update(Long id, GenresRequest request) {
         Optional.ofNullable(request)
@@ -72,7 +72,7 @@ public class GenresServiceImpl implements GenresService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(Long id) {
         repository.deleteById(id);
     }

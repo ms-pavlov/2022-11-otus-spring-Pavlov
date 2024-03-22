@@ -41,7 +41,7 @@ class FilterControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Поиск")

@@ -29,7 +29,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public BooksResponse create(BooksRequest request) {
         return Optional.ofNullable(request)
                 .map(mapper::create)
@@ -47,7 +47,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional //findById без транзакции, save - открывает транзакцию по-умолчанию
     public BooksResponse update(Long id, BooksRequest request) {
         return booksRepository.findById(id)
@@ -61,7 +61,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void delete(Long id) {
         commentsRepository.deleteByBookId(id);
