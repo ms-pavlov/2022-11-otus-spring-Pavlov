@@ -14,7 +14,7 @@ import ru.otus.models.AnonimusUD;
 
 @EnableWebSecurity
 @Configuration
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
