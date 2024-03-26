@@ -36,7 +36,7 @@ class AuthorControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Поиск автора по id")

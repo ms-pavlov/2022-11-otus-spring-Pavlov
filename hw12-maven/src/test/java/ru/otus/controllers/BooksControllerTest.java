@@ -68,7 +68,7 @@ class BooksControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Создание")
@@ -89,7 +89,7 @@ class BooksControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Получение книги по id с комментариями")
@@ -103,7 +103,7 @@ class BooksControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Форма для создания книги")
@@ -114,7 +114,7 @@ class BooksControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Форма для редактирования книги")
@@ -128,7 +128,7 @@ class BooksControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Постраничный вывод")
@@ -146,7 +146,7 @@ class BooksControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Редактирование")
@@ -165,7 +165,7 @@ class BooksControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Удаление")

@@ -24,7 +24,9 @@
         <module>hw10-maven</module>
         <module>hw11-maven</module>
         <module>hw12-maven</module>
+        <module>hw13-maven</module>
         <module>hw14-maven</module>
+        <module>hw15-maven</module>
         <module>hw17-maven</module>
         <module>hw16-maven</module>
     </modules>

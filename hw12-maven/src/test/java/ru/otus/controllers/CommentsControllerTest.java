@@ -30,7 +30,7 @@ class CommentsControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Добавление комментария")
@@ -48,7 +48,7 @@ class CommentsControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Удаление комментария")
