@@ -1,0 +1,173 @@
+openapi: 3.0.0
+info:
+  title: Endpoint для приема входящих сообщений
+  description: |-
+    API для приема входящих сообщений
+  termsOfService: http://localhost/
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081/api/v1
+tags:
+  - name: order_action
+    description: Действия над заказами
+  - name: key
+    description: Ключ для верификации JWT
+  - name: token
+    description: Токен
+paths:
+  /key:
+    get:
+      tags:
+        - key
+      summary: получение ключа
+      description: получение ключа для верификации JWT
+      operationId: getKey
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+  /order/action:
+    post:
+      tags:
+        - order_action
+      summary: Обработак сообщений
+      description: Обработак сообщений
+      operationId: processMessages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderAction'
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderActionResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+  /token/{scope}:
+    get:
+      tags:
+        - token
+      summary: Токена с контекстом
+      description: Получить токен
+      operationId: getToken
+      parameters:
+        - name: scope
+          in: path
+          description: контекст
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+      security:
+        - bearerAuth: [ ]
+components:
+  schemas:
+    KeyResponse:
+      type: object
+      properties:
+        key:
+          title: Ключ для верификации JWT
+          type: string
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            example: Описание ошибки
+            type: string
+    TokenResponse:
+      type: object
+      properties:
+        scope:
+          title: контекст
+          type: string
+          example: customer
+        token:
+          title: токен
+          type: string
+    OrderActionResponse:
+      type: object
+      properties:
+        status:
+          title: Статус
+          type: string
+          example: ACCEPTED
+        message:
+          type: object
+          additionalProperties:
+            type: string
+    OrderAction:
+      type: object
+      title: Сообщение
+      properties:
+        guid:
+          title: guid сообщения
+          type: string
+          format: uuid
+        token:
+          title: токен
+          type: string
+        order:
+          title: id заказа
+          type: integer
+          format: int64
+          example: 1
+        action:
+          title: id команды
+          type: integer
+          format: int64
+          example: 0
+        args:
+          additionalProperties:
+            type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
