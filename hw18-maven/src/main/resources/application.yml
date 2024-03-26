@@ -1,0 +1,38 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/master.xml
+    contexts: prod
+  datasource:
+    url: jdbc:h2:~/library;DB_CLOSE_DELAY=-1
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+resilience4j.retry:
+  instances:
+    bookRetry:
+      maxAttempts: 3
+      waitDuration: 100ms
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 100
+        permittedNumberOfCallsInHalfOpenState: 1
+        slowCallDurationThreshold: 4s
+        slowCallRateThreshold: 1
+        failureRateThreshold: 1
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 1
+    instances:
+      bookCircuitBreaker:
+        baseConfig: default
+        waitDurationInOpenState: 20s
+        slowCallDurationThreshold: 100ms
+resilience4j.rateLimiter:
+  configs:
+    default:
+      timeoutDuration: 5s
+      limitForPeriod: 5
+      limit-refresh-period: 10s

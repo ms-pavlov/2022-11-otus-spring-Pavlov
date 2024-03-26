@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title th:text="Комментарии"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+
+<div class="col" layout:fragment="content">
+    <div class="card">
+        <div class="card-body">
+            <span class="fw-bold">Комментарии:</span>
+            <div class="card mb-3" id="comments">
+            </div>
+        </div>
+    </div>
+    <script>
+        const deleteComment = async (id) => {
+            await fetch(`/api/v1/comment/${id}`, {
+                method: "DELETE",
+            }).then(res => res.ok ? res : Promise.reject(res))
+                .then(() => location.reload())
+                .catch((data) => console.log(data));
+            ;
+        }
+
+        window.onload = () => {
+            fetch(`/api/v1/comment`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((comments => {
+                let commentsDiv = document.querySelector('#comments');
+                comments.map(
+                    comment => {
+                        let deleteButton = document.createElement('button');
+                        deleteButton.onclick = () => {
+                            deleteComment(comment.id);
+                        };
+                        deleteButton.className = 'btn btn-outline-danger';
+                        deleteButton.append(makeIcon('bi bi-trash'));
+
+                        return wrapDiv(
+                            [
+                                wrapDiv(
+                                    [
+                                        wrapDiv([paragraph(comment.owner), span(comment.comment)], 'col'),
+                                        wrapDiv([deleteButton], 'col-auto text-end')
+                                    ],
+                                    'card-body row')
+                            ],
+                            'card mb-3'
+                        )
+                    })
+                    .forEach(item => commentsDiv.append(item));
+            }))
+        }
+
+        const wrapDiv = (items, className) => {
+            let div = document.createElement('div');
+            items.forEach(item => div.append(item));
+            div.className = className;
+            return div;
+        };
+
+        const paragraph = (text) => {
+            let paragraph = document.createElement('p');
+            paragraph.className = 'fw-bold';
+            paragraph.textContent = text;
+            return paragraph;
+        };
+
+        const span = (text) => {
+            let span = document.createElement('span');
+            span.textContent = text;
+            return span;
+        };
+
+        const makeIcon = (className) => {
+            let deleteIcon = document.createElement('i');
+            deleteIcon.className = className;
+            return deleteIcon;
+        };
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="library_v011_authorities" author="ms-pavlov" context="prod">
+        <createSequence dataType="INT"
+                        sequenceName="authorities_seq"/>
+        <createTable tableName="authorities">
+            <column name="id" type="INT" defaultValueSequenceNext="authorities_seq">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="access" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints primaryKey="true"
+                             nullable="false"
+                             foreignKeyName="fk_users_authorities"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -34,7 +34,7 @@ class GenresControllerTest {
 
     @WithMockUser(
             username = "admin",
-            authorities = {"ROLE_ADMIN"}
+            authorities = {"ADMIN"}
     )
     @Test
     @DisplayName("Поиск жанра по id")
