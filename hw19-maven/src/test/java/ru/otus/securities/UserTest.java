@@ -2,6 +2,7 @@ package ru.otus.securities;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.otus.model.entities.User;
 
 import java.util.List;
 
@@ -22,12 +23,12 @@ class UserTest {
 
     @Test
     void username() {
-        assertEquals(USER_NAME, user.username());
+        assertEquals(USER_NAME, user.getLogin());
     }
 
     @Test
     void password() {
-        assertEquals(PASSWORD, user.password());
+        assertEquals(PASSWORD, user.getPassword());
     }
 
     @Test
@@ -39,7 +40,7 @@ class UserTest {
 
     @Test
     void accesses() {
-        assertNotNull(user.accesses());
+        assertNotNull(user.getAccesses());
     }
 
     @Test

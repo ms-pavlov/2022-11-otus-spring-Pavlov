@@ -2,6 +2,7 @@ package ru.otus.securities;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.otus.model.entities.User;
 
 import java.util.Collection;
 import java.util.function.Function;
@@ -23,12 +24,12 @@ public class UserDetailsAdapter implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.password();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.username();
+        return user.getLogin();
     }
 
     @Override

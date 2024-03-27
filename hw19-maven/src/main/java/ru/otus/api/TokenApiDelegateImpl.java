@@ -24,14 +24,13 @@ public class TokenApiDelegateImpl implements TokenApiDelegate {
     public Mono<ResponseEntity<TokenResponse>> getToken(String scope, ServerWebExchange exchange) {
         return exchange.getPrincipal()
                 .flatMap(
-                        principal -> Mono.just(
-                                Optional.ofNullable(principal)
-                                        .map(Principal::getName)
-                                        .map(usersService::getUser)
-                                        .map(user -> new TokenResponse()
-                                                .scope(scope)
-                                                .token(tokenFactory.create(scope, user)))
-                                        .map(ResponseEntity::ok)
-                                        .orElseGet(() -> ResponseEntity.badRequest().build())));
+                        principal -> Optional.ofNullable(principal)
+                                .map(Principal::getName)
+                                .map(usersService::getUser)
+                                .map(user -> user
+                                        .map(value -> tokenFactory.create(scope, value))
+                                        .map(token -> new TokenResponse().scope(scope).token(token))
+                                        .map(ResponseEntity::ok))
+                                .orElseGet(() -> Mono.just(ResponseEntity.badRequest().build())));
     }
 }

@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.otus.model.entities.User;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ class TokenFactoryImplTest {
 
             assertEquals(ACCESSES, accesses);
             assertEquals(TEST_SCOPE, body.get("scope", String.class));
-            assertEquals(USER.username(), body.getSubject());
+            assertEquals(USER.getLogin(), body.getSubject());
         });
     }
 }

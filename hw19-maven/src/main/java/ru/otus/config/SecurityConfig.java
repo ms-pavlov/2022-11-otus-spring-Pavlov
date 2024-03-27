@@ -9,11 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import ru.otus.model.entities.User;
 import ru.otus.securities.AnonimusUD;
-import ru.otus.securities.User;
 import ru.otus.securities.UserDetailsAdapter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Function;
 
 @EnableWebFluxSecurity
@@ -49,7 +51,7 @@ public class SecurityConfig {
     @Bean
     public Function<User, Collection<? extends GrantedAuthority>> authoritiesStrategy() {
         return user -> Optional.ofNullable(user)
-                .map(User::accesses)
+                .map(User::getAccesses)
                 .orElseGet(ArrayList::new)
                 .stream()
                 .map(access -> (GrantedAuthority) () -> access)
@@ -59,15 +61,6 @@ public class SecurityConfig {
     @Bean
     public Function<User, UserDetails> userDetailsAdapter(Function<User, Collection<? extends GrantedAuthority>> authoritiesStrategy) {
         return user -> new UserDetailsAdapter(user, authoritiesStrategy);
-    }
-
-    @Bean
-    public Map<String, User> users(PasswordEncoder passwordEncoder) {
-        return Map.of(
-                "user1", new User("user1", passwordEncoder.encode("1234567"), List.of("customer", "manager", "admin")),
-                "user2", new User("user2", passwordEncoder.encode("1234567"), List.of("manager")),
-                "user3", new User("user3", passwordEncoder.encode("1234567"))
-        );
     }
 
 }

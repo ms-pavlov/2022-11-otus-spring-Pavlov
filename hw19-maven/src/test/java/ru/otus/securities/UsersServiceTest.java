@@ -8,8 +8,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
+import reactor.core.publisher.Mono;
+import ru.otus.mappers.UserMapper;
+import ru.otus.model.entities.User;
+import ru.otus.repositories.UsersRepository;
 
-import java.util.Map;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +26,9 @@ class UsersServiceTest {
 
 
     @Mock
-    private Map<String, User> users;
+    private UsersRepository usersRepository;
+    @Mock
+    private UserMapper userMapper;
     @Mock
     private UserDetails userDetail;
     @Mock
@@ -33,18 +38,18 @@ class UsersServiceTest {
 
     @BeforeEach
     void setUp() {
-        userDetailsService = new UsersServiceImpl(users, userDetailsAdapter);
+        userDetailsService = new UsersServiceImpl(usersRepository, userMapper, userDetailsAdapter);
     }
 
     @Test
     @DisplayName("Возвращает UserDetails по имени")
     void findByUsername() {
-        when(users.get(TEST_USER_NAME)).thenReturn(TEST_USER);
+        when(usersRepository.findByLogin(TEST_USER_NAME)).thenReturn(Mono.just(TEST_USER));
         when(userDetailsAdapter.apply(TEST_USER)).thenReturn(userDetail);
 
         var result = userDetailsService.findByUsername(TEST_USER_NAME);
 
         assertEquals(userDetail, result.block());
-        verify(users, times(1)).get(TEST_USER_NAME);
+        verify(usersRepository, times(1)).findByLogin(TEST_USER_NAME);
     }
 }
