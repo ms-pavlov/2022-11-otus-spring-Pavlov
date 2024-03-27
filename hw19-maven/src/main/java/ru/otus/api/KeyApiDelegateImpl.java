@@ -4,9 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import ru.otus.securities.KeyService;
 import ru.otus.openapi.api.KeyApiDelegate;
 import ru.otus.openapi.model.KeyResponse;
+import ru.otus.securities.KeyService;
 
 import java.security.PublicKey;
 import java.util.Base64;

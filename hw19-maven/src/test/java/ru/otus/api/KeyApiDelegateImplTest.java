@@ -10,9 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ServerWebExchange;
-import ru.otus.securities.KeyService;
 import ru.otus.openapi.api.KeyApiDelegate;
 import ru.otus.openapi.model.KeyResponse;
+import ru.otus.securities.KeyService;
 
 import java.security.KeyPair;
 import java.util.Base64;
