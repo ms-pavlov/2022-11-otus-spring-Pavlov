@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.mappers.UserMapper;
-import ru.otus.model.dto.input.UserRequestDto;
-import ru.otus.model.dto.output.UserResponseDto;
 import ru.otus.model.entities.User;
+import ru.otus.openapi.model.UserRequest;
+import ru.otus.openapi.model.UserResponse;
 import ru.otus.repositories.UsersRepository;
 
 import java.util.function.Function;
@@ -35,7 +36,7 @@ public class UsersServiceImpl implements ReactiveUserDetailsService, UsersServic
     }
 
     @Override
-    public Mono<UserResponseDto> create(UserRequestDto user) {
+    public Mono<UserResponse> create(UserRequest user) {
         return usersRepository.save(userMapper.create(user))
                 .map(userMapper::toDto);
     }
@@ -43,5 +44,19 @@ public class UsersServiceImpl implements ReactiveUserDetailsService, UsersServic
     @Override
     public Mono<Boolean> existsByUsername(String username) {
         return usersRepository.existsByLogin(username);
+    }
+
+    @Override
+    public Flux<UserResponse> getUsers() {
+        return usersRepository.findAll()
+                .map(userMapper::toDto);
+    }
+
+    @Override
+    public Mono<UserResponse> update(String id, UserRequest request) {
+        return usersRepository.findById(id)
+                .map(user -> userMapper.update(user, request))
+                .doOnSuccess(usersRepository::save)
+                .map(userMapper::toDto);
     }
 }

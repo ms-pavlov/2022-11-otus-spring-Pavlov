@@ -1,12 +1,14 @@
 package ru.otus.mappers;
 
-import ru.otus.model.dto.input.UserRequestDto;
-import ru.otus.model.dto.output.UserResponseDto;
 import ru.otus.model.entities.User;
+import ru.otus.openapi.model.UserRequest;
+import ru.otus.openapi.model.UserResponse;
 
 public interface UserMapper {
 
-    User create(UserRequestDto request);
+    User create(UserRequest request);
 
-    UserResponseDto toDto(User user);
+    User update(User entity, UserRequest request);
+
+    UserResponse toDto(User user);
 }

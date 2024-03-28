@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
-import ru.otus.model.dto.input.UserRequestDto;
+import ru.otus.openapi.model.UserRequest;
 import ru.otus.securities.UsersService;
 
 import java.util.List;
@@ -18,7 +18,9 @@ public class AdminConfig {
     @EventListener(ApplicationStartedEvent.class)
     public void runAfterStartup() {
         if (Boolean.FALSE.equals(usersService.existsByUsername("admin").block())) {
-            usersService.create(new UserRequestDto("admin", "admin", List.of("ADMIN"))).block();
+            usersService.create(
+                    new UserRequest("admin", "admin", "admin")
+                            .accesses(List.of(UserRequest.AccessesEnum.ADMIN))).block();
         }
     }
 }

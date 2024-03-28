@@ -14,6 +14,12 @@ tags:
     description: Ключ для верификации JWT
   - name: token
     description: Токен
+  - name: scope
+    description: Ограниченный контекст
+  - name: package
+    description: Пакеты выражений
+  - name: users
+    description: Пользователи
 paths:
   /key:
     get:
@@ -39,8 +45,8 @@ paths:
     post:
       tags:
         - order_action
-      summary: Обработак сообщений
-      description: Обработак сообщений
+      summary: Обработка сообщений
+      description: Обработка сообщений
       operationId: processMessages
       requestBody:
         content:
@@ -54,6 +60,200 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderActionResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+  /scope/:
+    get:
+      tags:
+        - scope
+      summary: Список контекстов
+      description: Получение списка контекстов
+      operationId: getScopes
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScopeResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+    post:
+      tags:
+        - scope
+      summary: Новый контекст
+      description: Создание нового контекста
+      operationId: createScopes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScopeRequest'
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScopeResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+  /package/:
+    get:
+      tags:
+        - package
+      summary: Пакеты выражений
+      description: Список пакета выражений
+      operationId: getPackages
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PackageResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+  /user/:
+    get:
+      tags:
+        - users
+      summary: Список список пользователей
+      description: Получение списка контекстов
+      operationId: getUsers
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+    post:
+      tags:
+        - users
+      summary: Новый пользователь
+      description: Создание нового пользователя
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+  /user/{id}:
+    put:
+      tags:
+        - users
+      summary: Новый пользователь
+      description: Создание нового пользователя
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          description: id пользователя
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
         '400':
           description: ошибка запроса
           content:
@@ -165,6 +365,120 @@ components:
           example: 0
         args:
           additionalProperties:
+            type: string
+    ScopeResponse:
+      type: object
+      title: Контекст
+      properties:
+        id:
+          title: id контекста
+          type: string
+        name:
+          title: Название
+          type: string
+          example: user
+        description:
+          title: Название
+          type: string
+          example: user
+        packages:
+          title: Доступные пакеты
+          type: array
+          items:
+            type: string
+    ScopeRequest:
+      type: object
+      title: Контекст
+      properties:
+        name:
+          title: Название
+          type: string
+          example: user
+        description:
+          title: Название
+          type: string
+          example: Контекст для простого пользователя
+        packages:
+          title: Доступные пакеты
+          type: array
+          items:
+            type: string
+    PackageResponse:
+      type: object
+      title: Пакет выражений
+      properties:
+        name:
+          title: Название
+          type: string
+          example: createOrderByUser
+        description:
+          title: Название
+          type: string
+          example: Создание заказа пользователем по умолчанию
+        expressions:
+          title: Выражения
+          type: array
+          example: Создать заказ
+          items:
+            type: string
+    UserRequest:
+      type: object
+      title: Пользователь
+      required:
+        - login
+        - password
+        - passwordConfirmation
+      properties:
+        name:
+          title: Имя
+          type: string
+        login:
+          title: login
+          type: string
+        password:
+          title: пароль
+          type: string
+        passwordConfirmation:
+          title: подтверждение пароля
+          type: string
+        accesses:
+          title: список доступов
+          type: array
+          items:
+            type: string
+            enum:
+              - ADMIN
+              - USER
+        scopes:
+          title: список контекстов
+          type: array
+          items:
+            type: string
+    UserResponse:
+      type: object
+      title: Пользователь
+      properties:
+        id:
+          title: id пользователя
+          type: string
+        name:
+          title: Имя
+          type: string
+        login:
+          title: login
+          type: string
+        accesses:
+          title: список доступов
+          type: array
+          items:
+            type: string
+            enum:
+              - ADMIN
+              - USER
+        scopes:
+          title: список контекстов
+          type: array
+          items:
             type: string
   securitySchemes:
     bearerAuth:
