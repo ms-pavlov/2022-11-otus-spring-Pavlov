@@ -1,4 +1,4 @@
-package ru.otus.securities;
+package ru.otus.securities.services;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

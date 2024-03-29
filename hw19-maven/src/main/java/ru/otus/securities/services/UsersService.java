@@ -1,4 +1,4 @@
-package ru.otus.securities;
+package ru.otus.securities.services;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

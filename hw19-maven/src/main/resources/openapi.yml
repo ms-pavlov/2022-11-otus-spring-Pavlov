@@ -10,6 +10,8 @@ servers:
 tags:
   - name: order_action
     description: Действия над заказами
+  - name: action
+    description: Описания действий
   - name: key
     description: Ключ для верификации JWT
   - name: token
@@ -35,6 +37,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/KeyResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+  /action/:
+    post:
+      tags:
+        - action
+      summary: Регистрация действия
+      description: Регистрация действия
+      operationId: addAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionRequest'
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+    get:
+      tags:
+        - action
+      summary: Список действия
+      description: Список действия
+      operationId: getAll
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ActionResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
         default:
           description: Unexpected error
           content:
@@ -151,7 +207,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PackageResponse'
+                  $ref: '#/components/schemas/PackagesGroupResponse'
         '400':
           description: ошибка запроса
           content:
@@ -403,6 +459,22 @@ components:
           type: array
           items:
             type: string
+    PackagesGroupResponse:
+      type: object
+      title: Группа пакетов выражений
+      properties:
+        name:
+          title: Название
+          type: string
+          example: createOrder
+        description:
+          title: Описание
+          type: string
+          example: Создание заказа
+        packages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackageResponse'
     PackageResponse:
       type: object
       title: Пакет выражений
@@ -412,15 +484,9 @@ components:
           type: string
           example: createOrderByUser
         description:
-          title: Название
+          title: Описание
           type: string
           example: Создание заказа пользователем по умолчанию
-        expressions:
-          title: Выражения
-          type: array
-          example: Создать заказ
-          items:
-            type: string
     UserRequest:
       type: object
       title: Пользователь
@@ -480,6 +546,28 @@ components:
           type: array
           items:
             type: string
+    ActionRequest:
+      type: object
+      title: Действие
+      properties:
+        actionId:
+          title: id действия
+          type: integer
+          format: int64
+        expression:
+          title: выражение
+          type: string
+    ActionResponse:
+      type: object
+      title: Действие
+      properties:
+        actionId:
+          title: id действия
+          type: integer
+          format: int64
+        expression:
+          title: выражение
+          type: string
   securitySchemes:
     bearerAuth:
       type: http

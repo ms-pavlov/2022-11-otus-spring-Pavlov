@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import ru.otus.openapi.api.UserApiDelegate;
 import ru.otus.openapi.model.UserRequest;
 import ru.otus.openapi.model.UserResponse;
-import ru.otus.securities.UsersService;
+import ru.otus.securities.services.UsersService;
 
 @Service
 @AllArgsConstructor

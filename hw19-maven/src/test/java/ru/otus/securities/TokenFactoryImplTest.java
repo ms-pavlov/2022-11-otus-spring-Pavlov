@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.model.entities.User;
+import ru.otus.securities.services.KeyService;
+import ru.otus.securities.services.KeyServiceImpl;
 
 import java.util.List;
 
@@ -21,17 +23,17 @@ class TokenFactoryImplTest {
             ACCESSES);
     private final static KeyService KEY_SERVICE = new KeyServiceImpl();
 
-    private TokenFactory tokenFactory;
+    private TokenService tokenService;
 
     @BeforeEach
     void setUp() {
-        tokenFactory = new TokenFactoryImpl(KEY_SERVICE);
+        tokenService = new TokenServiceImpl(KEY_SERVICE);
     }
 
     @Test
     @DisplayName("Создает токен подписанный закрытым ключем, который содержит имя пользователя, uuid игры и доступные к управлению в игре объекты")
     void create() {
-        var result = tokenFactory.create(TEST_SCOPE, USER);
+        var result = tokenService.create(TEST_SCOPE, USER);
 
         assertDoesNotThrow(() -> {
             Claims body = (Claims) Jwts.parserBuilder()

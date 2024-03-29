@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import ru.otus.expressions.services.ScopeService;
 import ru.otus.openapi.api.ScopeApiDelegate;
 import ru.otus.openapi.model.ScopeRequest;
 import ru.otus.openapi.model.ScopeResponse;
-import ru.otus.securities.ScopeService;
 
 @Service
 @AllArgsConstructor

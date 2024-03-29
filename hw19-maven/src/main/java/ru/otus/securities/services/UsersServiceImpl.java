@@ -1,4 +1,4 @@
-package ru.otus.securities;
+package ru.otus.securities.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -11,6 +11,7 @@ import ru.otus.model.entities.User;
 import ru.otus.openapi.model.UserRequest;
 import ru.otus.openapi.model.UserResponse;
 import ru.otus.repositories.UsersRepository;
+import ru.otus.securities.AnonimusUD;
 
 import java.util.function.Function;
 

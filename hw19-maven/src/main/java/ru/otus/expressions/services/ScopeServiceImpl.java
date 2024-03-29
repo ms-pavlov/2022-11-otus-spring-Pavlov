@@ -1,4 +1,4 @@
-package ru.otus.securities;
+package ru.otus.expressions.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

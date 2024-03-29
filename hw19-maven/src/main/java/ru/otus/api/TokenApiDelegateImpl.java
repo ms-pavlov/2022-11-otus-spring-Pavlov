@@ -7,8 +7,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import ru.otus.openapi.api.TokenApiDelegate;
 import ru.otus.openapi.model.TokenResponse;
-import ru.otus.securities.TokenFactory;
-import ru.otus.securities.UsersService;
+import ru.otus.securities.TokenService;
+import ru.otus.securities.services.UsersService;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class TokenApiDelegateImpl implements TokenApiDelegate {
 
-    private final TokenFactory tokenFactory;
+    private final TokenService tokenService;
     private final UsersService usersService;
 
     @Override
@@ -28,7 +28,7 @@ public class TokenApiDelegateImpl implements TokenApiDelegate {
                                 .map(Principal::getName)
                                 .map(usersService::getUser)
                                 .map(user -> user
-                                        .map(value -> tokenFactory.create(scope, value))
+                                        .map(value -> tokenService.create(scope, value))
                                         .map(token -> new TokenResponse().scope(scope).token(token))
                                         .map(ResponseEntity::ok))
                                 .orElseGet(() -> Mono.just(ResponseEntity.badRequest().build())));

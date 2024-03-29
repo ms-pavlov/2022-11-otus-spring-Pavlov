@@ -4,7 +4,7 @@ springdoc:
   api-docs:
     path: /api-docs
   swagger-ui:
-    path: /
+    path: /openapi
 spring:
   data:
     mongodb:
@@ -14,5 +14,9 @@ spring:
       port: 27018
       host: localhost
       database: orders
+  thymeleaf:
+    reactive:
+      max-chunk-size: 10MB
+    prefix: classpath:/templates
 eventLoopThreadPoolSize: 2
 dataSourceExecutorThreadPoolSize: 4

@@ -5,7 +5,7 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import ru.otus.openapi.model.UserRequest;
-import ru.otus.securities.UsersService;
+import ru.otus.securities.services.UsersService;
 
 import java.util.List;
 

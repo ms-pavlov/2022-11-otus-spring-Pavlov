@@ -6,7 +6,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import ru.otus.openapi.api.KeyApiDelegate;
 import ru.otus.openapi.model.KeyResponse;
-import ru.otus.securities.KeyService;
+import ru.otus.securities.services.KeyService;
 
 import java.security.PublicKey;
 import java.util.Base64;

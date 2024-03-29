@@ -1,8 +1,10 @@
 package ru.otus.securities;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
 import ru.otus.model.entities.User;
+import ru.otus.securities.services.KeyService;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,12 +13,12 @@ import java.util.Date;
 import java.util.Optional;
 
 @Component
-public class TokenFactoryImpl implements TokenFactory {
+public class TokenServiceImpl implements TokenService {
 
     private final KeyService keyService;
 
 
-    public TokenFactoryImpl(KeyService keyService) {
+    public TokenServiceImpl(KeyService keyService) {
         this.keyService = keyService;
     }
 
@@ -37,5 +39,15 @@ public class TokenFactoryImpl implements TokenFactory {
                                 .orElseGet(user::getDefaultAccess)
                 )
                 .compact();
+    }
+
+    @Override
+    public Claims parse(String token) {
+        var jwt = Jwts.parserBuilder()
+                .setSigningKey(keyService.getPublic())
+                .build()
+                .parse(token);
+
+        return (Claims) jwt.getBody();
     }
 }
