@@ -324,6 +324,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Errors'
+  /user/{id}/scope/{scope}:
+    put:
+      tags:
+        - users
+      summary: Сменить область видимости
+      description: Сменить область видимости
+      operationId: changeScope
+      parameters:
+        - name: id
+          in: path
+          description: id пользователя
+          required: true
+          schema:
+            type: string
+        - name: scope
+          in: path
+          description: Область видимости
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешное выполнение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: ошибка запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
   /token/{scope}:
     get:
       tags:
@@ -532,6 +573,9 @@ components:
           type: string
         login:
           title: login
+          type: string
+        currentScope:
+          title: Текущая область видимости
           type: string
         accesses:
           title: список доступов

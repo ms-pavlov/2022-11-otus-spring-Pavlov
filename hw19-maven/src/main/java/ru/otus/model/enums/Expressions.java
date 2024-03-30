@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 public enum Expressions {
 
     PROCESS_ORDER_MESSAGE("OrderAction::process", "Выполнить действие над заказом"),
+    GET_TOKEN_FOR_ORDER_ACTION("OrderAction::getToken", "Получить токен из сообщения"),
+    GET_CURRENT_SCOPE("Token::getScope", "Получить область видимости из токена"),
+    PARSE_TOKEN("Token::parse", "Верифицировать и распарсить токен"),
+    CHANGE_SCOPE("Scope::change", "Сменить область видимости"),
     CREATE_ORDER("Order::create", "Создать заказ");
 
 

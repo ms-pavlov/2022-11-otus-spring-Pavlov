@@ -19,17 +19,16 @@ public class PackageServiceImpl implements PackageService {
 
     private final Table<Expressions, ScopePackages, ExpressionFactory> packages;
 
-
-    public PackageServiceImpl(Map<String, ExpressionFactory> expressionSource) {
+    public PackageServiceImpl() {
         this.packages = HashBasedTable.create();
-        expressionSource.forEach(
-                (name, expressionFactory) -> {
-                    ExpressionsComponent component = expressionFactory.getClass().getAnnotation(ExpressionsComponent.class);
-                    if (null != component) {
-                        packages.put(component.expression(), component.scopePackages(), expressionFactory);
-                    }
-                }
-        );
+    }
+
+    @Override
+    public void put(ExpressionFactory expressionFactory) {
+        ExpressionsComponent component = expressionFactory.getClass().getAnnotation(ExpressionsComponent.class);
+        if (null != component) {
+            packages.put(component.expression(), component.scopePackages(), expressionFactory);
+        }
     }
 
     @Override
@@ -61,6 +60,6 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public Map<Expressions, ExpressionFactory> getPackageExpressions(String packageName) {
         return packages.columnMap()
-                .get(ScopePackages.getByName(packageName));
+                .getOrDefault(ScopePackages.getByName(packageName), Map.of());
     }
 }

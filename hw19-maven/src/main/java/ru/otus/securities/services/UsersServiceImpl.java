@@ -57,7 +57,7 @@ public class UsersServiceImpl implements ReactiveUserDetailsService, UsersServic
     public Mono<UserResponse> update(String id, UserRequest request) {
         return usersRepository.findById(id)
                 .map(user -> userMapper.update(user, request))
-                .doOnSuccess(usersRepository::save)
+                .flatMap(usersRepository::save)
                 .map(userMapper::toDto);
     }
 }

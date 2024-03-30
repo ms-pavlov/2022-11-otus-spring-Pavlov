@@ -53,6 +53,7 @@ public class UserMapperImpl implements UserMapper {
     @Override
     public UserResponse toDto(User entity) {
         return new UserResponse()
+                .id(entity.getId())
                 .name(entity.getName())
                 .login(entity.getLogin())
                 .accesses(

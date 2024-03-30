@@ -24,15 +24,16 @@ public class User {
     private String name;
     private String login;
     private String password;
+    private String currentScope;
     private List<String> accesses;
     private List<String> scopes;
 
     public User(String username, String password) {
-        this(null, username, username, password, new ArrayList<>(), new ArrayList<>());
+        this(null, username, username, password, "default", new ArrayList<>(), new ArrayList<>());
     }
 
     public User(String username, String password, List<String> accesses) {
-        this(null, username, username, password, accesses, new ArrayList<>());
+        this(null, username, username, password, "default", accesses, new ArrayList<>());
     }
 
     public void addAccess(String scope) {
@@ -44,6 +45,12 @@ public class User {
     public boolean hasAccess(String scope) {
         return Optional.ofNullable(scope)
                 .map(accesses::contains)
+                .orElse(false);
+    }
+
+    public boolean hasScope(String scope) {
+        return Optional.ofNullable(scope)
+                .map(scopes::contains)
                 .orElse(false);
     }
 

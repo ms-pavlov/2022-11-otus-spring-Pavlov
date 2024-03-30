@@ -22,18 +22,12 @@ public class ThreadLocalExpressionStorage implements ExpressionStorage {
     public ThreadLocalExpressionStorage(StorageInitPlugin scopeInit) {
         this.storage = new ConcurrentHashMap<>();
         this.scope = ThreadLocal.withInitial(() -> DEFAULT_SCOPE);
-        this.storage.put(DEFAULT_SCOPE, new ConcurrentHashMap<>());
         this.scopeInit = scopeInit;
-        scopeInit.execute(this);
     }
 
     @Override
     public void setScope(String scope) {
         this.scope.set(scope);
-        if (!storage.containsKey(scope)) {
-            storage.put(scope, new ConcurrentHashMap<>());
-            scopeInit.execute(this);
-        }
     }
 
     @Override
@@ -48,6 +42,7 @@ public class ThreadLocalExpressionStorage implements ExpressionStorage {
 
     @Override
     public ExpressionFactory get(Expressions expression) {
+        checkIntiScope();
         return Optional.ofNullable(storage.get(scope.get()))
                 .map(value -> value.get(expression))
                 .orElseThrow(RuntimeException::new);
@@ -73,5 +68,12 @@ public class ThreadLocalExpressionStorage implements ExpressionStorage {
                     return value;
                 })
                 .orElseThrow(RuntimeException::new);
+    }
+
+    private void checkIntiScope() {
+        if (!storage.containsKey(scope.get())) {
+            storage.put(scope.get(), new ConcurrentHashMap<>());
+            scopeInit.execute(this);
+        }
     }
 }

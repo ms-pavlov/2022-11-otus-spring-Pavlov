@@ -5,7 +5,5 @@ import ru.otus.model.enums.Expressions;
 
 public interface ExpressionService {
 
-    Expression resolve(Expressions expression, String scope, Object... args);
-
     Expression resolve(Expressions expression, Object... args);
 }

@@ -9,6 +9,8 @@ import java.util.Map;
 
 public interface PackageService {
 
+    void put(ExpressionFactory expressionFactory);
+
     Flux<PackagesGroupResponse> getPackages();
 
     Map<Expressions, ExpressionFactory> getPackageExpressions(String packageName);

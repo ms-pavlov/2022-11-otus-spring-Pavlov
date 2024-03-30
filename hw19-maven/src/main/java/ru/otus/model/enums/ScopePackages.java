@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public enum ScopePackages {
 
-    PROCESS_ORDER_MESSAGE("processOrderMessage", ScopePackagesGroups.DEFAULT, "Выполнение действия над Заказом"),
+    DEFAULT("default", ScopePackagesGroups.DEFAULT, "Действия по умолчанию"),
     CREATE_ORDER_BY_USER("createOrderByUser", ScopePackagesGroups.CREATE_ORDER, "Создание заказа пользователем по умолчанию"),
     CREATE_ORDER_BY_VIP_USER("createOrderByVipUser", ScopePackagesGroups.CREATE_ORDER, "Создание заказа VIP-пользователем по умолчанию"),
     CREATE_ORDER_BY_MANAGER("createOrderByManager", ScopePackagesGroups.CREATE_ORDER, "Создание заказа менеджером по умолчанию");

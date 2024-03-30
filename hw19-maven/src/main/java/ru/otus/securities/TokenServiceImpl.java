@@ -35,7 +35,7 @@ public class TokenServiceImpl implements TokenService {
                 .claim(
                         "scope",
                         Optional.ofNullable(scope)
-                                .filter(user::hasAccess)
+                                .filter(user::hasScope)
                                 .orElseGet(user::getDefaultAccess)
                 )
                 .compact();
