@@ -1,11 +1,11 @@
 package ru.otus.securities;
 
 import io.jsonwebtoken.Claims;
-import ru.otus.model.entities.User;
+import ru.otus.openapi.model.UserResponse;
 
 public interface TokenService {
 
-    String create(String scope, User user);
+    String create(String scope, UserResponse user);
 
     Claims parse(String token);
 

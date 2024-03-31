@@ -16,7 +16,8 @@ public enum ScopePackages {
     DEFAULT("default", ScopePackagesGroups.DEFAULT, "Действия по умолчанию"),
     CREATE_ORDER_BY_USER("createOrderByUser", ScopePackagesGroups.CREATE_ORDER, "Создание заказа пользователем по умолчанию"),
     CREATE_ORDER_BY_VIP_USER("createOrderByVipUser", ScopePackagesGroups.CREATE_ORDER, "Создание заказа VIP-пользователем по умолчанию"),
-    CREATE_ORDER_BY_MANAGER("createOrderByManager", ScopePackagesGroups.CREATE_ORDER, "Создание заказа менеджером по умолчанию");
+    CREATE_ORDER_BY_MANAGER("createOrderByManager", ScopePackagesGroups.CREATE_ORDER, "Создание заказа менеджером по умолчанию"),
+    CHENG_ORDER_STATUSES("chengOrderStatusesForManager", ScopePackagesGroups.ORDER_STATUSES, "Смена статуса заказа для менеджера");
 
     private final static List<String> PACKAGE_NAMES = Arrays.stream(ScopePackages.values())
             .map(ScopePackages::getPackageName)

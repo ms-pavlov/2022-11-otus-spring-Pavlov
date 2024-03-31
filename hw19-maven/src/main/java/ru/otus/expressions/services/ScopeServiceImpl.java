@@ -2,12 +2,13 @@ package ru.otus.expressions.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import ru.otus.mappers.ScopeMapper;
+import ru.otus.model.entities.Scope;
 import ru.otus.openapi.model.ScopeRequest;
 import ru.otus.openapi.model.ScopeResponse;
 import ru.otus.repositories.ScopeRepository;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -17,16 +18,22 @@ public class ScopeServiceImpl implements ScopeService {
     private final ScopeMapper scopeMapper;
 
     @Override
-    public Mono<ScopeResponse> createScopes(Mono<ScopeRequest> scopeRequest) {
-        return scopeRequest
-                .map(scopeMapper::create)
-                .flatMap(scopeRepository::save)
-                .map(scopeMapper::toDto);
+    public ScopeResponse createScopes(ScopeRequest scopeRequest) {
+        return scopeMapper.toDto(
+                scopeRepository.save(
+                        scopeMapper.create(scopeRequest)));
     }
 
     @Override
-    public Flux<ScopeResponse> getAll() {
+    public List<ScopeResponse> getAll() {
         return scopeRepository.findAll()
-                .map(scopeMapper::toDto);
+                .stream()
+                .map(scopeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public Scope getByName(String scopeName) {
+        return scopeRepository.findByName(scopeName);
     }
 }

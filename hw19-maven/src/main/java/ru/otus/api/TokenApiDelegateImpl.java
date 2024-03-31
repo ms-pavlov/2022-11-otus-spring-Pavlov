@@ -2,9 +2,9 @@ package ru.otus.api;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 import ru.otus.openapi.api.TokenApiDelegate;
 import ru.otus.openapi.model.TokenResponse;
 import ru.otus.securities.TokenService;
@@ -21,16 +21,14 @@ public class TokenApiDelegateImpl implements TokenApiDelegate {
     private final UsersService usersService;
 
     @Override
-    public Mono<ResponseEntity<TokenResponse>> getToken(String scope, ServerWebExchange exchange) {
-        return exchange.getPrincipal()
-                .flatMap(
-                        principal -> Optional.ofNullable(principal)
-                                .map(Principal::getName)
-                                .map(usersService::getUser)
-                                .map(user -> user
-                                        .map(value -> tokenService.create(scope, value))
-                                        .map(token -> new TokenResponse().scope(scope).token(token))
-                                        .map(ResponseEntity::ok))
-                                .orElseGet(() -> Mono.just(ResponseEntity.badRequest().build())));
+    public ResponseEntity<TokenResponse> getToken(String scope) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return Optional.ofNullable(authentication)
+                .map(Principal::getName)
+                .map(usersService::getUser)
+                .map(user -> tokenService.create(scope, user))
+                .map(token -> new TokenResponse().scope(scope).token(token))
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }

@@ -3,13 +3,12 @@ package ru.otus.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import ru.otus.expressions.services.ScopeService;
 import ru.otus.openapi.api.ScopeApiDelegate;
 import ru.otus.openapi.model.ScopeRequest;
 import ru.otus.openapi.model.ScopeResponse;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -18,13 +17,12 @@ public class ScopeApiDelegateImpl implements ScopeApiDelegate {
     private final ScopeService scopeService;
 
     @Override
-    public Mono<ResponseEntity<ScopeResponse>> createScopes(Mono<ScopeRequest> scopeRequest, ServerWebExchange exchange) {
-        return scopeService.createScopes(scopeRequest)
-                .map(ResponseEntity::ok);
+    public ResponseEntity<ScopeResponse> createScopes(ScopeRequest scopeRequest) {
+        return ResponseEntity.ok(scopeService.createScopes(scopeRequest));
     }
 
     @Override
-    public Mono<ResponseEntity<Flux<ScopeResponse>>> getScopes(ServerWebExchange exchange) {
-        return Mono.just(ResponseEntity.ok(scopeService.getAll()));
+    public ResponseEntity<List<ScopeResponse>> getScopes() {
+        return ResponseEntity.ok(scopeService.getAll());
     }
 }

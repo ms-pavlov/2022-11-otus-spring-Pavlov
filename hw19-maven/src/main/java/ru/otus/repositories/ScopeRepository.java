@@ -1,10 +1,9 @@
 package ru.otus.repositories;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import ru.otus.model.entities.Scope;
 
-public interface ScopeRepository extends ReactiveCrudRepository<Scope, String> {
+public interface ScopeRepository extends MongoRepository<Scope, String> {
 
-    Mono<Scope> findByName(String scope);
+    Scope findByName(String scope);
 }

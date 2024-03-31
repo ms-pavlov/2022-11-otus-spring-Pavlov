@@ -1,14 +1,16 @@
 package ru.otus.expressions.services;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import ru.otus.model.enums.Expressions;
 import ru.otus.openapi.model.ActionRequest;
 import ru.otus.openapi.model.ActionResponse;
 
+import java.util.List;
+
 public interface ActionService {
 
-    Mono<ActionResponse> addAction(ActionRequest actionRequest);
+    ActionResponse addAction(ActionRequest actionRequest);
 
-    Flux<ActionResponse> getAll();
+    List<ActionResponse> getAll();
 
+    Expressions getActionExpressionsById(Long actionId);
 }

@@ -37,7 +37,7 @@ public class ThreadLocalExpressionStorage implements ExpressionStorage {
 
     @Override
     public void setDefaultScope() {
-        this.scope.set(DEFAULT_SCOPE);
+        setScope(DEFAULT_SCOPE);
     }
 
     @Override
@@ -45,7 +45,10 @@ public class ThreadLocalExpressionStorage implements ExpressionStorage {
         checkIntiScope();
         return Optional.ofNullable(storage.get(scope.get()))
                 .map(value -> value.get(expression))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException(String.format(
+                        "В области видимости %s не зарегистрировано выражение %s",
+                        scope.get(),
+                        expression)));
     }
 
     @Override
@@ -61,13 +64,10 @@ public class ThreadLocalExpressionStorage implements ExpressionStorage {
 
     @Override
     public void put(Map<Expressions, ExpressionFactory> expressionFactories) {
-        Optional.ofNullable(storage)
-                .map(value -> value.get(scope.get()))
-                .map(value -> {
-                    value.putAll(expressionFactories);
-                    return value;
-                })
-                .orElseThrow(RuntimeException::new);
+        setScope(scope.get());
+        checkIntiScope();
+        storage.get(scope.get())
+                .putAll(expressionFactories);
     }
 
     private void checkIntiScope() {

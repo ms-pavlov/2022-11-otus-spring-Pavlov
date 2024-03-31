@@ -2,8 +2,9 @@ package ru.otus.securities;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.otus.model.entities.User;
+import ru.otus.openapi.model.UserResponse;
 import ru.otus.securities.services.KeyService;
 
 import java.time.Instant;
@@ -13,31 +14,25 @@ import java.util.Date;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class TokenServiceImpl implements TokenService {
 
     private final KeyService keyService;
 
-
-    public TokenServiceImpl(KeyService keyService) {
-        this.keyService = keyService;
-    }
-
     @Override
-    public String create(String scope, User user) {
+    public String create(String scope, UserResponse user) {
         final LocalDateTime now = LocalDateTime.now();
         final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
+        String scopeName = Optional.ofNullable(scope)
+                .filter(value -> user.getScopes().contains(scope))
+                .orElse("main");
         return Jwts.builder()
                 .setSubject(user.getLogin())
                 .setExpiration(accessExpiration)
                 .signWith(keyService.getPrivate())
                 .claim("accesses", user.getAccesses())
-                .claim(
-                        "scope",
-                        Optional.ofNullable(scope)
-                                .filter(user::hasScope)
-                                .orElseGet(user::getDefaultAccess)
-                )
+                .claim("scope", scopeName)
                 .compact();
     }
 

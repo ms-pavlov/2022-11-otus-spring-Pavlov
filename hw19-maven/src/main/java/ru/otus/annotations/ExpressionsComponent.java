@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Component
 public @interface ExpressionsComponent {
 
-    ScopePackages scopePackages();
+    ScopePackages[] scopePackages();
 
     Expressions expression();
 

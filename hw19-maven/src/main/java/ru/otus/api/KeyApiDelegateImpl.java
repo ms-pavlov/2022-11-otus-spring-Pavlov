@@ -2,8 +2,6 @@ package ru.otus.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 import ru.otus.openapi.api.KeyApiDelegate;
 import ru.otus.openapi.model.KeyResponse;
 import ru.otus.securities.services.KeyService;
@@ -22,13 +20,13 @@ public class KeyApiDelegateImpl implements KeyApiDelegate {
     }
 
     @Override
-    public Mono<ResponseEntity<KeyResponse>> getKey(ServerWebExchange exchange) {
-        return Mono.just(ResponseEntity.ok(
+    public ResponseEntity<KeyResponse> getKey() {
+        return ResponseEntity.ok(
                 new KeyResponse()
                         .key(
                                 Optional.ofNullable(keyService.getPublic())
                                         .map(PublicKey::getEncoded)
                                         .map(key -> Base64.getEncoder().encodeToString(key))
-                                        .orElse(""))));
+                                        .orElse("")));
     }
 }

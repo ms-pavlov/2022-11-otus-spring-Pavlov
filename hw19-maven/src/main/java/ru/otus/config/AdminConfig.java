@@ -17,10 +17,10 @@ public class AdminConfig {
 
     @EventListener(ApplicationStartedEvent.class)
     public void runAfterStartup() {
-        if (Boolean.FALSE.equals(usersService.existsByUsername("admin").block())) {
+        if (Boolean.FALSE.equals(usersService.existsByUsername("admin"))) {
             usersService.create(
                     new UserRequest("admin", "admin", "admin")
-                            .accesses(List.of(UserRequest.AccessesEnum.ADMIN))).block();
+                            .accesses(List.of(UserRequest.AccessesEnum.ADMIN)));
         }
     }
 }

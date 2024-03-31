@@ -12,11 +12,22 @@ import java.util.stream.Collectors;
 public enum Expressions {
 
     PROCESS_ORDER_MESSAGE("OrderAction::process", "Выполнить действие над заказом"),
-    GET_TOKEN_FOR_ORDER_ACTION("OrderAction::getToken", "Получить токен из сообщения"),
+    RESOLVE_EXPRESSIONS("ExpressionService::resolve", "Зарегистрировать выражения"),
     GET_CURRENT_SCOPE("Token::getScope", "Получить область видимости из токена"),
+    DO_EXPRESSIONS("Expression::do", "Выполнить выражения"),
     PARSE_TOKEN("Token::parse", "Верифицировать и распарсить токен"),
     CHANGE_SCOPE("Scope::change", "Сменить область видимости"),
-    CREATE_ORDER("Order::create", "Создать заказ");
+    DO_ACTION("OrderAction::execute", "Выполнить действие"),
+    PARSE_ORDER("Order::parse", "Распарсить заказ"),
+    CREATE_ORDER("Order::create", "Создать заказ"),
+    SET_ORDER_CUSTOMER("Order::setCustomer", "Задать заказчика в заказе"),
+    SET_ORDER_MANAGER("Order::setManager", "Назначить менеджера для заказа"),
+    SET_ORDER_STATUS("Order::setOrderStatus", "Назначить статус у заказа"),
+    SAVE_ORDER("Order::save", "Сохранить заказ"),
+    VALID_ORDER_STATUS("Order::validStatus", "Валидация статуса"),
+    GET_ORDERS("Order::getAll", "Получить список заказов"),
+    GET_ORDER_BY_ID("Order::getById", "Получить задачу по ID"),
+    GET_ORDERS_IN_WORK("Order::getInWork", "Взять заказ в работу");
 
 
     private final static Map<String, Expressions> EXPRESSIONS = Arrays.stream(Expressions.values())

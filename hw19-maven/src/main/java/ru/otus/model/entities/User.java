@@ -32,10 +32,6 @@ public class User {
         this(null, username, username, password, "default", new ArrayList<>(), new ArrayList<>());
     }
 
-    public User(String username, String password, List<String> accesses) {
-        this(null, username, username, password, "default", accesses, new ArrayList<>());
-    }
-
     public void addAccess(String scope) {
         if (!accesses.contains(scope)) {
             accesses.add(scope);
@@ -48,18 +44,8 @@ public class User {
                 .orElse(false);
     }
 
-    public boolean hasScope(String scope) {
-        return Optional.ofNullable(scope)
-                .map(scopes::contains)
-                .orElse(false);
-    }
-
     public List<String> getAccesses() {
         return new ArrayList<>(accesses);
     }
 
-    public String getDefaultAccess() {
-        return accesses.stream().findAny()
-                .orElse("default");
-    }
 }

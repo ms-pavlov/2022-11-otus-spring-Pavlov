@@ -5,7 +5,7 @@ import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.model.entities.User;
+import ru.otus.openapi.model.UserResponse;
 import ru.otus.securities.services.KeyService;
 import ru.otus.securities.services.KeyServiceImpl;
 
@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TokenFactoryImplTest {
     private final static String TEST_SCOPE = "TEST_SCOPE";
     private final static List<String> ACCESSES = List.of(TEST_SCOPE);
-    private final static User USER = new User(
-            "test",
-            "pass",
-            ACCESSES);
+    private final static UserResponse USER = new UserResponse()
+            .name("test")
+            .login("test")
+            .accesses(ACCESSES.stream().map(UserResponse.AccessesEnum::valueOf).toList());
     private final static KeyService KEY_SERVICE = new KeyServiceImpl();
 
     private TokenService tokenService;

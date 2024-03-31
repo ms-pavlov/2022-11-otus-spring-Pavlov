@@ -1,17 +1,18 @@
 package ru.otus.expressions.services;
 
-import reactor.core.publisher.Flux;
 import ru.otus.expressions.ExpressionFactory;
 import ru.otus.model.enums.Expressions;
+import ru.otus.model.enums.ScopePackages;
 import ru.otus.openapi.model.PackagesGroupResponse;
 
+import java.util.List;
 import java.util.Map;
 
 public interface PackageService {
 
-    void put(ExpressionFactory expressionFactory);
+    void put(Expressions expression, ScopePackages scopePackages, ExpressionFactory expressionFactory);
 
-    Flux<PackagesGroupResponse> getPackages();
+    List<PackagesGroupResponse> getPackages();
 
     Map<Expressions, ExpressionFactory> getPackageExpressions(String packageName);
 }

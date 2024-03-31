@@ -1,12 +1,11 @@
 package ru.otus.repositories;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import ru.otus.model.entities.User;
 
-public interface UsersRepository extends ReactiveCrudRepository<User, String> {
+public interface UsersRepository extends MongoRepository<User, String> {
 
-    Mono<User> findByLogin(String username);
+    User findByLogin(String username);
 
-    Mono<Boolean> existsByLogin(String username);
+    Boolean existsByLogin(String username);
 }

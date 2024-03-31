@@ -3,23 +3,19 @@ package ru.otus.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 import ru.otus.openapi.api.OrderApiDelegate;
-import ru.otus.openapi.model.OrderAction;
+import ru.otus.openapi.model.OrderActionRequest;
 import ru.otus.openapi.model.OrderActionResponse;
-import ru.otus.order.OrderService;
+import ru.otus.order.OrderActionService;
 
 @Service
 @AllArgsConstructor
 public class OrderApiDelegateImpl implements OrderApiDelegate {
 
-    private final OrderService orderService;
+    private final OrderActionService orderActionService;
 
     @Override
-    public Mono<ResponseEntity<OrderActionResponse>> processMessages(Mono<OrderAction> orderAction, ServerWebExchange exchange) {
-        return orderAction
-                .flatMap(orderService::processMessages)
-                .map(ResponseEntity::ok);
+    public ResponseEntity<OrderActionResponse> processMessages(OrderActionRequest orderAction) {
+        return ResponseEntity.ok(orderActionService.processMessages(orderAction));
     }
 }

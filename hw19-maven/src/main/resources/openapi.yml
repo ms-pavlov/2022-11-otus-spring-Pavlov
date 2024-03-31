@@ -108,7 +108,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrderAction'
+              $ref: '#/components/schemas/OrderActionRequest'
       responses:
         '200':
           description: Успешное выполнение
@@ -438,8 +438,8 @@ components:
         message:
           type: object
           additionalProperties:
-            type: string
-    OrderAction:
+            type: object
+    OrderActionRequest:
       type: object
       title: Сообщение
       properties:
@@ -452,8 +452,7 @@ components:
           type: string
         order:
           title: id заказа
-          type: integer
-          format: int64
+          type: string
           example: 1
         action:
           title: id команды

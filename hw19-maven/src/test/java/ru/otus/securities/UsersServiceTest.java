@@ -1,14 +1,14 @@
 package ru.otus.securities;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import reactor.core.publisher.Mono;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.otus.mappers.UserMapper;
 import ru.otus.model.entities.User;
 import ru.otus.repositories.UsersRepository;
@@ -16,7 +16,6 @@ import ru.otus.securities.services.UsersServiceImpl;
 
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +34,7 @@ class UsersServiceTest {
     @Mock
     private Function<User, UserDetails> userDetailsAdapter;
 
-    private ReactiveUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @BeforeEach
     void setUp() {
@@ -45,12 +44,12 @@ class UsersServiceTest {
     @Test
     @DisplayName("Возвращает UserDetails по имени")
     void findByUsername() {
-        when(usersRepository.findByLogin(TEST_USER_NAME)).thenReturn(Mono.just(TEST_USER));
+        when(usersRepository.findByLogin(TEST_USER_NAME)).thenReturn(TEST_USER);
         when(userDetailsAdapter.apply(TEST_USER)).thenReturn(userDetail);
 
-        var result = userDetailsService.findByUsername(TEST_USER_NAME);
+        var result = userDetailsService.loadUserByUsername(TEST_USER_NAME);
 
-        assertEquals(userDetail, result.block());
+        Assertions.assertEquals(userDetail, result);
         verify(usersRepository, times(1)).findByLogin(TEST_USER_NAME);
     }
 }

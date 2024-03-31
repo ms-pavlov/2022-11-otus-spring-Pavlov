@@ -22,12 +22,12 @@ public class ScopeSelectorExpression implements ExpressionFactory {
     @Override
     public Expression create(Object... args) {
         return context -> {
-            String scope = (String) context.get(SCOPE_PARAMETER_NAME);
-            if (null == scope) {
+            String scopeName = (String) context.get(SCOPE_PARAMETER_NAME);
+            if (null == scopeName) {
                 expressionStorage.setDefaultScope();
                 return;
             }
-            expressionStorage.setScope(scope);
+            expressionStorage.setScope(scopeName);
         };
     }
 }

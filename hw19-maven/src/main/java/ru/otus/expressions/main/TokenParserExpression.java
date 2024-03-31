@@ -6,12 +6,11 @@ import ru.otus.expressions.Expression;
 import ru.otus.expressions.ExpressionFactory;
 import ru.otus.model.enums.Expressions;
 import ru.otus.model.enums.ScopePackages;
-import ru.otus.openapi.model.OrderAction;
+import ru.otus.openapi.model.OrderActionRequest;
+import ru.otus.order.OrderActionServiceImpl;
 import ru.otus.securities.TokenService;
 
 import java.util.Optional;
-
-import static ru.otus.expressions.main.OrderActionProcessorExpression.REQUEST_PARAMETER_NAME;
 
 @ExpressionsComponent(
         expression = Expressions.PARSE_TOKEN,
@@ -20,7 +19,6 @@ import static ru.otus.expressions.main.OrderActionProcessorExpression.REQUEST_PA
 @AllArgsConstructor
 public class TokenParserExpression implements ExpressionFactory {
 
-    public static final String TOKEN_PARAMETER_NAME = "token";
     public static final String PARSED_TOKEN_PARAMETER_NAME = "claims";
 
     private final TokenService tokenService;
@@ -28,10 +26,10 @@ public class TokenParserExpression implements ExpressionFactory {
     @Override
     public Expression create(Object... args) {
         return context -> {
-            OrderAction action = (OrderAction) context.get(REQUEST_PARAMETER_NAME);
+            OrderActionRequest action = (OrderActionRequest) context.get(OrderActionServiceImpl.REQUEST_PARAMETER_NAME);
             context.add(PARSED_TOKEN_PARAMETER_NAME,
                     Optional.ofNullable(action)
-                            .map(OrderAction::getToken)
+                            .map(OrderActionRequest::getToken)
                             .map(tokenService::parse)
                             .orElseThrow(() -> new RuntimeException("Отсутствует токен")));
         };

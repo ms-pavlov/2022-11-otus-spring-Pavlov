@@ -1,11 +1,12 @@
 package ru.otus.repositories;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import ru.otus.model.entities.OrderAction;
 
-public interface OrderActionRepository extends ReactiveCrudRepository<OrderAction, String> {
+import java.util.Optional;
 
-    Mono<OrderAction> findByActionId(Long id);
+public interface OrderActionRepository extends MongoRepository<OrderAction, String> {
+
+    Optional<OrderAction> findByActionId(Long id);
 
 }

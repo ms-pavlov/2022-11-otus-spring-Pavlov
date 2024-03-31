@@ -10,7 +10,6 @@ import ru.otus.annotations.ExpressionsComponent;
 import ru.otus.expressions.services.PackageService;
 
 
-
 @Component
 @AllArgsConstructor
 public class ExpressionBeanPostProcessor implements BeanPostProcessor {
@@ -20,9 +19,14 @@ public class ExpressionBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(@NotNull Object bean, @Nullable String beanName) throws BeansException {
         if (bean.getClass().isAnnotationPresent(ExpressionsComponent.class)) {
-            packageService.put((ExpressionFactory) bean);
+            ExpressionsComponent component = bean.getClass().getAnnotation(ExpressionsComponent.class);
+            if (null != component) {
+                for (var scopePackage : component.scopePackages()) {
+                    packageService.put(component.expression(), scopePackage, (ExpressionFactory) bean);
+                }
+            }
         }
 
-        return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+        return bean;
     }
 }

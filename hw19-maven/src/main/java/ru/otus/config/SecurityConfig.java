@@ -2,13 +2,15 @@ package ru.otus.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
 import ru.otus.model.entities.User;
 import ru.otus.securities.AnonimusUD;
 import ru.otus.securities.UserDetailsAdapter;
@@ -18,7 +20,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
-@EnableWebFluxSecurity
+@EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
@@ -28,22 +30,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeExchange(
-                        authorize -> authorize
-                                .pathMatchers("/api-docs/**", "/message/**").permitAll()
-                                .pathMatchers("/", "/games/**").authenticated()
-                                .anyExchange().permitAll()
+                .authorizeHttpRequests(
+                        (authorize) -> authorize
+                                .requestMatchers("/**").authenticated()
                 )
-                .anonymous().principal(new AnonimusUD())
-                .and()
-                .httpBasic()
-                .and()
-                .formLogin()
-                .and()
-                .logout();
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(Customizer.withDefaults())
+                .anonymous(anonymous -> anonymous.principal(new AnonimusUD()))
+                .rememberMe(rememberMe -> rememberMe.key("AnySecret").tokenValiditySeconds(60 * 30))
+                .logout((logout) ->
+                        logout.deleteCookies("remove")
+                                .invalidateHttpSession(false));
         return http.build();
     }
 

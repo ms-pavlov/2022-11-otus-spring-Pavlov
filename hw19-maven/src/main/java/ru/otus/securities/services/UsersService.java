@@ -1,20 +1,19 @@
 package ru.otus.securities.services;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import ru.otus.model.entities.User;
 import ru.otus.openapi.model.UserRequest;
 import ru.otus.openapi.model.UserResponse;
 
+import java.util.List;
+
 public interface UsersService {
 
-    Mono<User> getUser(String username);
+    UserResponse getUser(String username);
 
-    Mono<UserResponse> create(UserRequest user);
+    UserResponse create(UserRequest user);
 
-    Mono<Boolean> existsByUsername(String username);
+    Boolean existsByUsername(String username);
 
-    Flux<UserResponse> getUsers();
+    List<UserResponse> getUsers();
 
-    Mono<UserResponse> update(String id, UserRequest request);
+    UserResponse update(String id, UserRequest request);
 }

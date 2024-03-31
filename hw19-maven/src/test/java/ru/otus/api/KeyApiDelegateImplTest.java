@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ServerWebExchange;
 import ru.otus.openapi.api.KeyApiDelegate;
 import ru.otus.openapi.model.KeyResponse;
 import ru.otus.securities.services.KeyService;
@@ -28,8 +27,6 @@ class KeyApiDelegateImplTest {
 
     @Mock
     private KeyService keyService;
-    @Mock
-    private ServerWebExchange exchange;
     private KeyApiDelegate delegate;
 
     @BeforeEach
@@ -42,14 +39,14 @@ class KeyApiDelegateImplTest {
     void getKey() {
         when(keyService.getPublic()).thenReturn(KEY_PAIR.getPublic());
 
-        var result = delegate.getKey(exchange);
+        var result = delegate.getKey();
 
         verify(keyService, times(1)).getPublic();
         verify(keyService, times(0)).getPrivate();
 
         assertEquals(
                 Base64.getEncoder().encodeToString(KEY_PAIR.getPublic().getEncoded()),
-                Optional.ofNullable(result.block())
+                Optional.ofNullable(result)
                         .map(ResponseEntity::getBody)
                         .map(KeyResponse::getKey)
                         .orElse(null)
