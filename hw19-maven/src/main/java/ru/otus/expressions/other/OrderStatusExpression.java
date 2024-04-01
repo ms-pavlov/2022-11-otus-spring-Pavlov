@@ -15,7 +15,8 @@ import static ru.otus.expressions.other.OrderParserExpression.ORDER_PARAMETER;
         scopePackages = {
                 ScopePackages.CREATE_ORDER_BY_USER,
                 ScopePackages.CREATE_ORDER_BY_VIP_USER,
-                ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER},
+                ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER,
+                ScopePackages.CHENG_ORDER_STATUSES_FOR_BOOKKEEPER},
         description = "Создать заказ от имени простого пользователя")
 public class OrderStatusExpression implements ExpressionFactory {
     @Override

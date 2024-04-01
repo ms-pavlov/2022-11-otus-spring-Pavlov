@@ -19,9 +19,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
 
     @Override
-    public Optional<OrderResponse> findById(String id) {
-        return orderRepository.findById(id)
-                .map(orderMapper::toDto);
+    public Optional<Order> findById(String id) {
+        return orderRepository.findById(id);
     }
 
     @Override

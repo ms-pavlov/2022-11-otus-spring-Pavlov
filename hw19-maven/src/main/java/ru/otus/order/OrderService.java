@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface OrderService {
 
-    Optional<OrderResponse> findById(String id);
+    Optional<Order> findById(String id);
 
     OrderResponse save(Order entity);
 

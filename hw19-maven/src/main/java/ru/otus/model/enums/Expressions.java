@@ -28,8 +28,10 @@ public enum Expressions {
     GET_ORDERS("Order::getAll", "Получить список заказов для текущего пользователя"),
     GET_ALL_ORDERS("Order::getList", "Получить список всех заказов"),
     ORDERS_FILTER("Order::filter", "Отфильтровать список заказов для текущего пользователя"),
-    GET_ORDER_BY_ID("Order::getById", "Получить задачу по ID"),
-    GET_ORDERS_IN_WORK("Order::getInWork", "Взять заказ в работу");
+    GET_ORDER_BY_ID("Order::getById", "Найти задачу по ID"),
+    GET_ORDERS_IN_WORK("Order::getInWork", "Взять заказ в работу"),
+    SEND_ORDERS_FOR_PAYMENT("Order::sendForPayment", "Выставить счет на оплату"),
+    SET_ORDER_PAID("Order::setPaid", "Счет оплачен");
 
 
     private final static Map<String, Expressions> EXPRESSIONS = Arrays.stream(Expressions.values())

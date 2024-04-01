@@ -1,0 +1,57 @@
+[{
+  "_id": {
+    "$oid": "660622eed0a56b67cd71d30c"
+  },
+  "name": "user",
+  "description": "Контекст для простого пользователя",
+  "packages": [
+    "createOrderByUser",
+    "getAllOrdersForUser"
+  ],
+  "_class": "ru.otus.model.entities.Scope"
+},
+{
+  "_id": {
+    "$oid": "66093302480a0f057bb1d069"
+  },
+  "name": "main",
+  "description": "Контекст для простого пользователя",
+  "packages": [],
+  "_class": "ru.otus.model.entities.Scope"
+},
+{
+  "_id": {
+    "$oid": "660944be61099a611688b562"
+  },
+  "name": "vip",
+  "description": "Контекст для VIP-пользователем",
+  "packages": [
+    "createOrderByVipUser",
+    "getAllOrdersForUser"
+  ],
+  "_class": "ru.otus.model.entities.Scope"
+},
+{
+  "_id": {
+    "$oid": "660958dfea58e45a0e275eac"
+  },
+  "name": "manager",
+  "description": "Контекст для менеджера",
+  "packages": [
+    "chengOrderStatusesForManager",
+    "getAllOrdersForManager"
+  ],
+  "_class": "ru.otus.model.entities.Scope"
+},
+{
+  "_id": {
+    "$oid": "660a1a34dca8c01742627c14"
+  },
+  "name": "bookkeeper",
+  "description": "Контекст для бухгалтера",
+  "packages": [
+    "getAllOrdersForBookkeeper",
+    "chengOrderStatusesForBookkeeper"
+  ],
+  "_class": "ru.otus.model.entities.Scope"
+}]

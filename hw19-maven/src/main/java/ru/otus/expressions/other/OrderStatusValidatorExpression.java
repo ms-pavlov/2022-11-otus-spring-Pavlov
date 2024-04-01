@@ -15,7 +15,7 @@ import static ru.otus.expressions.other.OrderParserExpression.ORDER_PARAMETER;
 
 @ExpressionsComponent(
         expression = Expressions.VALID_ORDER_STATUS,
-        scopePackages = {ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER},
+        scopePackages = {ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER, ScopePackages.CHENG_ORDER_STATUSES_FOR_BOOKKEEPER},
         description = "Создать заказ от имени простого пользователя")
 public class OrderStatusValidatorExpression implements ExpressionFactory {
     @Override
@@ -29,7 +29,7 @@ public class OrderStatusValidatorExpression implements ExpressionFactory {
                     .toList();
             Order order = (Order) context.get(ORDER_PARAMETER);
             if (!orderStatuses.contains(order.getOrderStatus())) {
-                throw new RuntimeException("В работу можно взять только заказ со статусом " + orderStatuses);
+                throw new RuntimeException("Новый статус можно выставить только заказ со статусом " + orderStatuses);
             }
         };
     }

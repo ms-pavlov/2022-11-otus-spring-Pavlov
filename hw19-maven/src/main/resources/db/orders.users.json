@@ -1,0 +1,35 @@
+[{
+  "_id": {
+    "$oid": "66039685f6417a4d76932177"
+  },
+  "name": "admin",
+  "login": "admin",
+  "password": "$2a$16$LoRYyGfe/5wRGMONaLRo4uhsXOXXmZkLcC9cser37TDLMpU6pf4rq",
+  "accesses": [
+    "ADMIN"
+  ],
+  "scopes": [
+    "manager",
+    "user",
+    "vip",
+    "bookkeeper",
+    "main"
+  ],
+  "_class": "ru.otus.model.entities.User"
+},
+{
+  "_id": {
+    "$oid": "660943ae49fb0f0cbb00de3d"
+  },
+  "name": "manager",
+  "login": "manager",
+  "password": "$2a$16$Bz5H3iwUcJ6JkRyy1bq2a.n9CuDSR4hHf4uUefLXGyCQQ3ySZyLEW",
+  "accesses": [
+    "USER"
+  ],
+  "scopes": [
+    "manager",
+    "main"
+  ],
+  "_class": "ru.otus.model.entities.User"
+}]

@@ -12,7 +12,7 @@ import ru.otus.order.OrderService;
 
 @ExpressionsComponent(
         expression = Expressions.GET_ORDER_BY_ID,
-        scopePackages = {ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER},
+        scopePackages = {ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER, ScopePackages.CHENG_ORDER_STATUSES_FOR_BOOKKEEPER},
         description = "Создать заказ от имени простого пользователя")
 @AllArgsConstructor
 public class OrderGetterExpression implements ExpressionFactory {
