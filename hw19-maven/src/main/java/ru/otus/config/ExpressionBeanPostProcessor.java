@@ -1,4 +1,4 @@
-package ru.otus.expressions;
+package ru.otus.config;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +7,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import ru.otus.annotations.ExpressionsComponent;
+import ru.otus.expressions.ExpressionFactory;
 import ru.otus.expressions.services.PackageService;
 
 
