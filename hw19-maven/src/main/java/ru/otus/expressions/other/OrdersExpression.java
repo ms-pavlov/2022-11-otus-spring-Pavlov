@@ -6,28 +6,20 @@ import ru.otus.expressions.Expression;
 import ru.otus.expressions.ExpressionFactory;
 import ru.otus.model.enums.Expressions;
 import ru.otus.model.enums.ScopePackages;
-import ru.otus.openapi.model.OrderActionResponse;
-import ru.otus.order.Answer;
-import ru.otus.order.OrderActionServiceImpl;
-import ru.otus.repositories.OrderRepository;
+import ru.otus.order.OrderService;
 
 @ExpressionsComponent(
-        expression = Expressions.GET_ORDERS,
+        expression = Expressions.GET_ALL_ORDERS,
         scopePackages = ScopePackages.DEFAULT)
 @AllArgsConstructor
 public class OrdersExpression implements ExpressionFactory {
 
-    private final OrderRepository orderRepository;
+    public final static String ORDERS_PARAMETER_NAME = "ordersList";
+
+    private final OrderService orderService;
 
     @Override
     public Expression create(Object... args) {
-
-
-        return context -> {
-            Answer<OrderActionResponse> answer = (Answer<OrderActionResponse>) context.get(OrderActionServiceImpl.ANSWER_CONSUMER_NAME);
-            answer.ans(new OrderActionResponse()
-                    .status("Ok")
-                    .putMessageItem("orders", orderRepository.findAll()));
-        };
+        return context -> context.add(ORDERS_PARAMETER_NAME, orderService.findAll());
     }
 }

@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum OrderStatuses {
 
     CREATED("Новый"),
-    AT_WORK("Взят в работу");
+    AT_WORK("Взят в работу"),
+    FOR_PAYMENT("К оплате"),
+    PAID("Оплачен");
 
     private final String name;
 

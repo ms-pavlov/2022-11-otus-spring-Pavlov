@@ -29,6 +29,9 @@
         window.onload = () => {
             let scope = document.querySelector('#scope');
             let value = scope.value;
+            scope.addEventListener('change', function (e) {
+                getOrders(document.querySelector('#scope').value);
+            });
             getOrders(value);
         }
 
@@ -48,11 +51,21 @@
                     method: "POST",
                     headers: {'content-type': 'application/json'},
                     body: request
-                }).then((response) => {
+                }).then(
+                    res => {
+                        return res.ok ? res : Promise.reject(res.json())
+                    }
+                ).then((response) => {
                     return response.json();
                 }).then((ordersData) => {
                     console.log(ordersData.message.orders)
+                    cleanBooksTable();
                     loadOrders(ordersData.message.orders);
+                }).catch((error) => {
+                    error.then((result) => {
+                        console.log(result)
+                        alert(result.errors.message)
+                    })
                 });
             })
         }

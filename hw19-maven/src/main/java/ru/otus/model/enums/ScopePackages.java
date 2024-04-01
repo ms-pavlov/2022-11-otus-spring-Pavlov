@@ -14,10 +14,14 @@ import java.util.stream.Collectors;
 public enum ScopePackages {
 
     DEFAULT("default", ScopePackagesGroups.DEFAULT, "Действия по умолчанию"),
+    GET_ORDERS_FOR_USER("getAllOrdersForUser", ScopePackagesGroups.GET_ORDERS, "Получить список заказов для пользователя"),
+    GET_ORDERS_FOR_MANAGER("getAllOrdersForManager", ScopePackagesGroups.GET_ORDERS, "Получить список заказов для менеджера"),
+    GET_ORDERS_FOR_BOOKKEEPER("getAllOrdersForBookkeeper", ScopePackagesGroups.GET_ORDERS, "Получить список заказов для бухгалтера"),
     CREATE_ORDER_BY_USER("createOrderByUser", ScopePackagesGroups.CREATE_ORDER, "Создание заказа пользователем по умолчанию"),
     CREATE_ORDER_BY_VIP_USER("createOrderByVipUser", ScopePackagesGroups.CREATE_ORDER, "Создание заказа VIP-пользователем по умолчанию"),
     CREATE_ORDER_BY_MANAGER("createOrderByManager", ScopePackagesGroups.CREATE_ORDER, "Создание заказа менеджером по умолчанию"),
-    CHENG_ORDER_STATUSES("chengOrderStatusesForManager", ScopePackagesGroups.ORDER_STATUSES, "Смена статуса заказа для менеджера");
+    CHENG_ORDER_STATUSES_FOR_MANAGER("chengOrderStatusesForManager", ScopePackagesGroups.ORDER_STATUSES, "Смена статуса заказа для менеджера"),
+    CHENG_ORDER_STATUSES_FOR_BOOKKEEPER("chengOrderStatusesForBookkeeper", ScopePackagesGroups.ORDER_STATUSES, "Смена статуса заказа для менеджера");
 
     private final static List<String> PACKAGE_NAMES = Arrays.stream(ScopePackages.values())
             .map(ScopePackages::getPackageName)

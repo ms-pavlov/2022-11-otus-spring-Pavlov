@@ -76,7 +76,7 @@ public class OrderParserExpression implements ExpressionFactory {
         if (matcher.find()) {
             return Long.parseLong(matcher.group(1));
         }
-        throw new RuntimeException("Недопустимый параметр: "+ key);
+        throw new RuntimeException("Недопустимый параметр: " + key);
     }
 
     private String getKey(String key) {

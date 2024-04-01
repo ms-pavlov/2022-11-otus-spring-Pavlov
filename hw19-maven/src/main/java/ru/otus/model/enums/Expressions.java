@@ -25,7 +25,9 @@ public enum Expressions {
     SET_ORDER_STATUS("Order::setOrderStatus", "Назначить статус у заказа"),
     SAVE_ORDER("Order::save", "Сохранить заказ"),
     VALID_ORDER_STATUS("Order::validStatus", "Валидация статуса"),
-    GET_ORDERS("Order::getAll", "Получить список заказов"),
+    GET_ORDERS("Order::getAll", "Получить список заказов для текущего пользователя"),
+    GET_ALL_ORDERS("Order::getList", "Получить список всех заказов"),
+    ORDERS_FILTER("Order::filter", "Отфильтровать список заказов для текущего пользователя"),
     GET_ORDER_BY_ID("Order::getById", "Получить задачу по ID"),
     GET_ORDERS_IN_WORK("Order::getInWork", "Взять заказ в работу");
 

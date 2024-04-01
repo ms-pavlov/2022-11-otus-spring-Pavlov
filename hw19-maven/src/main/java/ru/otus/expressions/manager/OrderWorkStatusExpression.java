@@ -11,7 +11,7 @@ import ru.otus.model.enums.ScopePackages;
 
 @ExpressionsComponent(
         expression = Expressions.GET_ORDERS_IN_WORK,
-        scopePackages = ScopePackages.CHENG_ORDER_STATUSES)
+        scopePackages = ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER)
 @AllArgsConstructor
 public class OrderWorkStatusExpression implements ExpressionFactory {
 
@@ -24,6 +24,7 @@ public class OrderWorkStatusExpression implements ExpressionFactory {
                                 expressionService.resolve(Expressions.GET_ORDER_BY_ID),
                                 expressionService.resolve(Expressions.VALID_ORDER_STATUS, OrderStatuses.CREATED),
                                 expressionService.resolve(Expressions.SET_ORDER_STATUS, OrderStatuses.AT_WORK),
+                                expressionService.resolve(Expressions.SET_ORDER_MANAGER),
                                 expressionService.resolve(Expressions.SAVE_ORDER))
                         .interpret(context);
     }

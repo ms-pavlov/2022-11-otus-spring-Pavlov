@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ScopePackagesGroups {
 
     DEFAULT("default", "Базовый покет"),
+    GET_ORDERS("getAllOrder", "Получение списка заказов"),
     CREATE_ORDER("createOrder", "Создание заказа"),
     ORDER_STATUSES("orderStatuses", "Смена статуса заказа");
 

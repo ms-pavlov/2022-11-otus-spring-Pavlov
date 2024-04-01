@@ -15,7 +15,7 @@ import static ru.otus.expressions.other.OrderParserExpression.ORDER_PARAMETER;
 
 @ExpressionsComponent(
         expression = Expressions.VALID_ORDER_STATUS,
-        scopePackages = {ScopePackages.CHENG_ORDER_STATUSES},
+        scopePackages = {ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER},
         description = "Создать заказ от имени простого пользователя")
 public class OrderStatusValidatorExpression implements ExpressionFactory {
     @Override

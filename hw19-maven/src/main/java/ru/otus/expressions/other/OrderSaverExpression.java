@@ -10,7 +10,7 @@ import ru.otus.model.enums.ScopePackages;
 import ru.otus.openapi.model.OrderActionResponse;
 import ru.otus.order.Answer;
 import ru.otus.order.OrderActionServiceImpl;
-import ru.otus.repositories.OrderRepository;
+import ru.otus.order.OrderService;
 
 import static ru.otus.expressions.other.OrderParserExpression.ORDER_PARAMETER;
 
@@ -19,18 +19,18 @@ import static ru.otus.expressions.other.OrderParserExpression.ORDER_PARAMETER;
         scopePackages = {
                 ScopePackages.CREATE_ORDER_BY_USER,
                 ScopePackages.CREATE_ORDER_BY_VIP_USER,
-                ScopePackages.CHENG_ORDER_STATUSES},
+                ScopePackages.CHENG_ORDER_STATUSES_FOR_MANAGER},
         description = "Создать заказ от имени простого пользователя")
 @AllArgsConstructor
 public class OrderSaverExpression implements ExpressionFactory {
 
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
     @Override
     public Expression create(Object... args) {
         return context -> {
             Order order = (Order) context.get(ORDER_PARAMETER);
-            orderRepository.save(order);
+            orderService.save(order);
             Answer<OrderActionResponse> answer = (Answer<OrderActionResponse>) context.get(OrderActionServiceImpl.ANSWER_CONSUMER_NAME);
             answer.ans(new OrderActionResponse().putMessageItem("done", "all"));
         };
