@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title>Новая книга</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="col" layout:fragment="content">
+    <h1 class="display-3">Новая книга</h1>
+    <div class="row">
+        <form id="createForm" method="dialog">
+            <div class="form-control mb-3 row" id="authors">
+                <span class="fw-bold" th:text="Автор"></span>
+                <div id="author-0" class="form-group mb-3 row">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr id="header">
+                            <th scope="col">Товар</th>
+                            <th scope="col">Количество</th>
+                            <th scope="col-auto"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="items">
+                        </tbody>
+                    </table>
+                </div>
+                <a id="authors-add" class="btn btn-outline-primary" th:attr="onclick=|addItem()|">
+                    <i class="bi bi-plus-square"></i>
+                </a>
+            </div>
+            <button class="btn btn-primary" th:attr="onclick=|addOrder()|">
+                <i class="bi bi-save"></i>
+            </button>
+        </form>
+    </div>
+    <script>
+        var itemCount = 0;
+
+        const addOrder = async () => {
+
+            let scope = document.querySelector('#scope').value;
+            let form = document.querySelector('#items');
+            const inputsHTML = form.getElementsByTagName('input');
+            const inputsObj = Array.from(inputsHTML);
+            let items = {};
+            inputsObj.forEach(function (item, i) {
+                items[item.name] = item.value;
+                console.log(item.name)
+                console.log(item.type)
+                console.log(item.value)
+            });
+
+            fetch(`/api/v1/token/${scope}`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((date) => {
+                let request = JSON.stringify({
+                    guid: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    token: date.token,
+                    action: 0,
+                    args: items
+                });
+                console.log(request)
+                fetch(`/api/v1/order/action`, {
+                    method: "POST",
+                    headers: {'content-type': 'application/json'},
+                    body: request
+                }).then(
+                    res => {
+                        return res.ok ? res : Promise.reject(res.json())
+                    }
+                ).then((response) => {
+                    return response.json();
+                }).then((result) => {
+                    location.replace("/");
+                }).catch((error) => {
+                    error.then((result) => {
+                        console.log(result)
+                        alert(result.errors.message)
+                    })
+                })
+            })
+
+        };
+
+        const deleteItem = async (id) => {
+            var element = document.querySelector('#item-' + id);
+            element.remove();
+        };
+
+        const addItem = async () => {
+            var items = document.querySelector('#items');
+
+            generateItem()
+                .then(value => items.append(value));
+        };
+
+        const generateItem = async () => {
+            var number = itemCount++;
+            var tr = wrapTr([
+                wrapTd(createInput('orderItems[' + number + '].product')),
+                wrapTd(createInput('orderItems[' + number + '].quantity')),
+                wrapTd(createDeleteAction(number))
+            ]);
+            tr.id = 'item-' + number;
+            return tr;
+        }
+
+
+        const wrapTr = (items) => {
+            let tr = document.createElement('tr');
+            items.forEach(item => tr.append(item));
+            return tr;
+        }
+
+        const createInput = (name) => {
+            let input = document.createElement('input');
+            input.name = name;
+            input.type = "text"
+            input.className = "form-control";
+            return input;
+        }
+
+        const createDeleteAction = (item) => {
+            var link = document.createElement('a');
+            link.setAttribute('href', "#");
+            link.onclick = () => {
+                deleteItem(item);
+            };
+            link.className = 'btn btn-danger';
+            link.append(makeIcon('bi bi-trash'));
+            return link
+        }
+
+        const wrapTd = (item) => {
+            let td = document.createElement('td');
+            td.append(item);
+            return td;
+        }
+
+        const wrapButtonGroup = (items) => {
+            let group = document.createElement('div');
+            group.className = 'btn-group';
+            items.forEach(item => group.append(item));
+            return group;
+
+        }
+
+        const wrapLi = (item) => {
+            let li = document.createElement('li');
+            li.append(item);
+            return li;
+        }
+
+        const wrapUl = (items) => {
+            let ul = document.createElement('ul');
+            items.forEach(item => ul.append(item));
+            return ul;
+        }
+
+        const makeIcon = (className) => {
+            let deleteIcon = document.createElement('i');
+            deleteIcon.className = className;
+            return deleteIcon;
+        }
+
+        const makeLink = (text, href) => {
+            let link = document.createElement('a');
+            link.href = href;
+            link.textContent = text;
+            return link;
+        }
+
+    </script>
+</div>
+</body>
+</html>

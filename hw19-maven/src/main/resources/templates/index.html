@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate=="~{layout/layout}">
+
+<head>
+    <title>Заказы</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="card" layout:fragment="content">
+    <div class="card-header">
+        <h1 class="display-3">Заказы</h1>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <nav class="col" aria-label="Page navigation example">
+                <ul class="pagination" id="pagination">
+                </ul>
+            </nav>
+            <div class="col text-end">
+                <a class="btn btn-primary" th:href="@{/order}"><i class="bi bi-plus-square"></i></a>
+            </div>
+        </div>
+        <div th:replace="~{orders/fragments/list :: orders}">
+            books content
+        </div>
+    </div>
+    <script>
+        window.onload = () => {
+            let scope = document.querySelector('#scope');
+            let value = scope.value;
+            scope.addEventListener('change', function (e) {
+                getOrders(document.querySelector('#scope').value);
+            });
+            getOrders(value);
+        }
+
+        const getOrders = async (scope) => {
+            fetch(`/api/v1/token/${scope}`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((date) => {
+                let request = JSON.stringify({
+                    guid: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    token: date.token,
+                    action: 1
+                });
+                console.log(request)
+                fetch(`/api/v1/order/action`, {
+                    method: "POST",
+                    headers: {'content-type': 'application/json'},
+                    body: request
+                }).then(
+                    res => {
+                        return res.ok ? res : Promise.reject(res.json())
+                    }
+                ).then((response) => {
+                    return response.json();
+                }).then((ordersData) => {
+                    console.log(ordersData.message.orders)
+                    cleanBooksTable();
+                    loadOrders(ordersData.message.orders);
+                }).catch((error) => {
+                    error.then((result) => {
+                        console.log(result)
+                        alert(result.errors.message)
+                    })
+                });
+            })
+        }
+    </script>
+</div>
+</div>
+</body>
+</html>

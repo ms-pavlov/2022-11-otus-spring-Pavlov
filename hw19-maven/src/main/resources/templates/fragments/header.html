@@ -1,0 +1,19 @@
+<header th:fragment="header">
+    <div class="container">
+        <div class="row">
+            <div class="col input-group me-auto mb-3">
+                <select name="scope" id="scope">
+                    <option disabled>Выберите Область видимости</option>
+                    <option value="main">По умолчанию</option>
+                    <option value="user" selected>Простой пользователь</option>
+                    <option value="vip">Привилегированный пользователь</option>
+                    <option value="manager">Менеджер</option>
+                    <option value="bookkeeper">Бухгалтер</option>
+                </select>
+            </div>
+            <div class="col-auto text-end">
+                <a class="btn btn-primary" th:href="@{/logout}"><i class="bi bi-box-arrow-left"></i></i></a>
+            </div>
+        </div>
+    </div>
+</header>
