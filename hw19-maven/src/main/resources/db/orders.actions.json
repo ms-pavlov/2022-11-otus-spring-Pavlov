@@ -1,0 +1,32 @@
+[{
+  "_id": {
+    "$oid": "6606505e38ea55514064de32"
+  },
+  "actionId": 0,
+  "expression": "CREATE_ORDER",
+  "_class": "ru.otus.model.entities.OrderAction"
+},
+{
+  "_id": {
+    "$oid": "660903173bfbb96e2d228e52"
+  },
+  "actionId": 1,
+  "expression": "GET_ORDERS",
+  "_class": "ru.otus.model.entities.OrderAction"
+},
+{
+  "_id": {
+    "$oid": "6609575193c2a260105b8d5d"
+  },
+  "actionId": 2,
+  "expression": "GET_ORDERS_IN_WORK",
+  "_class": "ru.otus.model.entities.OrderAction"
+},
+{
+  "_id": {
+    "$oid": "660a17cb744fdf7e4f63402f"
+  },
+  "actionId": 3,
+  "expression": "SEND_ORDERS_FOR_PAYMENT",
+  "_class": "ru.otus.model.entities.OrderAction"
+}]

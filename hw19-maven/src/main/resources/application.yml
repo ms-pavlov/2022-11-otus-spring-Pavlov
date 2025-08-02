@@ -1,0 +1,18 @@
+server:
+  port: 8081
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /openapi
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: root
+      password: root
+      port: 27018
+      host: localhost
+      database: orders
+eventLoopThreadPoolSize: 2
+dataSourceExecutorThreadPoolSize: 4

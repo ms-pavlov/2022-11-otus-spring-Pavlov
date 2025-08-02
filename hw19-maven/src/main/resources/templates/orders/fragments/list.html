@@ -1,0 +1,187 @@
+<footer th:fragment="orders">
+    <table class="table table-striped">
+        <thead>
+        <tr id="header">
+            <th scope="col">ID</th>
+            <th scope="col">Заказчик</th>
+            <th scope="col">Менеджер</th>
+            <th scope="col">Статус</th>
+            <th scope="col-auto"></th>
+        </tr>
+        </thead>
+        <tbody id="orders">
+        </tbody>
+    </table>
+    <script>
+
+        const cleanBooksTable = async () => {
+            var bookTable = document.querySelector('#orders');
+            bookTable.innerHTML = "";
+        }
+
+        const loadOrders = async (data) => {
+            data.forEach((order) => {
+                let bookTable = document.querySelector('#orders');
+
+                bookTable.append(
+                    wrapTr([
+                        wrapTd(order.id),
+                        wrapTd((null === order.customer.namer) ? "" : order.customer.name),
+                        wrapTd((null === order.manager) ? "" : order.manager.name),
+                        wrapTd(order.orderStatus),
+                        wrapTd(
+                            makeMenu(order.id)
+                        )])
+                );
+            })
+        }
+
+        const makeMenu = (id) => {
+            let menu = document.createElement('div');
+            menu.className = 'dropdown';
+            let menuButton = document.createElement('div');
+            menuButton.className = 'btn btn-secondary dropdown-toggle';
+            menuButton.type = 'button';
+            menuButton.setAttribute('data-bs-toggle', 'dropdown');
+            menuButton.setAttribute('aria-expanded', 'false');
+            menuButton.append(makeIcon('bi bi-list-task'))
+            menuButton.id = id;
+
+            let menu1 = makeLink('Взять в работу', '#');
+
+            menu1.onclick = () => {
+                setInWork(id);
+            };
+            menu1.className = 'dropdown-item';
+
+            let menu2 = makeLink('Выставить счет', '#');
+
+            menu2.onclick = () => {
+                sendForPayment(id);
+            };
+            menu2.className = 'dropdown-item';
+
+            let menu3 = makeLink('Счет оплачен', '#');
+
+            menu3.onclick = () => {
+                setPaid(id);
+            };
+            menu3.className = 'dropdown-item';
+
+            let ul = wrapUl([
+                wrapLi(menu1),
+                wrapLi(menu2),
+                wrapLi(menu3)
+            ])
+
+            ul.className = 'dropdown-menu';
+            ul.setAttribute('aria-labelledby', id);
+
+            menu.append(menuButton);
+            menu.append(ul);
+
+            console.log(menu);
+            return menu;
+        }
+
+        const setInWork = (id) => {
+            doAction(id, 2);
+        };
+
+        const sendForPayment = (id) => {
+            doAction(id, 3);
+        };
+
+        const setPaid = (id) => {
+            doAction(id, 4);
+        };
+
+        const doAction = (id, action, params) => {
+            let scope = document.querySelector('#scope');
+            let value = scope.value;
+
+            fetch(`/api/v1/token/${value}`, {
+                method: "GET",
+            }).then((response) => {
+                return response.json();
+            }).then((date) => {
+                let request = JSON.stringify({
+                    guid: uuidv4(),
+                    token: date.token,
+                    order: id,
+                    action: action,
+                    args: params
+                });
+                console.log(request)
+                fetch(`/api/v1/order/action`, {
+                    method: "POST",
+                    headers: {'content-type': 'application/json'},
+                    body: request
+                }).then(
+                    res => {
+                        return res.ok ? res : Promise.reject(res.json())
+                    }
+                ).then((result) => {
+                    location.replace("/");
+                }).catch((error) => {
+                    error.then((result) => {
+                        console.log(result)
+                        alert(result.errors.message)
+                    })
+                })
+            })
+        }
+
+        const uuidv4 = () => {
+            return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+                (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+            );
+        }
+
+        const wrapTr = (items) => {
+            let tr = document.createElement('tr');
+            items.forEach(item => tr.append(item));
+            return tr;
+        }
+
+        const wrapTd = (item) => {
+            let td = document.createElement('td');
+            td.append(item);
+            return td;
+        }
+
+        const wrapButtonGroup = (items) => {
+            let group = document.createElement('div');
+            group.className = 'btn-group';
+            items.forEach(item => group.append(item));
+            return group;
+
+        }
+
+        const wrapLi = (item) => {
+            let li = document.createElement('li');
+            li.append(item);
+            return li;
+        }
+
+        const wrapUl = (items) => {
+            let ul = document.createElement('ul');
+            items.forEach(item => ul.append(item));
+            return ul;
+        }
+
+        const makeIcon = (className) => {
+            let deleteIcon = document.createElement('i');
+            deleteIcon.className = className;
+            return deleteIcon;
+        }
+
+        const makeLink = (text, href) => {
+            let link = document.createElement('a');
+            link.href = href;
+            link.textContent = text;
+            return link;
+        }
+
+    </script>
+</footer>
